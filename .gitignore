@@ -1,0 +1,5 @@
+# Ignore all meta files
+*/*.meta
+
+# Ignore temp directory
+ModbotSim/ModbotSim/Temp

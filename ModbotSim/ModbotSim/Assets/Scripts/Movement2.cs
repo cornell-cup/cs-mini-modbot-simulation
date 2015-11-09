@@ -2,37 +2,40 @@
 using System.Collections;
 using System.IO;
 
-public class Movement : MonoBehaviour {
-	public float accel = .005f;
-	public float setDeltaTurn = .1f;
+public class Movement2 : MonoBehaviour
+{
+    public float accel = .005f;
+    public float setDeltaTurn = .1f;
     private float currentDeltaTurn = 0f;
-	public float maxTurn = 2f;
-	public float maxSpeed = .045f;
+    public float maxTurn = 2f;
+    public float maxSpeed = .045f;
     public bool usingPhone = false;
-	private float speed = 0f;
-	private float turnValue = 0f;
+    private float speed = 0f;
+    private float turnValue = 0f;
     private float turnInput = 0f;
-	private Vector3 direction = Vector3.forward;
-	private Vector3 rotationVector;
-	private bool goingBackwards = false;
+    private Vector3 direction = Vector3.forward;
+    private Vector3 rotationVector;
+    private bool goingBackwards = false;
     private int forwardInput = 0;
 
 
 
-    
 
 
-	// Use this for initialization
-	void Start () {
+
+    // Use this for initialization
+    void Start()
+    {
         //var sw = new StreamWriter(Application.dataPath + "/Scripts/WriteToFile.txt", false);
         //sw.Write(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t\n")); 
-	}
+    }
 
 
-	void Update () {
+    void Update()
+    {
         Vector3 Udp = Vector3.zero;
         if (!usingPhone)
-            turnInput = Input.GetAxis("Horizontal");
+            turnInput = Input.GetAxis("Horizontal2");
         else
         {
             Udp = GetComponent<UDPReceive>().getLatestUDPPacket();
@@ -40,7 +43,7 @@ public class Movement : MonoBehaviour {
             if (Mathf.Abs(turnInput) < .2)
                 turnInput = 0;
         }
-           
+
         //how quickly do we want to turn
         currentDeltaTurn = setDeltaTurn * turnInput;
         //takes care of ideling to go back straight && also turning
@@ -62,9 +65,9 @@ public class Movement : MonoBehaviour {
         //which way do we want to go
         if (!usingPhone)
         {
-            if (Input.GetAxis("Vertical") > 0)
+            if (Input.GetAxis("Vertical2") > 0)
                 forwardInput = 1;
-            else if (Input.GetAxis("Vertical") < 0)
+            else if (Input.GetAxis("Vertical2") < 0)
                 forwardInput = -1;
             else
                 forwardInput = 0;
@@ -81,51 +84,53 @@ public class Movement : MonoBehaviour {
         }
 
         //takes care of acceleration
-        if (forwardInput==1 && speed < maxSpeed)
+        if (forwardInput == 1 && speed < maxSpeed)
         {
             speed += accel;
         }
-        else if (forwardInput==-1 && speed > -maxSpeed)
+        else if (forwardInput == -1 && speed > -maxSpeed)
         {
             speed -= accel;
         }
-        else if (forwardInput==0 && speed < 0)
+        else if (forwardInput == 0 && speed < 0)
             speed += .5f * accel;
-        else if(forwardInput==0 && speed > 0)
+        else if (forwardInput == 0 && speed > 0)
             speed -= .5f * accel;
-		
-		//calculates the direction displacement vector
-		rotationVector.Set (0, turnValue * speed * 25, 0);
-		direction = Quaternion.Euler (rotationVector) * direction;
-		
-		//Debug.Log ("Direction: "+ direction);
-		//Debug.Log ("Speed: " +speed);
-	}
 
-	//Update transform position and rotation - Write to file
-	void FixedUpdate() {
+        //calculates the direction displacement vector
+        rotationVector.Set(0, turnValue * speed * 25, 0);
+        direction = Quaternion.Euler(rotationVector) * direction;
+
+        //Debug.Log ("Direction: "+ direction);
+        //Debug.Log ("Speed: " +speed);
+    }
+
+    //Update transform position and rotation - Write to file
+    void FixedUpdate()
+    {
         //update the transform
-			transform.position += speed * direction;
-			if(!goingBackwards)
-				transform.rotation = Quaternion.LookRotation (direction);
-			else
-				transform.rotation = Quaternion.LookRotation (-1 * direction);
-		//WriteToRepo ();
-	}
+        transform.position += speed * direction;
+        if (!goingBackwards)
+            transform.rotation = Quaternion.LookRotation(direction);
+        else
+            transform.rotation = Quaternion.LookRotation(-1 * direction);
+        //WriteToRepo ();
+    }
 
-    void WriteToRepo(){
-       /* Vector3 pos = Vector3.zero;
-        Quaternion rot = transform.rotation;
+    void WriteToRepo()
+    {
+        /* Vector3 pos = Vector3.zero;
+         Quaternion rot = transform.rotation;
 
-            pos = transform.position + speed * direction;
-            rot = Quaternion.LookRotation (direction);
+             pos = transform.position + speed * direction;
+             rot = Quaternion.LookRotation (direction);
         
-*/
-		int id = 1;
-        var sw = new StreamWriter(Application.dataPath + "/Scripts/WriteToFile.txt",true);
-		//print (transform.rotation.eulerAngles.y);
-		sw.Write (string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t\n", id, transform.position.x, transform.position.y, transform.position.z, transform.rotation.eulerAngles.y)); 
+ */
+        int id = 1;
+        var sw = new StreamWriter(Application.dataPath + "/Scripts/WriteToFile.txt", true);
+        //print (transform.rotation.eulerAngles.y);
+        sw.Write(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t\n", id, transform.position.x, transform.position.y, transform.position.z, transform.rotation.eulerAngles.y));
         sw.Close();
         //Debug.Log("Wrote to files");     
-    }                                    
+    }
 }
