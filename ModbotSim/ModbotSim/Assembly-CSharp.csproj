@@ -74,8 +74,10 @@
      <Compile Include="Assets\OVR\Scripts\Util\OVRScreenFade.cs" />
      <Compile Include="Assets\OVR\Scripts\Util\OVRTrackerBounds.cs" />
      <Compile Include="Assets\Scripts\MoveFromVisionData1.cs" />
-     <Compile Include="Assets\Scripts\Movement.cs" />
-     <Compile Include="Assets\Scripts\Movement2.cs" />
+     <Compile Include="Assets\Scripts\Movement\Movement.cs" />
+     <Compile Include="Assets\Scripts\Movement\Movement2.cs" />
+     <Compile Include="Assets\Scripts\Movement\Movement3.cs" />
+     <Compile Include="Assets\Scripts\Movement\Movement4.cs" />
      <Compile Include="Assets\Scripts\UDPReceive.cs" />
      <None Include="Assets\Plugins\Android\assets\placeholder.txt" />
      <None Include="Assets\OVR\Moonlight\Shaders\OVRColorRampAlpha.shader" />
