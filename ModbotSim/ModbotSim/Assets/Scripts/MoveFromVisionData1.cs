@@ -1,85 +1,32 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class MoveFromVisionData1 : MonoBehaviour {
-	public Queue testCoordinates;
+	public Queue<Coord> testCoordinates;
 	public Coord initialCoord;
-	const float PI = (float)Math.PI;
-
-	public float moveSpeed;
-
-	public class Coord{
-		float xCoord;
-		float yCoord;
-		float zCoord;
-		float rot;
-
-		public Coord(){
-			xCoord = 0;
-			yCoord = 0;
-			zCoord = 0;
-			rot = 0;
-		}
-
-		public Coord(float x, float y, float z, float r){
-			xCoord = x;
-			yCoord = y;
-			zCoord = z;
-			rot = r;
-		}
-
-		public float getXCoord(){
-			return xCoord;
-		}
-
-		public float getYCoord(){
-			return yCoord;
-		}
-
-		public float getZCoord()
-		{
-			return zCoord;
-		}
-
-		public float getRot(){
-			return rot;
-		}
-
-		public string toString(){
-			//Debug.Log ("(" + xCoord + "," + yCoord + ")");
-			return "(" + xCoord + "," + yCoord + ")";
-		}
-	}
-
-	Queue GetCoord() {
+	const float START_SPEED = 3f;
+    public float moveSpeed;
+    
+	Queue<Coord> GetCoord() {
 		string line;
-		string xcoord = "initial x";
-		string ycoord = "initial y";
-		string zcoord = "initial z";
-		string rotation = "initial rot";
-		int first, second, third, fourth, fifth;
-		Queue list = new Queue ();
+		
+		Queue<Coord> list = new Queue<Coord> ();
 		// Read the file and display it line by line.
 		System.IO.StreamReader file = 
 			new System.IO.StreamReader(Application.dataPath + "/Scripts/WriteToFile.txt");
         print(Application.dataPath);
 		while((line = file.ReadLine()) != null)
 		{
-			if(!line.Equals("ID\tXPOS(m)\tYPOS(m)\tROT(rad)\tXVEL(m/s)\tYVEL(m/s)\tROTVEL(rad/s)\tTIME(s)")){
-				//string[] values = line.Split("\t");
-				first = line.IndexOf('\t');
-				second = line.IndexOf ('\t', first+1);
-				third = line.IndexOf ('\t', second+1);
-				fourth = line.IndexOf ('\t', third+1);
-				fifth = line.IndexOf ('\t', fourth + 1);
-				xcoord = line.Substring (first+1, second - first - 1);
-				ycoord = line.Substring (second+1, third - second - 1);
-				zcoord = line.Substring(third+1, fourth - third -1);
-				rotation = line.Substring (fourth + 1, fifth - fourth - 1);
-				//Debug.Log (xcoord + "," + ycoord+","+rotation);
-				list.Enqueue (new Coord (float.Parse(xcoord), float.Parse(ycoord), float.Parse (zcoord), float.Parse(rotation)));
-			}
+            String[] values = line.Split('\t');
+
+            //values[0] is robot id
+            float x = float.Parse(values[1]);
+            float y = float.Parse(values[2]);
+            float z = float.Parse(values[3]);
+            float r = float.Parse(values[4]);
+            
+            list.Enqueue(new Coord (x,y,z,r));
 		}
 		file.Close();
 		// Suspend the screen.
@@ -89,9 +36,10 @@ public class MoveFromVisionData1 : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		moveSpeed = 3f;
-		testCoordinates = GetCoord ();
-		initialCoord = (Coord)testCoordinates.Dequeue();
+		//moveSpeed = 3f;
+        moveSpeed = START_SPEED;
+		testCoordinates = GetCoord();
+		initialCoord = testCoordinates.Dequeue();
 
 	}
 
@@ -100,8 +48,8 @@ public class MoveFromVisionData1 : MonoBehaviour {
 	{
 		float rot;
 		//reading vision data
-		if(testCoordinates.Count>0){
-			Coord c = (Coord)testCoordinates.Dequeue();
+		if(testCoordinates.Count > 0){
+            Coord c = testCoordinates.Dequeue();
 			rot = (c.getRot () );
 			transform.position = new Vector3 (c.getXCoord (), 
 				c.getYCoord(), c.getZCoord ());
@@ -109,4 +57,54 @@ public class MoveFromVisionData1 : MonoBehaviour {
 			c.toString ();
 		}
 	}
+
+    public class Coord
+    {
+        float xCoord;
+        float yCoord;
+        float zCoord;
+        float rot;
+
+        public Coord()
+        {
+            xCoord = 0;
+            yCoord = 0;
+            zCoord = 0;
+            rot = 0;
+        }
+
+        public Coord(float x, float y, float z, float r)
+        {
+            xCoord = x;
+            yCoord = y;
+            zCoord = z;
+            rot = r;
+        }
+
+        public float getXCoord()
+        {
+            return xCoord;
+        }
+
+        public float getYCoord()
+        {
+            return yCoord;
+        }
+
+        public float getZCoord()
+        {
+            return zCoord;
+        }
+
+        public float getRot()
+        {
+            return rot;
+        }
+
+        public string toString()
+        {
+            //Debug.Log ("(" + xCoord + "," + yCoord + ")");
+            return "(" + xCoord + "," + yCoord + ")";
+        }
+    }
 }
