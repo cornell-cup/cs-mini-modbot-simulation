@@ -23,7 +23,7 @@ public class UDPReceive : MonoBehaviour
 
     //constants
     const int INIT_PORT = 8051;
-    const IPAddress MULTICAST_ADDR = IPAddress.Parse("239.0.0.222");
+    const string MULTICAST_ADDR = "239.0.0.222";
 
     // start from unity3d
     public void Start()
@@ -52,7 +52,7 @@ public class UDPReceive : MonoBehaviour
         IPEndPoint localEp = new IPEndPoint(IPAddress.Any, port);
         client.Client.Bind(localEp);
         
-        client.JoinMulticastGroup(MULTICAST_ADDR);
+        client.JoinMulticastGroup(IPAddress.Parse(MULTICAST_ADDR));
         while (true)
         {
             try
