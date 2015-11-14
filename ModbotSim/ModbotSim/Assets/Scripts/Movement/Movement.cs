@@ -18,16 +18,39 @@ public class Movement : MonoBehaviour
     private bool goingBackwards = false;
     private int forwardInput = 0;
 
-
-
-
-
+    private string horizontal;
+    private string vertical;
 
     // Use this for initialization
     void Start()
     {
         //var sw = new StreamWriter(Application.dataPath + "/Scripts/WriteToFile.txt", false);
         //sw.Write(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t\n")); 
+        print("initializing " + this);
+        string[] name = this.ToString().Split(' ');
+        if (name[0] != "Kart")
+        {
+            throw new System.Exception("Movement script attached to non Kart object");
+        }
+        switch (name[1])
+        {
+            case "1":
+                horizontal = "Horizontal";
+                vertical = "Vertical";
+                break;
+            case "2":
+                horizontal = "Horizontal2";
+                vertical = "Vertical2";
+                break;
+            case "3":
+                horizontal = "Horizontal3";
+                vertical = "Vertical3";
+                break;
+            case "4":
+                horizontal = "Horizontal4";
+                vertical = "Vertical4";
+                break;
+        }
     }
 
 
@@ -35,7 +58,7 @@ public class Movement : MonoBehaviour
     {
         Vector3 Udp = Vector3.zero;
         if (!usingPhone)
-            turnInput = Input.GetAxis("Horizontal");
+            turnInput = Input.GetAxis(horizontal);
         else
         {
             Udp = GetComponent<UDPReceive>().getLatestUDPPacket();
@@ -61,13 +84,13 @@ public class Movement : MonoBehaviour
         }
         //Debug.Log("DeltaTurn: " + currentDeltaTurn);
 
-        //Debug.Log("Vert: "+Input.GetAxis("Vertical"));
+        //Debug.Log("Vert: "+Input.GetAxis(vertical));
         //which way do we want to go
         if (!usingPhone)
         {
-            if (Input.GetAxis("Vertical") > 0)
+            if (Input.GetAxis(vertical) > 0)
                 forwardInput = 1;
-            else if (Input.GetAxis("Vertical") < 0)
+            else if (Input.GetAxis(vertical) < 0)
                 forwardInput = -1;
             else
                 forwardInput = 0;
