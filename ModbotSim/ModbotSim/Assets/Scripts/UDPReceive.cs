@@ -14,7 +14,7 @@ public class UDPReceive : MonoBehaviour
 
     // udpclient object
     UdpClient client;
-    
+
     // public string IP = "127.0.0.1"; default local
     public int port; // define > init
 
@@ -51,7 +51,7 @@ public class UDPReceive : MonoBehaviour
 
         IPEndPoint localEp = new IPEndPoint(IPAddress.Any, port);
         client.Client.Bind(localEp);
-        
+
         client.JoinMulticastGroup(IPAddress.Parse(MULTICAST_ADDR));
         while (true)
         {
