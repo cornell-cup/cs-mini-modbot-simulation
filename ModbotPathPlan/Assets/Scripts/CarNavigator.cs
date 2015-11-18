@@ -10,6 +10,8 @@ public class CarNavigator : MonoBehaviour
 	public float maxTurn = 2f;
 	public float maxSpeed = .045f;
 	public bool usingPhone = false;
+    public string playerName;
+    public string playerIP;
 	private float speed = 0f;
 	private float turnValue = 0f;
 	private float turnInput = 0f;
@@ -52,17 +54,24 @@ public class CarNavigator : MonoBehaviour
 			break;
 		}
 	}
+
+    public void phoneUpdate(string ip, string name)
+    {
+        usingPhone = true;
+        playerIP = ip;
+        playerName = name;
+    }
 	
 	
 	void Update()
 	{
-		//Vector3 Udp = Vector3.zero;
+		Vector3 Udp = Vector3.zero;
 		if (!usingPhone)
 			turnInput = Input.GetAxis(horizontal);
 		else
 		{
-			//Udp = GetComponent<UDPReceive>().getLatestUDPPacket();
-			//turnInput = Udp.x;
+			Udp = GetComponent<UDPControl>().move;
+			turnInput = Udp.x;
 			if (Mathf.Abs(turnInput) < .2)
 				turnInput = 0;
 		}
@@ -97,13 +106,13 @@ public class CarNavigator : MonoBehaviour
 		}
 		else
 		{
-			/*float z = Udp.z;
+			float z = Udp.z;
 			if (z < -.25)
 				forwardInput = 1;
 			else if (z > 0)
 				forwardInput = -1;
 			else
-				forwardInput = 0;*/
+				forwardInput = 0;
 		}
 		
 		//takes care of acceleration

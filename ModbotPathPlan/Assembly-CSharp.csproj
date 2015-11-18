@@ -47,17 +47,28 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CarControl.cs" />
      <Compile Include="Assets\Scripts\CarNavigator.cs" />
+     <Compile Include="Assets\Scripts\CloseGUI.cs" />
+     <Compile Include="Assets\Scripts\DisplayIP.cs" />
      <Compile Include="Assets\Scripts\GenerateGraph.cs" />
+     <Compile Include="Assets\Scripts\MasterUDPReceive.cs" />
      <Compile Include="Assets\Scripts\PathPlanning.cs" />
      <Compile Include="Assets\Scripts\PriorityQueue.cs" />
      <Compile Include="Assets\Scripts\SmoothFollow.cs" />
      <Compile Include="Assets\Scripts\Triangle.cs" />
+     <Compile Include="Assets\Scripts\UDPControl.cs" />
+     <Compile Include="Assets\Scripts\UDPSendCam.cs" />
      <Compile Include="Assets\Scripts\WayPoint.cs" />
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/Mono.Cecil.dll</HintPath>
