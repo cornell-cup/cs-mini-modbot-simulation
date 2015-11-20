@@ -1,5 +1,12 @@
 # Ignore all meta files
 */*.meta
 
-# Ignore temp directory
-ModbotSim/ModbotSim/Temp
+# Ignore temp stuff iunno
+ModbotPathPlan/Library/metadata
+ModbotPathPlan/Library/ScriptAssemblies
+ModbotPathPlan/Library/assetDatabase3
+ModbotPathPlan/Library/expandedItems
+ModbotPathPlan/Library/*.log
+
+# Ignore suo?
+*.suo

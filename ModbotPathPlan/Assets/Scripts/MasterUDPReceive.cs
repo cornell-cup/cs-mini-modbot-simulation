@@ -96,7 +96,10 @@ public class MasterUDPReceive : MonoBehaviour
         if (players.Count != playersLen)
         {
             GameObject clone = (GameObject)Instantiate(kart);
-            clone.name = "Kart 1";
+            clone.GetComponentInChildren<Camera>().enabled = false;
+            clone.GetComponentInChildren<MeshCollider>().convex = true;
+            clone.GetComponentInChildren<WheelCollider>().enabled = false;
+            clone.name = "Kart UDP";
             clone.GetComponent<CarNavigator>().phoneUpdate((string) playerIPs[playersLen], (string) players[playersLen]);
             playersLen += 1;
         }
