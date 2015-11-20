@@ -4,19 +4,26 @@ using System.Runtime.InteropServices;
 using System.Net.Sockets;
 using System.Net;
 using System;
+using System.Threading;
 
 public class UDPSendCam : MonoBehaviour {
 
-    public int width = 100;
-    public int height = 50;
+    Thread sendThread;
+
+    public int width = 150;
+    public int height = 75;
 
     public byte[] toSend;
 
     public bool usingPhone = false;
-    private IPEndPoint remoteEP;
+    IPEndPoint remoteEP;
 
     public int port;
-    private UdpClient client;
+    UdpClient client;
+
+    Camera cam;
+    Texture2D tex;
+    RenderTexture rt;
 
 	// Use this for initialization
 	void Start () {
@@ -24,45 +31,65 @@ public class UDPSendCam : MonoBehaviour {
         {
             port = 8050;
             usingPhone = true;
-            remoteEP = new IPEndPoint(IPAddress.Parse(this.transform.parent.gameObject.GetComponent<CarNavigator>().playerIP), port);
 
-            client = new UdpClient();
+            cam = GetComponent<Camera>();
+            tex = new Texture2D(width, height, TextureFormat.RGB24, false);
+            rt = new RenderTexture(width, height, 24);
+
+            sendThread = new Thread(
+                new ThreadStart(sendData));
+            sendThread.IsBackground = true;
+            sendThread.Start();
         }
 	}
 
     // Update is called once per frame
-    void Update ()
+    void sendData ()
     {
+        remoteEP = new IPEndPoint(IPAddress.Parse(this.transform.parent.gameObject.GetComponent<CarNavigator>().playerIP), port);
+
+        client = new UdpClient();
+
         if (usingPhone)
         {
-            Camera cam = GetComponent<Camera>();
-            Texture2D tex = new Texture2D(width, height, TextureFormat.RGB24, false);
-
-            RenderTexture rt = new RenderTexture(width, height, 24);
-            cam.targetTexture = rt;
-            cam.Render();
-            RenderTexture.active = rt;
-
-            tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-            tex.Apply();
-
-            toSend = tex.EncodeToPNG();
-
-
-            cam.targetTexture = null;
-            RenderTexture.active = null; // added to avoid errors 
-            DestroyImmediate(rt);
-
-            try
+            while (true)
             {
-                //client.Send(toSend, toSend.Length, remoteEP);
-                client.Send(toSend, toSend.Length, remoteEP);
-            }
-            catch (Exception err)
-            {
-                print(err.ToString());
+                cam.targetTexture = rt;
+                cam.Render();
+                RenderTexture.active = rt;
+
+                tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                tex.Apply();
+
+                toSend = tex.EncodeToPNG();
+
+                print(toSend.Length);
+
+                cam.targetTexture = null;
+                RenderTexture.active = null; // added to avoid errors 
+                DestroyImmediate(rt);
+
+                try
+                {
+                    //client.Send(toSend, toSend.Length, remoteEP);
+                    client.Send(toSend, toSend.Length, remoteEP);
+                }
+                catch (Exception err)
+                {
+                    print(err.ToString());
+                }
             }
         }
 
     }
+
+    public void OnApplicationQuit()
+    {
+        if (sendThread != null)
+        {
+            client.Close();
+            sendThread.Abort();
+        }
+    }
 }
+

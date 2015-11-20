@@ -39,16 +39,16 @@ public class Movement : MonoBehaviour
                 vertical = "Vertical";
                 break;
             case "2":
-                horizontal = "Horizontal";
-                vertical = "Vertical";
+                horizontal = "Horizontal2";
+                vertical = "Vertical2";
                 break;
             case "3":
-                horizontal = "Horizontal";
-                vertical = "Vertical";
+                horizontal = "Horizontal3";
+                vertical = "Vertical3";
                 break;
             case "4":
-                horizontal = "Horizontal";
-                vertical = "Vertical";
+                horizontal = "Horizontal4";
+                vertical = "Vertical4";
                 break;
         }
     }
