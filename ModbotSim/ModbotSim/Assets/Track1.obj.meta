@@ -92,6 +92,23 @@ ModelImporter:
     4300028: object_7
     4300030: object_8
     4300032: object_9
+    6400000: object_1
+    6400002: object_10
+    6400004: object_11
+    6400006: object_12
+    6400008: object_13
+    6400010: object_14
+    6400012: object_15
+    6400014: object_16
+    6400016: object_17
+    6400018: object_2
+    6400020: object_3
+    6400022: object_4
+    6400024: object_5
+    6400026: object_6
+    6400028: object_7
+    6400030: object_8
+    6400032: object_9
   materials:
     importMaterials: 1
     materialName: 0
@@ -117,7 +134,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Editor\CrossPlatformInput\CrossPlatformInputInitialize.cs" />
+     <Compile Include="Assets\Editor\Object2Terrain.cs" />
      <Compile Include="Assets\OVR\Editor\OVRBuild.cs" />
      <Compile Include="Assets\OVR\Moonlight\Editor\OVRMoonlightLoader.cs" />
      <None Include="Assets\Plugins\Android\assets\placeholder.txt" />

@@ -24,6 +24,7 @@ public class Movement : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        this.
         //var sw = new StreamWriter(Application.dataPath + "/Scripts/WriteToFile.txt", false);
         //sw.Write(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t\n")); 
         print("initializing " + this);
