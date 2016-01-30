@@ -107,15 +107,15 @@ public class OVRDisplay
 	}
 
 	/// <summary>
-	/// Gets the current acceleration of the head.
+	/// Gets the current ACCELeration of the head.
 	/// </summary>
-	public Vector3 acceleration
+	public Vector3 ACCELeration
 	{
 		get {			
 			if (!OVRManager.isHmdPresent)
 				return Vector3.zero;
 
-            OVRPose ret = OVRPlugin.GetEyeAcceleration(OVRPlugin.Eye.None).ToOVRPose();
+            OVRPose ret = OVRPlugin.GetEyeACCELeration(OVRPlugin.Eye.None).ToOVRPose();
             return -ret.position;
 		}
 	}

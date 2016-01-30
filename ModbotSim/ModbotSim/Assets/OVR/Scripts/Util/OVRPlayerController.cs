@@ -29,9 +29,9 @@ using System.Collections.Generic;
 public class OVRPlayerController : MonoBehaviour
 {
 	/// <summary>
-	/// The rate acceleration during movement.
+	/// The rate ACCELeration during movement.
 	/// </summary>
-	public float Acceleration = 0.1f;
+	public float ACCELeration = 0.1f;
 
 	/// <summary>
 	/// The rate of damping on movement.
@@ -256,7 +256,7 @@ public class OVRPlayerController : MonoBehaviour
 		MoveScale *= SimulationRate * Time.deltaTime;
 
 		// Compute this for key movement
-		float moveInfluence = Acceleration * 0.1f * MoveScale * MoveScaleMultiplier;
+		float moveInfluence = ACCELeration * 0.1f * MoveScale * MoveScaleMultiplier;
 
 		// Run!
 		if (dpad_move || Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
@@ -314,7 +314,7 @@ public class OVRPlayerController : MonoBehaviour
 			euler.y += Input.GetAxis("Mouse X") * rotateInfluence * 3.25f;
 #endif
 
-		moveInfluence = SimulationRate * Time.deltaTime * Acceleration * 0.1f * MoveScale * MoveScaleMultiplier;
+		moveInfluence = SimulationRate * Time.deltaTime * ACCELeration * 0.1f * MoveScale * MoveScaleMultiplier;
 
 #if !UNITY_ANDROID // LeftTrigger not avail on Android game pad
 		moveInfluence *= 1.0f + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger);

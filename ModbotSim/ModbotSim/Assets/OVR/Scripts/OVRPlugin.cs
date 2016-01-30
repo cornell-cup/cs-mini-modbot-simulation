@@ -371,7 +371,7 @@ internal static class OVRPlugin
 	}
 
 	public static Posef GetEyeVelocity(Eye eyeId) { return OVRP0100.ovrp_GetEyeVelocity(eyeId); }
-	public static Posef GetEyeAcceleration(Eye eyeId) { return OVRP0100.ovrp_GetEyeAcceleration(eyeId); }
+	public static Posef GetEyeACCELeration(Eye eyeId) { return OVRP0100.ovrp_GetEyeACCELeration(eyeId); }
 	public static Frustumf GetEyeFrustum(Eye eyeId) { return OVRP0100.ovrp_GetEyeFrustum(eyeId); }
 	public static Sizei GetEyeTextureSize(Eye eyeId) { return OVRP0100.ovrp_GetEyeTextureSize(eyeId); }
 	public static Posef GetTrackerPose(Tracker trackerId) { return OVRP0100.ovrp_GetTrackerPose(trackerId); }
@@ -457,7 +457,7 @@ internal static class OVRPlugin
 		public static extern Posef ovrp_GetEyeVelocity(Eye eyeId);
 
 		[DllImport(pluginName, CallingConvention = CallingConvention.Cdecl)]
-		public static extern Posef ovrp_GetEyeAcceleration(Eye eyeId);
+		public static extern Posef ovrp_GetEyeACCELeration(Eye eyeId);
 
 		[DllImport(pluginName, CallingConvention = CallingConvention.Cdecl)]
 		public static extern Frustumf ovrp_GetEyeFrustum(Eye eyeId);

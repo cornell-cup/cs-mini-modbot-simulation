@@ -4,12 +4,14 @@ using System.IO;
 
 public class Movement : MonoBehaviour
 {
-    public float accel = .005f;
-    public float setDeltaTurn = .1f;
-    private float currentDeltaTurn = 0f;
-    public float maxTurn = 2f;
-    public float maxSpeed = .045f;
     public bool usingPhone = false;
+    [System.NonSerialized]
+    public static float ACCEL = .05f;
+    public static float DELTA_TURN = .05f;
+    public static float MAX_TURN = 1f;
+    [HideInInspector]
+    public float MAX_SPEED = 1f;
+    private float currentDeltaTurn = 0f;
     private float speed = 0f;
     private float turnValue = 0f;
     private float turnInput = 0f;
@@ -24,10 +26,10 @@ public class Movement : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        this.
+        //this.
         //var sw = new StreamWriter(Application.dataPath + "/Scripts/WriteToFile.txt", false);
         //sw.Write(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t\n")); 
-        print("initializing " + this);
+        //print("initializing " + this);
         string[] name = this.ToString().Split(' ');
         if (name[0] != "Kart")
         {
@@ -69,17 +71,17 @@ public class Movement : MonoBehaviour
         }
 
         //how quickly do we want to turn
-        currentDeltaTurn = setDeltaTurn * turnInput;
+        currentDeltaTurn = DELTA_TURN * turnInput;
         //takes care of ideling to go back straight && also turning
         if (turnInput == 0 && turnValue > 0)
         {
-            turnValue -= setDeltaTurn;
+            turnValue -= DELTA_TURN;
         }
         else if (turnInput == 0 && turnValue < 0)
         {
-            turnValue += setDeltaTurn;
+            turnValue += DELTA_TURN;
         }
-        if ((turnValue + currentDeltaTurn) < (maxTurn * Mathf.Abs(turnInput)) && (turnValue + currentDeltaTurn) > (-maxTurn * Mathf.Abs(turnInput)))
+        if ((turnValue + currentDeltaTurn) < (MAX_TURN * Mathf.Abs(turnInput)) && (turnValue + currentDeltaTurn) > (-MAX_TURN * Mathf.Abs(turnInput)))
         {
             turnValue += currentDeltaTurn;
         }
@@ -107,19 +109,19 @@ public class Movement : MonoBehaviour
                 forwardInput = 0;
         }
 
-        //takes care of acceleration
-        if (forwardInput == 1 && speed < maxSpeed)
+        //takes care of ACCELeration
+        if (forwardInput == 1 && speed < MAX_SPEED)
         {
-            speed += accel;
+            speed += ACCEL;
         }
-        else if (forwardInput == -1 && speed > -maxSpeed)
+        else if (forwardInput == -1 && speed > -MAX_SPEED)
         {
-            speed -= accel;
+            speed -= ACCEL;
         }
         else if (forwardInput == 0 && speed < 0)
-            speed += .5f * accel;
+            speed += .5f * ACCEL;
         else if (forwardInput == 0 && speed > 0)
-            speed -= .5f * accel;
+            speed -= .5f * ACCEL;
 
         //calculates the direction displacement vector
         rotationVector.Set(0, turnValue * speed * 25, 0);
