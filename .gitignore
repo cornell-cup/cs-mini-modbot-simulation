@@ -2,7 +2,7 @@
 **/*.meta
 **/*.csproj
 **/*.unityproj
-**/*.sln
+**/*.sln*
 **/*.user
 **/*.userprefs
 **/*.DS_store
