@@ -1,12 +1,14 @@
 # Ignore all meta files
-*/*.meta
+**/*.meta
+**/*.csproj
+**/*.unityproj
+**/*.sln
+**/*.user
+**/*.userprefs
+**/*.DS_store
+**/*.suo
 
 # Ignore temp stuff iunno
-ModbotPathPlan/Library/metadata
-ModbotPathPlan/Library/ScriptAssemblies
-ModbotPathPlan/Library/assetDatabase3
-ModbotPathPlan/Library/expandedItems
-ModbotPathPlan/Library/*.log
-
-# Ignore suo?
-*.suo
+**/Library
+**/Temp
+**/obj
