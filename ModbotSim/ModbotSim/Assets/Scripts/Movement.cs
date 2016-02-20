@@ -27,53 +27,19 @@ public class Movement : MonoBehaviour
 
     private string horizontal;
     private string vertical;
+	GetInput input;
 
     // Use this for initialization
     void Start()
     {
-        //this.
-        //var sw = new StreamWriter(Application.dataPath + "/Scripts/WriteToFile.txt", false);
-        //sw.Write(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t\n")); 
-        //print("initializing " + this);
-        string[] name = this.ToString().Split(' ');
-        if (name[0] != "Kart")
-        {
-            throw new System.Exception("Movement script attached to non Kart object");
-        }
-        switch (name[1])
-        {
-            case "1":
-                horizontal = "Horizontal";
-                vertical = "Vertical";
-                break;
-            case "2":
-                horizontal = "Horizontal2";
-                vertical = "Vertical2";
-                break;
-            case "3":
-                horizontal = "Horizontal3";
-                vertical = "Vertical3";
-                break;
-            case "4":
-                horizontal = "Horizontal4";
-                vertical = "Vertical4";
-                break;
-        }
+		input = GetComponent<GetInput>();
     }
 
 
     void Update()
     {
-        Vector3 Udp = Vector3.zero;
-        if (!usingPhone)
-            turnInput = Input.GetAxis(horizontal);
-        else
-        {
-            Udp = GetComponent<UDPReceive>().getLatestUDPPacket();
-            turnInput = Udp.x;
-            if (Mathf.Abs(turnInput) < .2)
-                turnInput = 0;
-        }
+		turnInput = input.getTurnInput();
+		forwardInput = input.getForwardInput();
 
         //how quickly do we want to turn
         currentDeltaTurn = DELTA_TURN * turnInput;
@@ -104,25 +70,7 @@ public class Movement : MonoBehaviour
 
         //Debug.Log("Vert: "+Input.GetAxis(vertical));
         //which way do we want to go
-        if (!usingPhone)
-        {
-            if (Input.GetAxis(vertical) > 0)
-                forwardInput = 1;
-            else if (Input.GetAxis(vertical) < 0)
-                forwardInput = -1;
-            else
-                forwardInput = 0;
-        }
-        else
-        {
-            float z = Udp.z;
-            if (z < -.25)
-                forwardInput = 1;
-            else if (z > 0)
-                forwardInput = -1;
-            else
-                forwardInput = 0;
-        }
+
 
         //takes care of ACCELeration
         if (forwardInput == 1 && speed < MAX_SPEED)
