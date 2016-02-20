@@ -1,14 +1,14 @@
-# Ignore all meta files
-**/*.meta
+# Ignore the following files
+# --------------------------
+# Unity3D specific
+#
+**/Library/*
+**/Temp/*
 **/*.csproj
 **/*.unityproj
-**/*.sln*
-**/*.user
+**/*.sln
 **/*.userprefs
-**/*.DS_store
-**/*.suo
+**/*.pidb
 
-# Ignore temp stuff iunno
-**/Library
-**/Temp
-**/obj
+# include meta files
+!*.*.meta
