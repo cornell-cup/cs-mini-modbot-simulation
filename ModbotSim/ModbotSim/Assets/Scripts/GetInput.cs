@@ -5,6 +5,10 @@ public class GetInput : MonoBehaviour {
 	public bool usingPhone = false;
 	private string horizontal;
 	private string vertical;
+	private KeyCode left;
+	private KeyCode right;
+	private KeyCode up;
+	private KeyCode down;
 
 	// Use this for initialization
 	void Start () {
@@ -23,10 +27,18 @@ public class GetInput : MonoBehaviour {
 		case "1":
 			horizontal = "Horizontal";
 			vertical = "Vertical";
+			left = KeyCode.LeftArrow;
+			right = KeyCode.RightArrow;
+			up = KeyCode.UpArrow;
+			down = KeyCode.DownArrow;
 			break;
 		case "2":
 			horizontal = "Horizontal2";
 			vertical = "Vertical2";
+			left = KeyCode.A;
+			right = KeyCode.D;
+			up = KeyCode.W;
+			down = KeyCode.S;
 			break;
 		case "3":
 			horizontal = "Horizontal3";
@@ -46,10 +58,10 @@ public class GetInput : MonoBehaviour {
 	public float getTurnInput(){
 		Vector3 Udp = Vector3.zero;
 		if (!usingPhone) {
-			if (Input.GetKey(KeyCode.RightArrow)){
+			if (Input.GetKey(right)){
 				return 1;
 			}
-			if (Input.GetKey(KeyCode.LeftArrow)){
+			if (Input.GetKey(left)){
 				return -1;
 			}
 			return Input.GetAxis (horizontal);
@@ -73,10 +85,10 @@ public class GetInput : MonoBehaviour {
 				forwardInput = 1;
 			else if (Input.GetAxis(vertical) < 0)
 				forwardInput = -1;
-			else if (Input.GetKey (KeyCode.UpArrow)) {
+			else if (Input.GetKey (up)) {
 				return 1;
 			}
-			else if (Input.GetKey (KeyCode.DownArrow)) {
+			else if (Input.GetKey (down)) {
 				return -1;
 			} 
 			else
