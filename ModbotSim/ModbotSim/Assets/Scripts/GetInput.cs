@@ -35,10 +35,7 @@ public class GetInput : MonoBehaviour {
 		case "2":
 			horizontal = "Horizontal2";
 			vertical = "Vertical2";
-			left = KeyCode.A;
-			right = KeyCode.D;
-			up = KeyCode.W;
-			down = KeyCode.S;
+
 			break;
 		case "3":
 			horizontal = "Horizontal3";
@@ -47,6 +44,10 @@ public class GetInput : MonoBehaviour {
 		case "4":
 			horizontal = "Horizontal4";
 			vertical = "Vertical4";
+			left = KeyCode.A;
+			right = KeyCode.D;
+			up = KeyCode.W;
+			down = KeyCode.S;
 			break;
 		}
 	}
