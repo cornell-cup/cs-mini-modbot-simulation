@@ -3,10 +3,11 @@ using System.Collections;
 
 public class Movement : MonoBehaviour
 {
-    
+
     public float TURN_DELTA = 0.2f;
-    public float SPEED_DELTA = 0.5f;
+    public float SPEED_DELTA = 0.2f;
     public float MAX_TURN = 1.0f;
+    private float[] lastVelocity = { 0, 0, 0, 0, 0, 0 };
     private Rigidbody rb;
 
     // Use this for initialization
@@ -18,52 +19,33 @@ public class Movement : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        Vector3 rot = new Vector3();
-        Vector3 dir = new Vector3();
-
+    {        
         Vector3 x = transform.right.normalized;
         Vector3 y = transform.up.normalized;
         Vector3 z = transform.forward.normalized;
 
-        //pitch
-        if (Input.GetKey(KeyCode.W))
-            rot -= x;
-        if (Input.GetKey(KeyCode.S))
-            rot += x;
+        Vector3 rot = new Vector3();
+        rot += x * Input.GetAxis("Pitch");
+        rot += y * Input.GetAxis("Yaw");
+        rot += z * Input.GetAxis("Roll");
+        rb.AddTorque(rot * TURN_DELTA);
 
-        //yaw
-        if (Input.GetKey(KeyCode.A))
-            rot -= y;
-        if (Input.GetKey(KeyCode.D))
-            rot += y;
+        Vector3 dir = new Vector3();
+        dir += x * Input.GetAxis("Sway");
+        dir += y * Input.GetAxis("Heave");
+        dir += z * Input.GetAxis("Surge");
+        rb.AddForce(dir * SPEED_DELTA);
 
-        //roll
-        if (Input.GetKey(KeyCode.E))
-            rot -= z;
-        if (Input.GetKey(KeyCode.Q))
-            rot += z;
+        Vector3 ang = rb.angularVelocity;
+        Vector3 vel = rb.velocity;
+        float[] currVelocity = { ang.x, ang.y, ang.z, vel.x, vel.y, vel.z };
+        float[] currAccel = new float[6];
+        for (int i = 0; i < 6; i++) currAccel[i] = currVelocity[i] - lastVelocity[i];
 
-        rb.AddTorque(rot*TURN_DELTA);
+        //TODO send curr Velocity and Accel to MOOG
+        Debug.Log(currVelocity);
+        Debug.Log(currAccel);
 
-        //sway   
-        if (Input.GetKey(KeyCode.LeftArrow))
-            dir -= x;
-        else if (Input.GetKey(KeyCode.RightArrow))
-            dir += x;
-
-        //heave
-        if (Input.GetKey(KeyCode.UpArrow))
-            dir -= y;
-        else if (Input.GetKey(KeyCode.DownArrow))
-            dir += y;
-
-        //surge
-        if (Input.GetKey(KeyCode.Comma))
-            dir -= z;
-        else if (Input.GetKey(KeyCode.Period))
-            dir += z;
-        
-        rb.AddForce(dir*SPEED_DELTA);
+        lastVelocity = currVelocity;
     }
 }
