@@ -20,35 +20,50 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Vector3 rot = new Vector3();
-        Vector3 dir = transform.forward.normalized;
+        Vector3 dir = new Vector3();
+
+        Vector3 x = transform.right.normalized;
+        Vector3 y = transform.up.normalized;
+        Vector3 z = transform.forward.normalized;
 
         //pitch
         if (Input.GetKey(KeyCode.W))
-            rot -= transform.right * TURN_DELTA;
+            rot -= x;
         if (Input.GetKey(KeyCode.S))
-            rot += transform.right * TURN_DELTA;
+            rot += x;
 
         //yaw
         if (Input.GetKey(KeyCode.A))
-            rot -= transform.up * TURN_DELTA;
+            rot -= y;
         if (Input.GetKey(KeyCode.D))
-            rot += transform.up * TURN_DELTA;
+            rot += y;
 
         //roll
         if (Input.GetKey(KeyCode.E))
-            rot -= transform.forward * TURN_DELTA;
+            rot -= z;
         if (Input.GetKey(KeyCode.Q))
-            rot += transform.forward * TURN_DELTA;
+            rot += z;
 
-        rb.AddTorque(rot);
+        rb.AddTorque(rot*TURN_DELTA);
 
-        //thrust
-        if (Input.GetKey(KeyCode.DownArrow))
-            dir *= -SPEED_DELTA;
-        else if (Input.GetKey(KeyCode.UpArrow))
-            dir *= SPEED_DELTA;
-        else return;
+        //sway   
+        if (Input.GetKey(KeyCode.LeftArrow))
+            dir -= x;
+        else if (Input.GetKey(KeyCode.RightArrow))
+            dir += x;
 
-        rb.AddForce(dir);
+        //heave
+        if (Input.GetKey(KeyCode.UpArrow))
+            dir -= y;
+        else if (Input.GetKey(KeyCode.DownArrow))
+            dir += y;
+
+        //surge
+        if (Input.GetKey(KeyCode.Comma))
+            dir -= z;
+        else if (Input.GetKey(KeyCode.Period))
+            dir += z;
+        
+        rb.AddForce(dir*SPEED_DELTA);
     }
 }
