@@ -7,14 +7,18 @@ public class Movement : MonoBehaviour
     [System.NonSerialized]
     public bool usingPhone = false;
     [System.NonSerialized]
-    public static float ACCEL = .002f;
+    public static float ACCEL = 3.4f/4.5f; // m/s^2
     [System.NonSerialized]
-    public static float DELTA_TURN = .1f;
+    public static float DELTA_TURN = .5f*4.5f; 
     [System.NonSerialized]
-    public static float MAX_TURN = 0.5f;
+	public static float MAX_TURN = 5.91f*4.5f;// turn radius in meters ~ 64 / MAX_TURN (car is 1 meter long, .5 meters wide)
+	[System.NonSerialized]
+	public static float IDLE_ACCEL = ACCEL / 10;
+//	[System.NonSerialized]
+//	public static float MAX_TURN = 0.5f;
     [HideInInspector]
     [System.NonSerialized]
-    public float MAX_SPEED = .1f;
+    public float MAX_SPEED = 40f / 4.5f; // this is meters per second! woo
 
     private float currentDeltaTurn = 0f;
     private float speed = 0f;
@@ -73,31 +77,26 @@ public class Movement : MonoBehaviour
 
 
         //takes care of ACCELeration
-        if (forwardInput == 1 && speed < MAX_SPEED)
-        {
-            speed += ACCEL;
-        }
-        else if (forwardInput == -1 && speed > -MAX_SPEED)
-        {
-            speed -= ACCEL;
-        }
-        else if (forwardInput == 0 && speed < 0)
-        {
-            if (speed > .5f * -ACCEL)
-                speed = 0;
-            else
-                speed += .5f * ACCEL;
-        }
-        else if (forwardInput == 0 && speed > 0)
-        {
-            if (speed < .5f * ACCEL)
-                speed = 0;
-            else
-                speed -= .5f * ACCEL;
-        }
+		if (forwardInput == 1 && speed < MAX_SPEED) {
+			speed += ACCEL;
+		} else if (forwardInput == -1 && speed > -MAX_SPEED) {
+			speed -= ACCEL;
+		} else if (forwardInput == 0 && speed < 0) {
+			if (speed > -IDLE_ACCEL)
+				speed = 0;
+			else
+				speed += IDLE_ACCEL;
+		} else if (forwardInput == 0 && speed > 0) {
+			if (speed < IDLE_ACCEL)
+				speed = 0;
+			else
+				speed -= IDLE_ACCEL;
+		} else if (Mathf.Abs (speed) > MAX_SPEED) {
+			speed = Mathf.Sign (speed) * MAX_SPEED;
+		}
 
         //calculates the direction displacement vector
-        rotationVector.Set(0, turnValue * speed * 25, 0);
+		rotationVector.Set(0, turnValue * speed * Time.deltaTime, 0);
         direction = Quaternion.Euler(rotationVector) * direction;
 
         //Debug.Log ("Direction: "+ direction);
@@ -108,7 +107,7 @@ public class Movement : MonoBehaviour
     void FixedUpdate()
     {
         //update the transform
-        transform.position += speed * direction;
+		transform.position += (speed * Time.deltaTime) * direction;
         if (!goingBackwards)
             transform.rotation = Quaternion.LookRotation(direction);
         else
