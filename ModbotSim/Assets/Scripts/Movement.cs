@@ -28,6 +28,7 @@ public class Movement : MonoBehaviour
     private Vector3 rotationVector;
     private bool goingBackwards = false;
     private int forwardInput = 0;
+	public float boost = 1f;
 
     private string horizontal;
     private string vertical;
@@ -94,6 +95,9 @@ public class Movement : MonoBehaviour
 		} else if (Mathf.Abs (speed) > MAX_SPEED) {
 			speed = Mathf.Sign (speed) * MAX_SPEED;
 		}
+
+		//applies boost, if any
+		speed = speed * boost;
 
         //calculates the direction displacement vector
 		rotationVector.Set(0, turnValue * speed * Time.deltaTime, 0);
