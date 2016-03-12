@@ -4,6 +4,7 @@ using System.IO;
 
 public class Movement : MonoBehaviour
 {
+	public bool writePositionsToFile = false;
     [System.NonSerialized]
     public bool usingPhone = false;
     [System.NonSerialized]
@@ -36,6 +37,7 @@ public class Movement : MonoBehaviour
 
 	//Log Stuff
 	private Vector3 position = new Vector3();
+	private Vector3 oldPosition = new Vector3();
 	private Vector3 velocity = new Vector3();
 	private Vector3 acceleration = new Vector3();
 	private Vector3 rotation = new Vector3();
@@ -45,13 +47,13 @@ public class Movement : MonoBehaviour
 	private Vector3 velocityX = new Vector3();
 	private Vector3 velocityY = new Vector3();
 
-	private float mTor = 50;
+	private float mTor = 100;
 	private float effec = 1;
 	private float gearRatio = 20;
 	private float angularSpeed = 0;
-	private float wheelRad = .5f;
+	private float wheelRad = .3f;
 
-	private float mass = 10;
+	private float mass = 100;
 	private float g = 9.8f;
 	private float gradAngle = 0;
 
@@ -59,9 +61,9 @@ public class Movement : MonoBehaviour
 
 	private float airDensity = 1.21f;
 	private float dragCoef = 1.2f;
-	private float areaCross = .004f;
+	private float areaCross = .4f;
 
-	private float lW = .15f;
+	private float lW = 1.5f;
 
 	private float maxTurnAngle = Mathf.PI /6;
 
@@ -107,7 +109,7 @@ public class Movement : MonoBehaviour
     void Start()
     {
 		input = GetComponent<GetInput>();
-		position.Set (50, 0, 50);
+		position.Set (50, 50, 0);
 		//position.y = 1.5f;
     }
 
@@ -117,73 +119,68 @@ public class Movement : MonoBehaviour
 		turnInput = input.getTurnInput();
 		forwardInput = input.getForwardInput();
 //
-        //how quickly do we want to turn
-        currentDeltaTurn = DELTA_TURN * turnInput;
-        //takes care of ideling to go back straight && also turning
-        if (turnInput == 0 && turnValue > 0)
-        {
-            Debug.Log("Idle Pos");
-            if (turnValue < DELTA_TURN)
-                turnValue = 0;
-            else 
-                turnValue -= DELTA_TURN;
-        }
-        else if (turnInput == 0 && turnValue < 0)
-        {
-            Debug.Log("Idle Neg");
-            if (turnValue > -DELTA_TURN)
-                turnValue = 0;
-            else
-                turnValue += DELTA_TURN;
-        }
-        else if ((turnValue + currentDeltaTurn) < (MAX_TURN * Mathf.Abs(turnInput)) && (turnValue + currentDeltaTurn) > (-MAX_TURN * Mathf.Abs(turnInput)))
-        {
-            Debug.Log("Turn");
-            turnValue += currentDeltaTurn;
-        }
-        //Debug.Log("DeltaTurn: " + currentDeltaTurn);
-        //Debug.Log("turnValue: " + turnValue);
-
-        //Debug.Log("Vert: "+Input.GetAxis(vertical));
-        //which way do we want to go
-
-
-        //takes care of ACCELeration
-		if (forwardInput == 1 && speed < MAX_SPEED) {
-			speed += ACCEL;
-		} else if (forwardInput == -1 && speed > -MAX_SPEED) {
-			speed -= ACCEL;
-		} else if (forwardInput == 0 && speed < 0) {
-			if (speed > -IDLE_ACCEL)
-				speed = 0;
-			else
-				speed += IDLE_ACCEL;
-		} else if (forwardInput == 0 && speed > 0) {
-			if (speed < IDLE_ACCEL)
-				speed = 0;
-			else
-				speed -= IDLE_ACCEL;
-		} else if (Mathf.Abs (speed) > MAX_SPEED) {
-			speed = Mathf.Sign (speed) * MAX_SPEED;
-		}
-
-		//applies boost, if any
-		speed = speed * boost;
-
-        //calculates the direction displacement vector
-		rotationVector.Set(0, turnValue * speed * Time.deltaTime, 0);
-        direction = Quaternion.Euler(rotationVector) * direction;
-
-        //Debug.Log ("Direction: "+ direction);
-        //Debug.Log ("Speed: " +speed);
+//        //how quickly do we want to turn
+//        currentDeltaTurn = DELTA_TURN * turnInput;
+//        //takes care of ideling to go back straight && also turning
+//        if (turnInput == 0 && turnValue > 0)
+//        {
+//            Debug.Log("Idle Pos");
+//            if (turnValue < DELTA_TURN)
+//                turnValue = 0;
+//            else 
+//                turnValue -= DELTA_TURN;
+//        }
+//        else if (turnInput == 0 && turnValue < 0)
+//        {
+//            Debug.Log("Idle Neg");
+//            if (turnValue > -DELTA_TURN)
+//                turnValue = 0;
+//            else
+//                turnValue += DELTA_TURN;
+//        }
+//        else if ((turnValue + currentDeltaTurn) < (MAX_TURN * Mathf.Abs(turnInput)) && (turnValue + currentDeltaTurn) > (-MAX_TURN * Mathf.Abs(turnInput)))
+//        {
+//            Debug.Log("Turn");
+//            turnValue += currentDeltaTurn;
+//        }
+//        //Debug.Log("DeltaTurn: " + currentDeltaTurn);
+//        //Debug.Log("turnValue: " + turnValue);
+//
+//        //Debug.Log("Vert: "+Input.GetAxis(vertical));
+//        //which way do we want to go
+//
+//
+//        //takes care of ACCELeration
+//		if (forwardInput == 1 && speed < MAX_SPEED) {
+//			speed += ACCEL;
+//		} else if (forwardInput == -1 && speed > -MAX_SPEED) {
+//			speed -= ACCEL;
+//		} else if (forwardInput == 0 && speed < 0) {
+//			if (speed > -IDLE_ACCEL)
+//				speed = 0;
+//			else
+//				speed += IDLE_ACCEL;
+//		} else if (forwardInput == 0 && speed > 0) {
+//			if (speed < IDLE_ACCEL)
+//				speed = 0;
+//			else
+//				speed -= IDLE_ACCEL;
+//		} else if (Mathf.Abs (speed) > MAX_SPEED) {
+//			speed = Mathf.Sign (speed) * MAX_SPEED;
+//		}
+//
+//		//applies boost, if any
+//		speed = speed * boost;
+//
+//        //calculates the direction displacement vector
+//		rotationVector.Set(0, turnValue * speed * Time.deltaTime, 0);
+//        direction = Quaternion.Euler(rotationVector) * direction;
+//
+//        //Debug.Log ("Direction: "+ direction);
+//        //Debug.Log ("Speed: " +speed);
     }
 
 	void updateLogVectors(){
-		//oldvelocity = velocity;
-		//velocity = (position - transform.position) / Time.deltaTime;
-		//acceleration = (velocity - oldvelocity) / Time.deltaTime;
-		//position = transform.position;
-		//rotation = transform.rotation.eulerAngles;
 		//turn input [-1,1], forward input [-1,1]
 
 		float F1 = ((mTor * forwardInput) * effec + gearRatio * angularSpeed) / wheelRad;
@@ -192,12 +189,12 @@ public class Movement : MonoBehaviour
 		Debug.Log ("F2: " + F2);
 		float F3 = rollResist * mass * g * Mathf.Cos (gradAngle) ;
 		Debug.Log ("F3: " + F3);
-		float F4 = .5f * airDensity * dragCoef * areaCross * velocity.y;
+		float F4 = .5f * airDensity * dragCoef * areaCross * velocity.y*velocity.y;
 		Debug.Log ("F4: " + F4);
 
 		float accelY = (F1 - F2 - F3 - F4) / mass;
 
-		float accelX = (velocity.y * Mathf.Tan (turnInput * maxTurnAngle))/lW;
+		float accelX = (velocity.y* velocity.y * Mathf.Tan (turnInput * maxTurnAngle))/lW;
 
 //		temp.Set (transform.position.y, velocity.y, posY, 0);
 //		posMatrix.SetRow (0, temp);
@@ -221,11 +218,13 @@ public class Movement : MonoBehaviour
 		velocity.x = velocity.x + Time.deltaTime * accelX;
 		velocity.y = velocity.y + Time.deltaTime * accelY;
 
-
 		temp3.Set (position.x, position.z, position.y);
 		transform.position = temp3;
-		temp3.Set (velocity.x, 0, velocity.y);
-		//transform.rotation = Quaternion.LookRotation(temp3);
+
+		//forces to look at displacement vector in order to rotate
+//		temp3.Set (position.x - oldPosition.x,position.z - oldPosition.z,position.y - oldPosition.y);
+//		transform.rotation = Quaternion.LookRotation(temp3);
+//		oldPosition = position;
 
 
 
@@ -241,8 +240,9 @@ public class Movement : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(direction);
         else
             transform.rotation = Quaternion.LookRotation(-1 * direction);
-		//updateLogVectors ();
-        WriteToRepo ();
+		updateLogVectors ();
+		if(writePositionsToFile)
+        	WriteToRepo ();
     }
 
     void WriteToRepo()
