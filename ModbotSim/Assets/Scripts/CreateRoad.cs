@@ -1,89 +1,100 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CreateRoad : MonoBehaviour {
 	private float width = 2f;
+	private Vector3[] vertices;
+	private int counter = 1;
+	private Vector2 temp = new Vector2();
+	private static float MIN_DISTANCE = .01f;
 
+//	void OnDrawGizmos () {
+//		Debug.Log ("_________________________");
+//		Debug.Log (counter);
+//		Debug.Log ("_________________________");
+//		if (vertices == null || counter == 5)
+//			return;
+//		Gizmos.color = Color.black;
+//		for (int i = 0; i <vertices.Length; i++) {
+//			//Debug.Log (i);
+//			if (vertices [i] != null) {
+//				Gizmos.DrawSphere (vertices [i], .05f);
+//				Debug.Log (vertices[i]);
+//				Debug.Log("Point: "+vertices[i/2]);
+//			} else {
+//				Debug.Log ("NULL");
+//			}
+//		}
+//	}
 
 	// Use this for initialization
 	void Start () {
 		Mesh mesh = new Mesh ();
 		MeshFilter m = GetComponent<MeshFilter>();
 		m.mesh.Clear ();
-		//generate 300 points that go in a circle
-		Vector3[] sampleinput = new Vector3[300];
-		float angle = 0;
-		float radius = 30; 
-
-		for (int i = 0; i < sampleinput.Length-1; i++) {
-			float dxR = radius * Mathf.Sin (angle);
-			float dyR = radius * Mathf.Cos (angle);
-			sampleinput [i] = new Vector3 (dxR, 0, dyR);
-			//Debug.Log ("i: " + i + "   " + sampleinput [i]);
-			angle += (2 * Mathf.PI / (sampleinput.Length-1));
+//									
+		string text = System.IO.File.ReadAllText(Application.dataPath + "/Scripts/WriteToFile.txt");
+		string[] lines = text.Split ('\n');
+		string sep = "\t";
+		Vector3 oldV = new Vector3();
+		List<Vector3> array = new List<Vector3> ();
+		for (int i=0; i<lines.Length-1; i++) {
+			string s = lines [i];
+			string[] split = s.Split (sep.ToCharArray());
+			float x = float.Parse (split [0]);
+			float y = float.Parse (split [1]);
+			float z = float.Parse (split [2]);
+			Vector3 tempp = new Vector3 (x, y, z);
+			if (Vector3.Magnitude (tempp - oldV) < MIN_DISTANCE)
+				continue;
+			array.Add(tempp);
+			oldV = tempp;
 		}
-		sampleinput [sampleinput.Length - 1] = new Vector3(sampleinput [0].x, 0, sampleinput[0].z);
-		Debug.Log ("0: " + sampleinput [0]);
-		Debug.Log ("last: " + sampleinput [sampleinput.Length - 1]);
-		for(int i=0; i<sampleinput.Length; i++)
-			Debug.Log ("i: "+i+"  "+sampleinput[i]);
-		Debug.Log ("------------------");
 
-//		Vector3[] sampleinput = {
-//			new Vector3 (0, 0, 0),
-//			new Vector3 (0, 0, .1f),
-//			new Vector3 (.1f, 0, .3f),
-//			new Vector3 (.15f, 0, .4f),
-//			new Vector3 (.3f, 0, .4f)
-//		};
+		Vector3[] sampleinput = array.ToArray ();
+		vertices = new Vector3[sampleinput.Length * 2];
+		float dz = sampleinput[1].z - sampleinput[0].z;
+		float dx = sampleinput[1].x - sampleinput[0].x;
 
-		Vector3[] vertices = new Vector3[sampleinput.Length * 2];
+		temp.Set (-1 * dz, dx);
+		temp.Normalize();
+		temp *= width;
 
+		float moveZ = temp.y;
+		float moveX = temp.x;
 
-		//setup the first two points for basecase reference
-		//-------------------------------------------------------
-		//Debug.Log ("b4: "+(sampleinput [1].z - sampleinput [0].z) / (sampleinput [1].x - sampleinput [0].x));
-		//get angle between point 0 and 1
-		float a = Mathf.Atan((sampleinput[1].z - sampleinput[0].z)/(sampleinput[1].x - sampleinput[0].x));
-		//Debug.Log (a);
+		vertices [0] = new Vector3 (sampleinput [0].x + moveX, 0, sampleinput [0].z + moveZ);
+		vertices [1] = new Vector3 (sampleinput [0].x - moveX, 0, sampleinput [0].z - moveZ);
 
-		//get delta x and z for wing vertices
-		float dz = Mathf.Abs(width * Mathf.Cos(a));
-		float dx = Mathf.Abs(width * Mathf.Sin(a));
-		float sign_x = Mathf.Sign (sampleinput [0].x);
-		float sign_z = Mathf.Sign (sampleinput [0].z);
-		vertices [0] = new Vector3 (sampleinput [0].x + sign_x*dx, 0, sampleinput [0].z + sign_z*dz);
-		vertices [1] = new Vector3 (sampleinput [0].x + -1*sign_x*dx, 0, sampleinput [0].z + -1*sign_z*dz);
-		sign_x = -1*Mathf.Sign (sampleinput [1].x);
-		sign_z = -1*Mathf.Sign (sampleinput [1].z);
-		vertices [2] = new Vector3 (sampleinput [1].x + -1*sign_x*dx, 0, sampleinput [1].z + -1*sign_z*dz);
-		vertices [3] = new Vector3 (sampleinput [1].x + sign_x*dx, 0, sampleinput [1].z + sign_z*dz);
 		//-------------------------------------------------------
 
-		for (int i = 2; i < sampleinput.Length-1; i++) {
-			a = Mathf.Atan((sampleinput[i+1].z - sampleinput[i-1].z)/(sampleinput[i+1].x - sampleinput[i-1].x));
-			dz = Mathf.Abs(width * Mathf.Cos(a));
-			dx = Mathf.Abs(width * Mathf.Sin(a));
-			sign_x = Mathf.Sign (sampleinput [i].x);
-			sign_z = Mathf.Sign (sampleinput [i].z);
-			vertices[i*2] = new Vector3 (sampleinput [i].x + sign_x*dx, 0, sampleinput [i].z + sign_z*dz);
-			vertices[i*2+1] = new Vector3 (sampleinput [i].x + -1*sign_x*dx, 0, sampleinput [i].z + -1*sign_z*dz);
+		for (int i = 1; i < sampleinput.Length-1; i++) {
+			dz = sampleinput[i+1].z - sampleinput[i-1].z;
+			dx = sampleinput[i+1].x - sampleinput[i-1].x;
+			temp.Set (-1 * dz, dx);
+			temp.Normalize();
+			temp *= width;
+			moveZ = temp.y;
+			moveX = temp.x;
+
+			vertices [i*2] = new Vector3 (sampleinput [i].x + moveX, 0, sampleinput [i].z + moveZ);
+			vertices [i*2 + 1] = new Vector3 (sampleinput [i].x - moveX, 0, sampleinput [i].z - moveZ);
+
 		}
 
 		//setup last one
-		a = Mathf.Atan((sampleinput[sampleinput.Length-1].z - sampleinput[sampleinput.Length-2].z)/(sampleinput[sampleinput.Length-1].x - sampleinput[sampleinput.Length-2].x));
-		dz = Mathf.Abs(width * Mathf.Cos(a));
-		dx = Mathf.Abs(width * Mathf.Sin(a));
-		sign_x = Mathf.Sign (sampleinput [(sampleinput.Length-1)].x);
-		sign_z = Mathf.Sign (sampleinput [(sampleinput.Length-1)].z);
-		vertices[(sampleinput.Length-1)*2] = new Vector3 (sampleinput [(sampleinput.Length-1)].x + sign_x*dx, 0, sampleinput [(sampleinput.Length-1)].z + sign_z*dz);
-		vertices[(sampleinput.Length-1)*2+1] = new Vector3 (sampleinput [(sampleinput.Length-1)].x + -1*sign_x*dx, 0, sampleinput [(sampleinput.Length-1)].z + -1*sign_z*dz);
-//
-//		vertices[(sampleinput.Length-1)*2 + 1] = new Vector3(vertices[0].x,0,vertices[0].z);
-//		vertices [(sampleinput.Length - 1) * 2] = new Vector3(vertices[1].x,0,vertices[1].z);
+		dz = sampleinput[sampleinput.Length-1].z - sampleinput[sampleinput.Length-2].z;
+		dx = sampleinput[sampleinput.Length-1].x - sampleinput[sampleinput.Length-2].x;
+		temp.Set (-1 * dz, dx);
+		temp.Normalize();
+		temp *= width;
+		moveZ = temp.y;
+		moveX = temp.x;
+
+		vertices [2*(sampleinput.Length-1)] = new Vector3 (sampleinput [sampleinput.Length-1].x + moveX, 0, sampleinput [sampleinput.Length-1].z + moveZ);
+		vertices [2*(sampleinput.Length-1)+1] = new Vector3 (sampleinput [sampleinput.Length-1].x - moveX, 0, sampleinput [sampleinput.Length-1].z - moveZ);
 		mesh.vertices = vertices;
-
-
 
 		//num triangles
 
@@ -97,7 +108,7 @@ public class CreateRoad : MonoBehaviour {
 
 		int[] indices = new int[(sampleinput.Length * 2-2)*3];
 		for (int i = 0; i < sampleinput.Length * 2 - 2; i++) {
-			if (i % 2 == 0) {
+			if (i % 2 == 0 && i!= sampleinput.Length-1) {
 				indices [i * 3] = i;
 				indices [i * 3 + 1] = i + 3;
 				indices [i * 3 + 2] = i + 1;
