@@ -9,6 +9,8 @@ public class PowerUp : MonoBehaviour {
 	[HideInInspector]
 	public float time = 0;
 
+	public GameObject shell; 
+
 	public void Deactivate() { 
 		isActive = false;
 		powerUp = "";
@@ -54,6 +56,11 @@ public class PowerUp : MonoBehaviour {
 					Deactivate ();
 				}
 			}
+
+			if (powerUp == "Green Shell") {
+				print ("Green Shell");
+				Deactivate ();
+			}
 		}
 	}
 
@@ -65,6 +72,16 @@ public class PowerUp : MonoBehaviour {
 
 		if (other.transform.tag == "Fake Item") {
 			powerUp = "Fake";
+			Activate ();
+			Destroy (other.gameObject);
+		}
+
+		if (other.transform.tag == "Green Shell") {
+			powerUp = "Green Shell";
+			Vector3 kartPos = transform.position;
+			Vector3 kartDir = -1f*transform.forward;
+			Vector3 spawnPos = transform.position + kartDir * .7f;
+			Instantiate (shell,spawnPos, transform.rotation);
 			Activate ();
 			Destroy (other.gameObject);
 		}
