@@ -34,7 +34,7 @@ public class PowerUp : MonoBehaviour {
 			if (powerUp == "Boost") {
 				print ("Speed Up");
 				if (GetComponent<Movement> ().MAX_SPEED == 40f / 4.5f) {
-					GetComponent<Movement> ().MAX_SPEED = 40f / 6f;
+					GetComponent<Movement> ().MAX_SPEED = 40f / 9f;
 				}
 				GetComponent<Movement> ().boost += 0.2f;
 				time += Time.deltaTime;
