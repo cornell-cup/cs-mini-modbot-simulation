@@ -7,7 +7,7 @@ public class CreateRoad : MonoBehaviour {
 	private Vector3[] vertices;
 	private int counter = 1;
 	private Vector2 temp = new Vector2();
-	private static float MIN_DISTANCE = .01f;
+	private static float MIN_DISTANCE = .03f;
 
 //	void OnDrawGizmos () {
 //		Debug.Log ("_________________________");

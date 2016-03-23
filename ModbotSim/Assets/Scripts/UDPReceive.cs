@@ -82,6 +82,8 @@ public class UDPReceive : MonoBehaviour
 
     public void OnApplicationQuit()
     {
+		Debug.Log ("!!!!!!!!");
+		Debug.Log (this.ToString());
         if (receiveThread.IsAlive)
         {
             receiveThread.Abort();
