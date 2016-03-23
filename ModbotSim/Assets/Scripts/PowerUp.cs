@@ -69,27 +69,32 @@ public class PowerUp : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (other.transform.tag == "Speed Boost") {
-			powerUp = "Boost";
-			Destroy (other.gameObject);
-		}
+		if (GetComponent<Movement> ().isArtificialIntelligence () == false) {
+			if (other.transform.tag == "Speed Boost") {
+				powerUp = "Boost";
+				Destroy (other.gameObject);
+			}
 
-		if (other.transform.tag == "Fake Item") {
-			powerUp = "Fake";
-			Activate ();
-			Destroy (other.gameObject);
-		}
+			if (other.transform.tag == "Fake Item") {
+				powerUp = "Fake";
+				Activate ();
+				Destroy (other.gameObject);
+			}
 
-		if (other.transform.tag == "Green Shell") {
-			powerUp = "Green Shell";
-			Vector3 kartPos = transform.position;
-			Vector3 kartDir = -1f*transform.forward;
-			Vector3 spawnPos = transform.position + kartDir * 1.5f;
-			currentShell = Instantiate (shell, spawnPos, transform.rotation) as GameObject;
-			currentShell.AddComponent<Shell>();
-			currentShell.GetComponent<Shell> ().target = gameObject;
-			Activate ();
-			Destroy (other.gameObject);
+			if (other.transform.tag == "Green Shell") {
+				powerUp = "Green Shell";
+				Vector3 kartPos = transform.position;
+				Vector3 kartDir = -1f * transform.forward;
+				Vector3 spawnPos = transform.position + kartDir * 1.5f;
+				currentShell = Instantiate (shell, spawnPos, transform.rotation) as GameObject;
+				Material material = Resources.Load("Materials/orange-plastic", typeof(Material)) as Material;
+				currentShell.GetComponent<MeshRenderer> ().material = material;
+				//currentShell.GetComponent<BoxCollider> ().enabled = false;
+				currentShell.AddComponent<Shell> ();
+				currentShell.GetComponent<Shell> ().target = gameObject;
+				Activate ();
+				Destroy (other.gameObject);
+			}
 		}
 	}
 

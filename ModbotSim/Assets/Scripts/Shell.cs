@@ -20,6 +20,7 @@ public class Shell : MonoBehaviour {
 		Vector3 spawnPos = transform.position + kartDir * 3.5f;
 		transform.position = spawnPos;
 		GetComponent<Rigidbody>().velocity = transform.TransformDirection( new Vector3( 0, 0, speed ) );
+		//GetComponent<BoxCollider> ().enabled = true;
 	}
 		
 	// Update is called once per frame
@@ -38,7 +39,7 @@ public class Shell : MonoBehaviour {
 
 			print (GetComponent<Rigidbody> ().velocity);
 			//GetComponent<Rigidbody>().AddForce(transform.forward * 20);
-		} else {
+		} else if(target!=null){
 			Vector3 kartDir = -1f*target.transform.forward;
 			Vector3 followPos = target.transform.position + kartDir * 1.5f;
 			transform.position = Vector3.MoveTowards(transform.position, followPos, 100f);

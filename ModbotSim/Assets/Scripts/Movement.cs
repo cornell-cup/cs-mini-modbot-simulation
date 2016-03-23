@@ -363,4 +363,8 @@ public class Movement : MonoBehaviour
 		sw.Write(string.Format("{0}\t{1}\t{2}\n",transform.position.x, transform.position.y, transform.position.z));
         sw.Close();
     }
+
+	public bool isArtificialIntelligence(){
+		return isAI;
+	}
 }
