@@ -2,14 +2,15 @@
 using System.Collections;
 
 public class PowerUp : MonoBehaviour {
-	private string powerUp = "";
+	public string powerUp = "";
 
 	[HideInInspector]
 	public bool isActive = false;
 	[HideInInspector]
-	public float time = 0;
+	private float time = 0;
 
 	public GameObject shell; 
+	private GameObject currentShell; 
 
 	public void Deactivate() { 
 		isActive = false;
@@ -59,8 +60,11 @@ public class PowerUp : MonoBehaviour {
 
 			if (powerUp == "Green Shell") {
 				print ("Green Shell");
-				Deactivate ();
+				if (Input.GetKeyDown ("e")) {
+					Deactivate ();
+				}
 			}
+				
 		}
 	}
 
@@ -80,8 +84,10 @@ public class PowerUp : MonoBehaviour {
 			powerUp = "Green Shell";
 			Vector3 kartPos = transform.position;
 			Vector3 kartDir = -1f*transform.forward;
-			Vector3 spawnPos = transform.position + kartDir * .7f;
-			Instantiate (shell,spawnPos, transform.rotation);
+			Vector3 spawnPos = transform.position + kartDir * 1.5f;
+			currentShell = Instantiate (shell, spawnPos, transform.rotation) as GameObject;
+			currentShell.AddComponent<Shell>();
+			currentShell.GetComponent<Shell> ().target = gameObject;
 			Activate ();
 			Destroy (other.gameObject);
 		}

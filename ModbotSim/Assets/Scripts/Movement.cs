@@ -203,7 +203,6 @@ public class Movement : MonoBehaviour
 		if (speed > MAX_SPEED) {
 			speed = MAX_SPEED;
 		}
-
 		if (forwardInput == 1 && speed < MAX_SPEED) {
 			speed += ACCEL;
 		} else if (forwardInput == -1 && speed > -MAX_SPEED) {
@@ -232,6 +231,7 @@ public class Movement : MonoBehaviour
         //Debug.Log ("Direction: "+ direction);
         //Debug.Log ("Speed: " +speed);
     }
+
 
 	void equations(){
 		float F1 = motorOutForce * forwardInput;
@@ -307,6 +307,25 @@ public class Movement : MonoBehaviour
 //
 //		velocity.x = velocity.x + Time.deltaTime * accelX;
 //		velocity.y = velocity.y + Time.deltaTime * accelY;
+
+	void updateLogVectors(){
+		//turn input [-1,1], forward input [-1,1]
+
+		float F1 = ((mTor * forwardInput) * effec + gearRatio * angularSpeed) / wheelRad;
+		Debug.Log ("F1: " + F1);
+		float F2 = mass * g * Mathf.Sin (gradAngle);
+		Debug.Log ("F2: " + F2);
+		float F3 = rollResist * mass * g * Mathf.Cos (gradAngle) ;
+		Debug.Log ("F3: " + F3);
+		float F4 = .5f * airDensity * dragCoef * areaCross * velocity.y*velocity.y;
+		Debug.Log ("F4: " + F4);
+
+		float accelY = (F1 - F2 - F3 - F4) / mass;
+
+		float accelX = (velocity.y* velocity.y * Mathf.Tan (turnInput * maxTurnAngle))/lW;
+
+//		temp.Set (transform.position.y, velocity.y, posY, 0);
+//		posMatrix.SetRow (0, temp);
 //
 //		temp3.Set (position.x, position.z, position.y);
 //		transform.position = temp3;
@@ -319,7 +338,7 @@ public class Movement : MonoBehaviour
 //
 //
 //
-//	}
+	}
 
     //Update transform position and rotation - Write to file
     void FixedUpdate()

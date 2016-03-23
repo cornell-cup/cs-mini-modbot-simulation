@@ -128,6 +128,7 @@ public class CreateRoad : MonoBehaviour {
 
 
 		GetComponent<MeshCollider> ().sharedMesh = mesh;
+		print ("Here");
 		this.enabled = false;
 	}
 	
