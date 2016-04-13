@@ -15,7 +15,6 @@ interface CarControllerInt {
 }
 
 public class CarController : CarControllerInt {
-	private float oldDistance = 100000f;
 	private bool justSwitchedWaypoint = false;
 
 	public Tuple<float, float> speedAndTurn(GameObject car) {
