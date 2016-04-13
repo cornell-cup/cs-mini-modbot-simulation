@@ -51,7 +51,7 @@ public class CarController : CarControllerInt {
 			desiredAngle += Mathf.PI;
 		if (carAngle - desiredAngle < -Mathf.PI / 2)
 			carAngle += Mathf.PI;
-			
+
 		steer = (carAngle - desiredAngle)/(Mathf.PI/2);
 		if (steer > 1) {
 			steer = Mathf.Min (steer, 1f);
