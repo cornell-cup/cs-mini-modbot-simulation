@@ -1,24 +1,31 @@
-﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-/* Priority queue for A* implementation */
-public class PriorityQueue<T> where T : System.IComparable {
+public class PriorityQueue<T> {
 
-	/* Note index 1 is the front of the heap */
-	public T[] minHeap;
-	public int size;
-	public int maxsize; 
+	private class QueueObject {
+		public T data;
+		public float priority;
 
-	/* constructs new min heap */
+		public QueueObject(T data, float priority) {
+			this.data = data;
+			this.priority = priority;
+		}
+	}
+
+	private QueueObject[] minHeap;
+	private int size;
+	private int maxsize;
+
 	public PriorityQueue (int size) {
 		maxsize = size;
 		this.size = 0;
-		minHeap = new T[maxsize + 1];
-		minHeap [0] = default(T);
+		minHeap = new QueueObject[maxsize + 1];
+		minHeap [0] = null;
 	}
 
 	private int getParent(int pos) {
-		return pos / 2;
+		return pos/2;
 	}
 
 	private int getLeftChild(int pos) {
@@ -26,7 +33,7 @@ public class PriorityQueue<T> where T : System.IComparable {
 	}
 
 	private int getRightChild(int pos) {
-		return 2 * pos + 1;
+		return 2*pos + 1;
 	}
 
 	private bool isLeaf(int pos) {
@@ -34,18 +41,18 @@ public class PriorityQueue<T> where T : System.IComparable {
 	}
 
 	private void swap (int fst, int snd) {
-		T tmp = minHeap[fst];
-		minHeap [fst] = minHeap [snd];
-		minHeap [snd] = tmp; 
+		QueueObject tmp = minHeap[fst];
+		minHeap[fst] = minHeap[snd];
+		minHeap[snd] = tmp;
 	}
 
 	private void Heapify (int pos) {
 		if (!isLeaf(pos)) {
 			int leftIndex = getLeftChild(pos);
 			int rightIndex = getRightChild(pos);
-			if ((size >= leftIndex && minHeap[pos].CompareTo(minHeap[leftIndex]) > 0)  || 
-			(size >= rightIndex && minHeap[pos].CompareTo(minHeap[rightIndex]) > 0)) {
-				if (minHeap[leftIndex].CompareTo(minHeap[rightIndex]) < 0) {
+			if ((size >= leftIndex && minHeap[pos].priority > minHeap[leftIndex].priority) ||
+			(size >= rightIndex && minHeap[pos].priority > minHeap[rightIndex].priority)) {
+				if (minHeap[leftIndex].priority < minHeap[rightIndex].priority) {
 					swap(leftIndex, pos);
 					Heapify(leftIndex);
 				}
@@ -56,27 +63,32 @@ public class PriorityQueue<T> where T : System.IComparable {
 			}
 		}
 	}
-				           
-	public void queue(T element) {
-		if (size == maxsize)
+
+	public void queue(float priority, T element) {
+		if (size == maxsize) {
 			return;
-		minHeap [++size] = element;
+		}
+		QueueObject t = new QueueObject(element, priority);
+		minHeap[++size] = t;
 		int pos = size;
-		while (pos > 1 && minHeap[pos].CompareTo(minHeap[getParent(pos)]) < 0) {
+		while (pos > 1 && minHeap[pos].priority < minHeap[getParent(pos)].priority) {
 			swap (pos, getParent(pos));
 			pos = getParent(pos);
 		}
 	}
 
 	public T dequeue() {
-		T removed = minHeap [1];
+		QueueObject removed = minHeap[1];
 		minHeap[1] = minHeap[size--];
-		Heapify (1);
-		return removed; 
+		Heapify(1);
+		return removed.data;
+	}
+
+	public bool Contains(float priority, T elem) {
+		return true;
 	}
 
 	public int getSize() {
 		return size;
 	}
 }
-

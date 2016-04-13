@@ -25,18 +25,18 @@ public class CarController : CarControllerInt {
 			steer = steer * 1.42f; 
 		}
 		//Debug.Log ("steerHere: " + steer);
-		Kart kart = car.GetComponent<Kart> ();
+		PathPlanningKart kart = car.GetComponent<PathPlanningKart> ();
 //		Vector3 travelDirection = car.transform.InverseTransformPoint(new Vector3 (kart.wayPoints[kart.current_point].x, 
 //		                                                                           car.transform.position.y, 
 //		                                                                           kart.wayPoints[kart.current_point].z));
-		Vector3 travelDirection = kart.wayPoints[kart.current_point];
+		Vector3 travelDirection = kart.currentWayPoints[kart.current_waypoint];
 		travelDirection.x -= car.transform.position.x;
 		travelDirection.z -= car.transform.position.z;
 
-		Vector3 position = kart.wayPoints [kart.current_point];
+		Vector3 position = kart.currentWayPoints [kart.current_waypoint];
 		Vector3 mypos = car.transform.position;
 		float distance = Vector3.Distance (position, mypos);
-		Debug.Log ("current Waypoint: "+kart.current_point+" justS:"+ justSwitchedWaypoint);
+		Debug.Log ("current Waypoint: "+kart.current_waypoint+" justS:"+ justSwitchedWaypoint);
 		//Debug.Log ("distance: " + distance + " justS:" + oldDistance);
 		//skipping logic --- BAD
 //		if (distance > oldDistance && !justSwitchedWaypoint) {
@@ -92,10 +92,12 @@ public class CarController : CarControllerInt {
 		}
 		
 		if (travelDirection.magnitude < 5) {
-			kart.current_point = kart.current_point + 1;
+			kart.current_waypoint = kart.current_waypoint + 1;
 			justSwitchedWaypoint = true;
-			if (kart.current_point >= kart.wayPoints.Count) {
-				kart.current_point = 0;
+			if (kart.current_waypoint >= kart.currentWayPoints.Count) {
+				kart.currentWayPoints = kart.nextWayPoints;
+				kart.pathCalculated = false;
+				kart.current_waypoint = 0;
 			}
 		} else {
 			justSwitchedWaypoint = false;
