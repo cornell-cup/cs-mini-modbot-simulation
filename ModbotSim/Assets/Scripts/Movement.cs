@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 public class Movement : MonoBehaviour
@@ -137,6 +138,7 @@ public class Movement : MonoBehaviour
 		centripetalForce = mass / lW;
 
 		if (isAI) {
+			Debug.Log ("Trigger initial path plan");
 			PathPlanningKart k = GetComponent<PathPlanningKart> ();
 			k.PathPlanInitialSegment ();
 			MAX_SPEED = MAX_SPEED * .95f;
@@ -380,4 +382,24 @@ public class Movement : MonoBehaviour
 		//
 		//
 	}
+
+	public void OnDrawGizmosSelected() {
+		PathPlanningKart k = GetComponent<PathPlanningKart> ();
+		List<Vector3> currentWayPoints = k.currentWayPoints;
+		if (currentWayPoints == null) {
+			return; 
+		}
+		for (int i = 0; i < currentWayPoints.Count; i++) { 
+			Vector3 point = currentWayPoints [i];
+			Gizmos.color = new Color (0.0f, 0.0f, 1.0f, 0.3f);
+			Gizmos.DrawCube (point, new Vector3 (3.0f, 3.0f, 3.0f));
+
+			int x = i + 1;
+			if (x < currentWayPoints.Count) {
+				Gizmos.color = Color.magenta;
+				Gizmos.DrawLine (point, currentWayPoints [x]);
+			}
+		}
+	}
+
 }

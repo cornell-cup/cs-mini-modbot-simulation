@@ -9107,7 +9107,6 @@ GameObject:
   - 146: {fileID: 475428638}
   - 114: {fileID: 475428640}
   - 114: {fileID: 475428641}
-  - 114: {fileID: 475428644}
   m_Layer: 0
   m_Name: Kart 1
   m_TagString: kart
@@ -9283,25 +9282,6 @@ MonoBehaviour:
   powerUp: 
   isActive: 0
   shell: {fileID: 127096, guid: dbc2fd573c64c42e29c8d5688c11f025, type: 2}
---- !u!114 &475428644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 475428630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77dbe616e374a4ab296f1adc7efec635, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angleRange: 90
-  leftObs: 0
-  rightObs: 1
-  centerObs: 0
-  LeftDis: 0
-  CenterDis: 0
-  RightDis: 0
-  carRadiusApprox: 1
 --- !u!1 &482628611
 GameObject:
   m_ObjectHideFlags: 0
@@ -9575,10 +9555,10 @@ GameObject:
   - 146: {fileID: 485339473}
   - 114: {fileID: 485339481}
   - 114: {fileID: 485339476}
-  - 114: {fileID: 485339483}
   - 114: {fileID: 485339482}
   - 114: {fileID: 485339485}
   - 114: {fileID: 485339484}
+  - 114: {fileID: 485339483}
   m_Layer: 0
   m_Name: Kart 4
   m_TagString: kart
@@ -9767,11 +9747,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 485339471}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 040ba90dfc960488c8152469bc926444, type: 3}
+  m_Script: {fileID: 11500000, guid: 28789faefe41c4257aedf7b9f359f313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wayPoints: []
-  current_point: 0
+  currentWayPoints: []
+  nextWayPoints: []
+  current_waypoint: 0
+  pathCalculated: 0
+  jobInProgress: 0
 --- !u!114 &485339484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15382,12 +15365,12 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 683499885}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af33f454ce3d90840bb5722843367b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAI: 1
+  isAI: 0
   writePositionsToFile: 0
   boost: 1
 --- !u!1 &685317902
@@ -40961,7 +40944,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a050426b5e914455a1c0ee0b2cf77cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debug: 0
 --- !u!4 &1811901326
 Transform:
   m_ObjectHideFlags: 0
@@ -45835,6 +45817,7 @@ GameObject:
   - 114: {fileID: 2018099472}
   - 114: {fileID: 2018099479}
   - 114: {fileID: 2018099478}
+  - 114: {fileID: 2018099480}
   m_Layer: 0
   m_Name: Kart 2
   m_TagString: kart
@@ -46004,14 +45987,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 2018099467}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28789faefe41c4257aedf7b9f359f313, type: 3}
+  m_Script: {fileID: 11500000, guid: 77dbe616e374a4ab296f1adc7efec635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentWayPoints: []
-  nextWayPoints: []
-  current_waypoint: 0
-  pathCalculated: 0
-  jobInProgress: 0
+  angleRange: 90
+  leftObs: 0
+  rightObs: 0
+  centerObs: 0
+  LeftDis: 0
+  CenterDis: 0
+  RightDis: 0
+  carRadiusApprox: 1
 --- !u!114 &2018099479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46026,6 +46012,22 @@ MonoBehaviour:
   powerUp: 
   isActive: 0
   shell: {fileID: 127096, guid: dbc2fd573c64c42e29c8d5688c11f025, type: 2}
+--- !u!114 &2018099480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2018099467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28789faefe41c4257aedf7b9f359f313, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentWayPoints: []
+  nextWayPoints: []
+  current_waypoint: 0
+  pathCalculated: 0
+  jobInProgress: 0
 --- !u!1 &2019312791
 GameObject:
   m_ObjectHideFlags: 0

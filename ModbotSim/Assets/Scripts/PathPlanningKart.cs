@@ -31,7 +31,8 @@ public class PathPlanningKart : MonoBehaviour
 	// </summary>
 	public void PathPlanInitialSegment () {
 		//first triggered thread job for this car
-		Node startNode = PathPlanningDataStructures.graph.getClosestNode (transform.position);
+		Debug.Log("Starting path planning for initial segment");
+		startNode = PathPlanningDataStructures.graph.getClosestNode (transform.position);
 		currentThreadJob = new DynamicPathThreadJob (startNode, PathPlanningDataStructures.graph.endNode);
 		currentThreadJob.Start();
 		currentThreadJob.Join();
