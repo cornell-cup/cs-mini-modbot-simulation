@@ -190,8 +190,8 @@ public class CreateRoad : MonoBehaviour {
 
 		//UnityEditor.AssetDatabase.CreateAsset (GameObject.FindGameObjectWithTag ("FenceHolder"), "Assets/createdmesh/fences.asset");
 		//Object prefab = EditorUtility.CreateEmptyPrefab("Assets/Temporary/"+t.gameObject.name+".prefab");
-		Object prefab = UnityEditor.PrefabUtility.FindPrefabRoot(GameObject.FindGameObjectWithTag("AllFences")); //Prefab prefab = Resources.Load("AllFences");
-		UnityEditor.PrefabUtility.ReplacePrefab(GameObject.FindGameObjectWithTag("kart"),prefab,UnityEditor.ReplacePrefabOptions.ConnectToPrefab);
+		//Object prefab = UnityEditor.PrefabUtility.FindPrefabRoot(GameObject.FindGameObjectWithTag("AllFences")); //Prefab prefab = Resources.Load("AllFences");
+		//UnityEditor.PrefabUtility.ReplacePrefab(GameObject.FindGameObjectWithTag("FenceHolder"),prefab,UnityEditor.ReplacePrefabOptions.ConnectToPrefab);
 		UnityEditor.AssetDatabase.SaveAssets ();
 
 
