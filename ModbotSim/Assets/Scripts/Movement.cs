@@ -137,8 +137,8 @@ public class Movement : MonoBehaviour
 		centripetalForce = mass / lW;
 
 		if (isAI) {
-			Kart k = GetComponent<Kart> ();
-			k.SetUpKart ();
+			PathPlanningKart k = GetComponent<PathPlanningKart> ();
+			k.PathPlanInitialSegment ();
 			MAX_SPEED = MAX_SPEED * .95f;
 		}
     }
@@ -148,8 +148,9 @@ public class Movement : MonoBehaviour
     void Update()
     {
 		if (isAI) {
+			PathPlanningKart k = GetComponent<PathPlanningKart> ();
+			k.PathPlanNextSegment ();
 			Tuple<float, float> t = carController.speedAndTurn (this.gameObject);
-			//Debug.Log ("Receiving data: " + t.First + "  " + t.Second);
 			turnInput = (float)t.Second;
 			forwardInput = (float)t.First;
 		} else {
