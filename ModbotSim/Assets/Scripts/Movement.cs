@@ -92,6 +92,8 @@ public class Movement : MonoBehaviour
 	private CarController carController = new CarController();
 
 
+    private static bool paused = false;
+
 	//movement variable descriptions
 
 	//force from motor
@@ -147,12 +149,15 @@ public class Movement : MonoBehaviour
 	//uncomment for original movement code
     void Update()
     {
-		if (isAI) {
-			PathPlanningKart k = GetComponent<PathPlanningKart> ();
-			k.PathPlanNextSegment ();
-			Tuple<float, float> t = carController.speedAndTurn (this.gameObject);
-			turnInput = (float)t.Second;
-			forwardInput = (float)t.First;
+        if (isAI) {
+            PathPlanningKart k = GetComponent<PathPlanningKart>();
+            k.PathPlanNextSegment();
+            Tuple<float, float> t = carController.speedAndTurn(this.gameObject);
+            turnInput = (float)t.Second;
+            forwardInput = (float)t.First;
+        } else if (Input.GetKeyUp(KeyCode.P)) {
+            Time.timeScale = paused ? 1 : 0;
+            paused = !paused;
 		} else {
 			turnInput = input.getTurnInput ();
 			forwardInput = input.getForwardInput ();
