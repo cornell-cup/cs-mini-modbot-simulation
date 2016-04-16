@@ -69,6 +69,7 @@ public class PowerUp : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
+		Debug.Log ("ENTERED");
 		if (GetComponent<Movement> ().isArtificialIntelligence () == false) {
 			if (other.transform.tag == "Speed Boost") {
 				powerUp = "Boost";
@@ -85,7 +86,7 @@ public class PowerUp : MonoBehaviour {
 				powerUp = "Green Shell";
 				Vector3 kartPos = transform.position;
 				Vector3 kartDir = -1f * transform.forward;
-				Vector3 spawnPos = transform.position + kartDir * 1.5f;
+				Vector3 spawnPos = transform.position + kartDir * 1.8f;
 				currentShell = Instantiate (shell, spawnPos, transform.rotation) as GameObject;
 				Material material = Resources.Load ("Materials/orange-plastic", typeof(Material)) as Material;
 				currentShell.GetComponent<MeshRenderer> ().material = material;

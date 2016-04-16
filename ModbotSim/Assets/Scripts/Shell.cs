@@ -4,7 +4,7 @@ using System.Collections;
 public class Shell : MonoBehaviour {
 	public GameObject target;
 	private bool fired = false;
-	public float speed = 20;
+	public float speed = 22;
 	private Vector3 oldVelocity;
 	private float time = 0;
 	private bool isColliderEnabled = false;
@@ -16,10 +16,13 @@ public class Shell : MonoBehaviour {
 	public void Fire() {
 		fired = true;
 		isColliderEnabled = true;
+		gameObject.GetComponent<Rigidbody> ().isKinematic = false;
 		Vector3 kartDir = 1f*transform.forward;
-		Vector3 spawnPos = transform.position + kartDir * 3.5f;
+		Vector3 spawnPos = transform.position + kartDir * 4.5f;
 		transform.position = spawnPos;
 		GetComponent<Rigidbody>().velocity = transform.TransformDirection( new Vector3( 0, 0, speed ) );
+		isColliderEnabled = true;
+
 		//GetComponent<BoxCollider> ().enabled = true;
 	}
 		
@@ -37,12 +40,13 @@ public class Shell : MonoBehaviour {
 			}
 			GetComponent<Rigidbody>().velocity = speed * (GetComponent<Rigidbody>().velocity.normalized);
 
-			print (GetComponent<Rigidbody> ().velocity);
+			//print (GetComponent<Rigidbody> ().velocity);
 			//GetComponent<Rigidbody>().AddForce(transform.forward * 20);
 		} else if(target!=null){
+			//gameObject.GetComponent<BoxCollider> ().enabled = false;
 			Vector3 kartDir = -1f*target.transform.forward;
-			Vector3 followPos = target.transform.position + kartDir * 1.5f;
-			transform.position = Vector3.MoveTowards(transform.position, followPos, 100f);
+			Vector3 followPos = target.transform.position + kartDir * 1.8f;
+			transform.position = followPos;
 			transform.LookAt(target.transform);
 		}
 	}
@@ -54,7 +58,7 @@ public class Shell : MonoBehaviour {
 
 	void OnCollisionEnter (Collision collision) {
 		if (isColliderEnabled) {
-			if (collision.gameObject.tag == "kart") {
+			if (collision.gameObject.tag == "kart" ) {
 				collision.gameObject.GetComponent<PowerUp> ().powerUp = "Fake";
 				collision.gameObject.GetComponent<PowerUp> ().Activate ();
 				Destroy (gameObject);

@@ -40,7 +40,7 @@ public class CarController : CarControllerInt {
 		//Determine desired angle of car steer
 		PathPlanningKart kart = car.GetComponent<PathPlanningKart> ();
 		Vector3 currentWayPoint = kart.currentWayPoints[kart.current_waypoint];
-		Vector3 desiredDirection = new Vector3 ();
+		Vector3 desiredDirection = new Vector3 (0,0,0);
 		desiredDirection.y = currentWayPoint.y;
 		desiredDirection.x = currentWayPoint.x - car.transform.position.x;
 		desiredDirection.z = currentWayPoint.z - car.transform.position.z;
