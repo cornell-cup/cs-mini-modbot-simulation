@@ -69,6 +69,7 @@ public class PowerUp : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
+		Debug.Log ("ENTERED");
 		if (GetComponent<Movement> ().isArtificialIntelligence () == false) {
 			if (other.transform.tag == "Speed Boost") {
 				powerUp = "Boost";
