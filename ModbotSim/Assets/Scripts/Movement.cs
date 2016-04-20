@@ -139,6 +139,7 @@ public class Movement : MonoBehaviour
 
 		if (isAI) {
 			Debug.Log ("Trigger initial path plan");
+			ItemsAI.intializeItems ();
 			PathPlanningKart k = GetComponent<PathPlanningKart> ();
 			k.PathPlanInitialSegment ();
 			MAX_SPEED = MAX_SPEED * .95f;

@@ -19,9 +19,10 @@ public class CarController : CarControllerInt {
 
 	public Tuple<float, float> speedAndTurn(GameObject car) {
 		//Adjust steer accordingly if obstacles are present
-		ObstacleAvoid obstacleAvoid = car.GetComponent<ObstacleAvoid> ();
 		float speed = 0; 
 		float steer = 0;
+		/*
+		ObstacleAvoid obstacleAvoid = car.GetComponent<ObstacleAvoid> ();
 		if (obstacleAvoid.leftObs && !obstacleAvoid.rightObs)
 			steer = Mathf.Max (1.2f/obstacleAvoid.LeftDis, 0.35f);
 		if (obstacleAvoid.rightObs && !obstacleAvoid.leftObs) 
@@ -32,6 +33,7 @@ public class CarController : CarControllerInt {
 		if (obstacleAvoid.centerObs && (obstacleAvoid.leftObs || obstacleAvoid.rightObs)) {
 			steer = steer * 1.42f; 
 		}
+		*/
 			
 		//Obtain current movement direction of the car
 		//Determine current angle of car steer
