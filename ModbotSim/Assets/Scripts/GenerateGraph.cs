@@ -87,7 +87,7 @@ public class GenerateGraph {
 				triangleSides.Add(new Vector3Pair(t.vertex1, t.vertex3));
 				//iterate through each item node to check if it is contained within the current triangle; if so,
 				//make the centroid of the triangle, currentNode, and the item neighbors of each other
-				bool[] nodeInTriangle = new bool[itemNodes.Count];
+				//bool[] nodeInTriangle = new bool[itemNodes.Count];
 				for(int i = 0; i < itemNodes.Count; i++) {
 					Node currentItemNode = itemNodes [i];
 					if (t.PointInTriangle (currentItemNode.position)) {

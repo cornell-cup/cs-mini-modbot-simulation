@@ -22,7 +22,8 @@ public class PathPlanningKart : MonoBehaviour
 	public bool pathCalculated;
 	//indicates whether a thread job is in progress or not
 	public bool jobInProgress;
-	//
+	//Marks already visited nodes in the A* traversal
+	public HashSet<Node> closedNodes = new HashSet<Node> ();
 
 
 	// <summary>
@@ -33,10 +34,11 @@ public class PathPlanningKart : MonoBehaviour
 		//first triggered thread job for this car
 		Debug.Log("Starting path planning for initial segment");
 		startNode = PathPlanningDataStructures.graph.getClosestNode (transform.position);
-		currentThreadJob = new DynamicPathThreadJob (startNode, PathPlanningDataStructures.graph.endNode);
+		currentThreadJob = new DynamicPathThreadJob (startNode, PathPlanningDataStructures.graph.endNode, closedNodes);
 		currentThreadJob.Start();
 		currentThreadJob.Join();
 		currentWayPoints = currentThreadJob.getPathWayPoints();
+		closedNodes = currentThreadJob.getClosedNodes ();
 		//indicate that next path segment needs to calculated
 		pathCalculated = false;
 		jobInProgress = false;
@@ -56,8 +58,7 @@ public class PathPlanningKart : MonoBehaviour
 			} else {
 				pathStartNode = currentThreadJob.destinationNode;
 			}
-			currentThreadJob = new DynamicPathThreadJob(pathStartNode, 
-				PathPlanningDataStructures.graph.endNode);
+			currentThreadJob = new DynamicPathThreadJob(pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes);
 			currentThreadJob.Start();
 			jobInProgress = true;
 		}
@@ -65,6 +66,7 @@ public class PathPlanningKart : MonoBehaviour
 		if (jobInProgress) {
 			if (currentThreadJob.isFinished()) {
 				nextWayPoints = currentThreadJob.getPathWayPoints();
+				closedNodes = currentThreadJob.getClosedNodes ();
 				pathCalculated = true;
 				jobInProgress = false;
 				Debug.Log ("Finished next thread job. Size: " + nextWayPoints.Count);
