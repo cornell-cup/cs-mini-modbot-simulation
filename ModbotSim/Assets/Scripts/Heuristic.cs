@@ -30,6 +30,6 @@ public class HeuristicD {
 	}
 	
 	public float Estimate(Node n) {
-		return heuristicCost [n]; /// ItemsAI.getReduction (n);
+		return heuristicCost [n] / ItemsAI.getReduction (n);
 	}
 }
