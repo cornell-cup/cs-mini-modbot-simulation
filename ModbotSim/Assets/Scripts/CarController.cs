@@ -41,15 +41,23 @@ public class CarController : CarControllerInt {
 		float carAngle = Mathf.Atan (forward.z / forward.x);
 		//Determine desired angle of car steer
 		PathPlanningKart kart = car.GetComponent<PathPlanningKart> ();
+
 		if (kart.nextWayPoints != null && kart.nextWayPoints.Count == 0) {
 			kart.nextWayPoints = null;
 		}
-		if (kart.nextWayPoints != null && kart.nextWayPoints.Count > 0) {
+		if (kart.nextWayPoints != null) {
 			kart.currentWayPoints = kart.nextWayPoints;
 			kart.nextWayPoints = null;
 			kart.current_waypoint = 0;
 		}
-		Vector3 currentWayPoint = kart.currentWayPoints[kart.current_waypoint];
+
+		Vector3 currentWayPoint = kart.currentWayPoints [kart.current_waypoint];
+		if (Vector3.Distance (kart.transform.position, kart.nodeInProgress) >= 5 && kart.nodeInProgress != null) {
+			kart.closedNodes.Add (kart.nodeInProgress);
+		}
+
+		kart.nodeInProgress = kart.currentWayPoints [kart.current_waypoint];
+
 		Vector3 desiredDirection = kart.transform.InverseTransformPoint(new Vector3 
 			(kart.currentWayPoints[kart.current_waypoint].x, kart.transform.position.y, kart.currentWayPoints[kart.current_waypoint].z));;
 		/*desiredDirection.y = currentWayPoint.y;
@@ -92,15 +100,8 @@ public class CarController : CarControllerInt {
 			} 
 		} 
 		steer = desiredDirection.x / desiredDirection.magnitude;
-		if (steer > 1) {
-			steer = 1f;
-		} 
-		if (steer < -1) {
-			steer = -1f; 
-		}
-
 		//If within small distance away to the current waypoint, move onto the next waypoint
-		if (desiredDirection.magnitude < 5) {
+		if (desiredDirection.magnitude < 1) {
 			kart.current_waypoint = kart.current_waypoint + 1;
 			justSwitchedWaypoint = true;
 			if (kart.current_waypoint >= kart.currentWayPoints.Count 

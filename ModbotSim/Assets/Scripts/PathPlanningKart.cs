@@ -21,7 +21,9 @@ public class PathPlanningKart : MonoBehaviour
 	//indicates whether a thread job is in progress or not
 	public bool jobInProgress;
 	//Marks already visited nodes in the A* traversal
-	public HashSet<Node> closedNodes = new HashSet<Node> ();
+	public HashSet<Vector3> closedNodes = new HashSet<Vector3> ();
+	//Current waypoint node in progress
+	public Vector3 nodeInProgress;
 
 	// <summary>
 	// Performs path planning for the first path segment by utilizing a DynamicPathThreadJob
@@ -52,7 +54,7 @@ public class PathPlanningKart : MonoBehaviour
 			if (currentThreadJob.destinationNode == PathPlanningDataStructures.graph.endNode) {
 				pathStartNode = startNode;
 			} else {
-				pathStartNode = PathPlanningDataStructures.graph.getClosestNode (transform.position);
+				pathStartNode = PathPlanningDataStructures.graph.getClosestNode (transform.position + 3 * transform.forward);
 			}
 			currentThreadJob = new DynamicPathThreadJob(pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes);
 			currentThreadJob.Start();

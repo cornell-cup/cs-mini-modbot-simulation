@@ -9,7 +9,7 @@ public class DynamicPathThreadJob : ThreadJob
 	public Node endNode;
 	public Node destinationNode;
 	private List<Vector3> pathWayPoints; 
-	private HashSet<Node> closedNodes;
+	private HashSet<Vector3> closedNodes;
 	private const double pathLength = 10;
 
 	// <summary>
@@ -17,7 +17,7 @@ public class DynamicPathThreadJob : ThreadJob
 	// </summary>
 	// <param name="startNode">Node object where the path planning starts from</param>
 	// <param name="endNode">Node object representing where the path should move towards</param> 
-	public DynamicPathThreadJob(Node startNode, Node endNode, HashSet<Node> closedNodes) {
+	public DynamicPathThreadJob(Node startNode, Node endNode, HashSet<Vector3> closedNodes) {
 		this.startNode = startNode;
 		this.endNode = endNode;
 		this.closedNodes = closedNodes;
@@ -38,7 +38,6 @@ public class DynamicPathThreadJob : ThreadJob
 		open.queue (PathPlanningDataStructures.heuristic.Estimate (startNode), startNode);
 		while (open.getSize() > 0) {
 			Node current = open.dequeue ();
-			closedNodes.Add (current);
 
 			if (current.Equals (PathPlanningDataStructures.graph.endNode) || 
 				Node.distanceBetweenNodes (startNode, current) >= pathLength) {
@@ -52,7 +51,7 @@ public class DynamicPathThreadJob : ThreadJob
 			foreach (Node n in current.neighbors) {
 				float graph_cost = cost_so_far [current] + Node.distanceBetweenNodes (current, n);
 				if ((cost_so_far.ContainsKey (n) == false || graph_cost < cost_so_far [n]) && 
-				closedNodes.Contains(n) == false) {
+				closedNodes.Contains(n.position) == false) {
 					cost_so_far [n] = graph_cost;
 					float priority = graph_cost + PathPlanningDataStructures.heuristic.Estimate (n);
 					open.queue (priority, n);
@@ -84,7 +83,7 @@ public class DynamicPathThreadJob : ThreadJob
 	// <summary>
 	//	Returns already visited nodes in the A* traversal
 	// </summary>
-	public HashSet<Node> getClosedNodes() {
+	public HashSet<Vector3> getClosedNodes() {
 		return closedNodes;
 	}
 }

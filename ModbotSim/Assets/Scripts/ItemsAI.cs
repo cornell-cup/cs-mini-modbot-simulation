@@ -43,7 +43,7 @@ public class ItemsAI
 			if (Vector3.Distance(objectToPosition [item], n.position) <= 5) {
 				Debug.Log ("Node contains item!!!!");
 				Vector3 itemPosition = objectToPosition [item];
-				reduction = 20;
+				reduction = 1;
 			}
 		}
 		return reduction;
