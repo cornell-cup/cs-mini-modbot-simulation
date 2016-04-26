@@ -156,6 +156,8 @@ public class Movement : MonoBehaviour
 			Tuple<float, float> t = carController.speedAndTurn (this.gameObject);
 			turnInput = (float)t.Second;
 			forwardInput = (float)t.First;
+			Debug.Log("Turn input " + t.Second);
+			Debug.Log("Forward input " + t.First);
 		} else {
 			turnInput = input.getTurnInput ();
 			forwardInput = input.getForwardInput ();

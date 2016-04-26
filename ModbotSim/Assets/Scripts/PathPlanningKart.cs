@@ -18,12 +18,8 @@ public class PathPlanningKart : MonoBehaviour
 	public Node startNode;
 	//represents the current thread job calculating the next path segment
 	public DynamicPathThreadJob currentThreadJob; 
-	//indicates whether or not the next path segment has been calculated yet
-	public bool pathCalculated;
 	//indicates whether a thread job is in progress or not
 	public bool jobInProgress;
-	//
-
 
 	// <summary>
 	// Performs path planning for the first path segment by utilizing a DynamicPathThreadJob
@@ -38,7 +34,6 @@ public class PathPlanningKart : MonoBehaviour
 		currentThreadJob.Join();
 		currentWayPoints = currentThreadJob.getPathWayPoints();
 		//indicate that next path segment needs to calculated
-		pathCalculated = false;
 		jobInProgress = false;
 	}
 
@@ -48,13 +43,13 @@ public class PathPlanningKart : MonoBehaviour
 	// </summary>
 	public void PathPlanNextSegment () {
 		//Check if the next path segment needs to be calculated in a thread
-		if (pathCalculated == false && jobInProgress == false) {
+		if (jobInProgress == false && nextWayPoints == null) {
 			//trigger thread job for this car to obtain the next set of waypoints
 			Node pathStartNode;
 			if (currentThreadJob.destinationNode == PathPlanningDataStructures.graph.endNode) {
 				pathStartNode = startNode;
 			} else {
-				pathStartNode = currentThreadJob.destinationNode;
+				pathStartNode = PathPlanningDataStructures.graph.getClosestNode (transform.position);
 			}
 			currentThreadJob = new DynamicPathThreadJob(pathStartNode, 
 				PathPlanningDataStructures.graph.endNode);
@@ -65,7 +60,6 @@ public class PathPlanningKart : MonoBehaviour
 		if (jobInProgress) {
 			if (currentThreadJob.isFinished()) {
 				nextWayPoints = currentThreadJob.getPathWayPoints();
-				pathCalculated = true;
 				jobInProgress = false;
 				Debug.Log ("Finished next thread job. Size: " + nextWayPoints.Count);
 			}

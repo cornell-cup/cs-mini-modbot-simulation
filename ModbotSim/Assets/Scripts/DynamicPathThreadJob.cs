@@ -40,6 +40,9 @@ public class DynamicPathThreadJob : ThreadJob
 
 			if (current.Equals (PathPlanningDataStructures.graph.endNode) || 
 				Node.distanceBetweenNodes (startNode, current) >= pathLength) {
+				if (came_from[current] == null) {
+					came_from[current] = startNode;
+				}
 				destinationNode = current;
 				break;
 			}
