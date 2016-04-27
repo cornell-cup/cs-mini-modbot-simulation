@@ -24,6 +24,8 @@ public class PathPlanningKart : MonoBehaviour
 	public HashSet<Vector3> closedNodes = new HashSet<Vector3> ();
 	//Current waypoint node in progress
 	public Vector3 nodeInProgress;
+	//used for dynamic replanning
+	public bool dynamicReplan;
 
 	// <summary>
 	// Performs path planning for the first path segment by utilizing a DynamicPathThreadJob

@@ -10,7 +10,7 @@ public class DynamicPathThreadJob : ThreadJob
 	public Node destinationNode;
 	private List<Vector3> pathWayPoints; 
 	private HashSet<Vector3> closedNodes;
-	private const double pathLength = 10;
+	private const double pathLength = 5.0;
 
 	// <summary>
 	// Constructor that initializes the start node and end node of the path planning
