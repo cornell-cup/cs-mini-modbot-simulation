@@ -30,24 +30,6 @@ public class HeuristicD {
 	}
 	
 	public float Estimate(Node n) {
-		float reduction = 1;
-		/*
-		//Reduction logic to pick up items
-		GameObject[] speedBoosts = GameObject.FindGameObjectsWithTag("Speed Boost");
-		GameObject[] itemList = speedBoosts;
-		foreach (GameObject item in itemList) {
-				if (item.GetComponent<BoxCollider>().bounds.Contains(n.position)) {
-				reduction = -1000.0f / Vector3.Distance(n.position, item.transform.position);
-				}
-		}
-		*/
-		if (reduction <= 0) {
-			return reduction;
-		} else {
-			return heuristicCost [n];
-		}
-		//Debug.Log (heuristicCost[n] / reduction);
-
-		//return heuristicCost[n] / reduction;
+		return heuristicCost [n]; /// ItemsAI.getReduction (n);
 	}
 }
