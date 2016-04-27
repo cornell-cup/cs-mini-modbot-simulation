@@ -10,18 +10,19 @@ public class DynamicPathThreadJob : ThreadJob
 	public Node destinationNode;
 	private List<Vector3> pathWayPoints; 
 	private HashSet<Vector3> closedNodes;
-	private const double pathLength = 5.0;
+	private double pathLength;
 
 	// <summary>
 	// Constructor that initializes the start node and end node of the path planning
 	// </summary>
 	// <param name="startNode">Node object where the path planning starts from</param>
 	// <param name="endNode">Node object representing where the path should move towards</param> 
-	public DynamicPathThreadJob(Node startNode, Node endNode, HashSet<Vector3> closedNodes) {
+	public DynamicPathThreadJob(Node startNode, Node endNode, HashSet<Vector3> closedNodes, double pathLength) {
 		this.startNode = startNode;
 		this.endNode = endNode;
 		this.closedNodes = closedNodes;
 		destinationNode = null;
+		this.pathLength = pathLength;
 	}
 
 	// <summary>

@@ -12,6 +12,8 @@ public class PathPlanningKart : MonoBehaviour
 	public List<Vector3> currentWayPoints;
 	//list of waypoints of the next path segment
 	public List<Vector3> nextWayPoints;
+	//list of waypoints for savior
+	public List<Vector3> dynamicWayPoints;
 	//the current waypoint
 	public int current_waypoint;
 	//represents the start node in the map
@@ -35,7 +37,7 @@ public class PathPlanningKart : MonoBehaviour
 		//first triggered thread job for this car
 		Debug.Log("Starting path planning for initial segment");
 		startNode = PathPlanningDataStructures.graph.getClosestNode (transform.position);
-		currentThreadJob = new DynamicPathThreadJob (startNode, PathPlanningDataStructures.graph.endNode, closedNodes);
+		currentThreadJob = new DynamicPathThreadJob (startNode, PathPlanningDataStructures.graph.endNode, closedNodes, 15.0f);
 		currentThreadJob.Start();
 		currentThreadJob.Join();
 		currentWayPoints = currentThreadJob.getPathWayPoints();
@@ -50,25 +52,45 @@ public class PathPlanningKart : MonoBehaviour
 	// </summary>
 	public void PathPlanNextSegment () {
 		//Check if the next path segment needs to be calculated in a thread
-		if (jobInProgress == false && nextWayPoints == null) {
+		if (jobInProgress == false && nextWayPoints == null && !dynamicReplan) {
 			//trigger thread job for this car to obtain the next set of waypoints
+			Node pathStartNode;
+			Debug.Log ("Spawning thread.");
+			if (currentThreadJob.destinationNode == PathPlanningDataStructures.graph.endNode) {
+				pathStartNode = startNode;
+			} else {
+				pathStartNode = currentThreadJob.destinationNode;
+			}
+			currentThreadJob = new DynamicPathThreadJob (pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 15.0f);
+			currentThreadJob.Start ();
+			jobInProgress = true;
+		} else if (!jobInProgress && dynamicReplan) {
 			Node pathStartNode;
 			if (currentThreadJob.destinationNode == PathPlanningDataStructures.graph.endNode) {
 				pathStartNode = startNode;
 			} else {
-				pathStartNode = PathPlanningDataStructures.graph.getClosestNode (transform.position + 3 * transform.forward);
+				pathStartNode = PathPlanningDataStructures.graph.getClosestNode(transform.position + 3 * transform.forward);
 			}
-			currentThreadJob = new DynamicPathThreadJob(pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes);
-			currentThreadJob.Start();
+			currentThreadJob = new DynamicPathThreadJob(pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 5.0f);
+			currentThreadJob.Start ();
 			jobInProgress = true;
 		}
 		//Check if in progress thread has completed the path calculation
 		if (jobInProgress) {
 			if (currentThreadJob.isFinished()) {
-				nextWayPoints = currentThreadJob.getPathWayPoints();
-				closedNodes = currentThreadJob.getClosedNodes ();
-				jobInProgress = false;
-				Debug.Log ("Finished next thread job. Size: " + nextWayPoints.Count);
+				if (dynamicReplan) {
+					dynamicWayPoints = currentThreadJob.getPathWayPoints ();
+					nextWayPoints = null;
+					closedNodes = currentThreadJob.getClosedNodes ();
+					jobInProgress = false;
+					Debug.Log ("Finished Dynamic thread job. Size: " + dynamicWayPoints.Count);
+				} else {
+					nextWayPoints = currentThreadJob.getPathWayPoints();
+					dynamicWayPoints = null;
+					closedNodes = currentThreadJob.getClosedNodes ();
+					jobInProgress = false;
+					Debug.Log ("Finished next thread job. Size: " + nextWayPoints.Count);
+				}
 			}
 		}
 	}
