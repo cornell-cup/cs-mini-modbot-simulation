@@ -150,8 +150,8 @@ public class Movement : MonoBehaviour
     }
 
 
-    //uncomment for original movement code
-    void Update()
+	//uncomment for original movement code
+    void FixedUpdate()
     {
         if (isAI)
         {
@@ -255,6 +255,18 @@ public class Movement : MonoBehaviour
 
         //Debug.Log ("Direction: "+ direction);
         //Debug.Log ("Speed: " +speed);
+
+		// update the transform
+		transform.position += direction* (speed * Time.deltaTime);
+		if (!goingBackwards)
+			transform.rotation = Quaternion.LookRotation(direction);
+		else
+			transform.rotation = Quaternion.LookRotation(-1 * direction);
+		//newEquations ();
+		//equations();
+		//updateLogVectors ();
+		if(writePositionsToFile)
+			WriteToRepo ();
     }
 
 
@@ -305,11 +317,12 @@ public class Movement : MonoBehaviour
     }
 
 
-
+	/*
 
     //Update transform position and rotation - Write to file
     void FixedUpdate()
     {
+
         // update the transform
         transform.position += direction * (speed * Time.deltaTime);
         if (!goingBackwards)
@@ -322,6 +335,7 @@ public class Movement : MonoBehaviour
         if (writePositionsToFile)
             WriteToRepo();
     }
+	*/
 
     void WriteToRepo()
     {
