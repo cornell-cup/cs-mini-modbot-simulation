@@ -3,11 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class CreateRoad : MonoBehaviour {
-	private float width = 2f;
+	private float width = 8f;
 	private Vector3[] vertices;
 	private int counter = 1;
 	private Vector2 temp = new Vector2();
 	private static float MIN_DISTANCE = .03f;
+	private static float FENCE_LENGTH = 2f;
+	private Vector3 lastRightFence;
+	private Vector3 lastLeftFence;
+	private Vector3 lastLeftDxDy;
+	private Vector3 lastRightDxDy;
 
 //	void OnDrawGizmos () {
 //		Debug.Log ("_________________________");
@@ -30,6 +35,10 @@ public class CreateRoad : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		lastRightFence = new Vector3 ();
+		lastLeftFence = new Vector3 ();
+		lastLeftDxDy = new Vector3 ();
+		lastRightDxDy = new Vector3 ();
 		Mesh mesh = new Mesh ();
 		MeshFilter m = GetComponent<MeshFilter>();
 		m.mesh.Clear ();
@@ -68,18 +77,74 @@ public class CreateRoad : MonoBehaviour {
 		vertices [1] = new Vector3 (sampleinput [0].x - moveX, 0, sampleinput [0].z - moveZ);
 
 		//-------------------------------------------------------
-
+		Transform fence = GameObject.FindGameObjectWithTag("FenceHolder").transform;
+		ArrayList fences = new ArrayList ();
 		for (int i = 1; i < sampleinput.Length-1; i++) {
+//			if (i % 10 == 0) {
+//				GameObject o = Instantiate (Resources.Load ("BetterFence"), sampleinput [i], Quaternion.identity) as GameObject;
+//				o.transform.SetParent (fence);
+//				fences.Add (o);
+//			}
 			dz = sampleinput[i+1].z - sampleinput[i-1].z;
 			dx = sampleinput[i+1].x - sampleinput[i-1].x;
 			temp.Set (-1 * dz, dx);
 			temp.Normalize();
 			temp *= width;
+
 			moveZ = temp.y;
 			moveX = temp.x;
 
 			vertices [i*2] = new Vector3 (sampleinput [i].x + moveX, 0, sampleinput [i].z + moveZ);
 			vertices [i*2 + 1] = new Vector3 (sampleinput [i].x - moveX, 0, sampleinput [i].z - moveZ);
+			if (lastLeftFence == null || Vector3.Distance(lastLeftFence,vertices[i*2]) > FENCE_LENGTH) {
+				Vector3 tempp;
+				if (lastLeftDxDy == null) {
+					tempp = vertices [i * 2];
+					lastLeftDxDy.Set (moveX, 0, moveZ);
+					lastLeftDxDy.Normalize ();
+				} else {
+					tempp = lastLeftFence + (lastLeftDxDy * FENCE_LENGTH / 2);
+					lastLeftDxDy.Set (moveX, 0, moveZ);
+					lastLeftDxDy.Normalize ();
+					tempp += (lastLeftDxDy * FENCE_LENGTH / 2);
+				}
+				lastLeftFence = vertices [i * 2];
+
+				float angle = Mathf.Atan (lastLeftDxDy.x / lastLeftDxDy.z);
+				Quaternion q = new Quaternion ();
+				q.SetEulerRotation (0, angle, 0);
+				GameObject o1 = Instantiate (Resources.Load ("BetterFence"), tempp,q) as GameObject;
+				//GameObject o2 = Instantiate (Resources.Load ("BetterFence"), vertices[i*2+1],q) as GameObject;
+				o1.transform.SetParent (fence);
+				//o2.transform.SetParent (fence);
+				fences.Add (o1);
+				//fences.Add (o2);
+				//lastLeftDxDy.Set(moveX,0,moveZ);
+			}
+			if (lastRightFence == null || Vector3.Distance(lastRightFence,vertices[i*2+1]) > FENCE_LENGTH) {
+				Vector3 tempp;
+				if (lastRightDxDy == null) {
+					tempp = vertices [i * 2+1];
+					lastRightDxDy.Set (moveX, 0, moveZ);
+					lastRightDxDy.Normalize ();
+				} else {
+					tempp = lastRightFence + (lastRightDxDy * FENCE_LENGTH / 2);
+					lastRightDxDy.Set (moveX, 0, moveZ);
+					lastRightDxDy.Normalize ();
+					tempp += (lastRightDxDy * FENCE_LENGTH / 2);
+				}
+
+				lastRightFence = vertices [i * 2+1];
+				float angle = Mathf.Atan (temp.x / temp.y);
+				Quaternion q = new Quaternion ();
+				q.SetEulerRotation (0, angle, 0);
+				//GameObject o1 = Instantiate (Resources.Load ("BetterFence"), vertices[i*2],q) as GameObject;
+				GameObject o2 = Instantiate (Resources.Load ("BetterFence"), vertices[i*2+1],q) as GameObject;
+				//o1.transform.SetParent (fence);
+				o2.transform.SetParent (fence);
+				//fences.Add (o1);
+				fences.Add (o2);
+			}
 
 		}
 
@@ -122,9 +187,12 @@ public class CreateRoad : MonoBehaviour {
 		mesh.triangles = indices;
 		mesh.uv = uvs;
 		UnityEditor.AssetDatabase.CreateAsset (mesh, "Assets/createdmesh/trackmesh.asset");
+
+		//UnityEditor.AssetDatabase.CreateAsset (GameObject.FindGameObjectWithTag ("FenceHolder"), "Assets/createdmesh/fences.asset");
+		//Object prefab = EditorUtility.CreateEmptyPrefab("Assets/Temporary/"+t.gameObject.name+".prefab");
+		//Object prefab = UnityEditor.PrefabUtility.FindPrefabRoot(GameObject.FindGameObjectWithTag("AllFences")); //Prefab prefab = Resources.Load("AllFences");
+		//UnityEditor.PrefabUtility.ReplacePrefab(GameObject.FindGameObjectWithTag("FenceHolder"),prefab,UnityEditor.ReplacePrefabOptions.ConnectToPrefab);
 		UnityEditor.AssetDatabase.SaveAssets ();
-
-
 
 
 		GetComponent<MeshCollider> ().sharedMesh = mesh;

@@ -9,17 +9,20 @@ public class DynamicPathThreadJob : ThreadJob
 	public Node endNode;
 	public Node destinationNode;
 	private List<Vector3> pathWayPoints; 
-	private const double pathLength = 50;
+	private HashSet<Vector3> closedNodes;
+	private double pathLength;
 
 	// <summary>
 	// Constructor that initializes the start node and end node of the path planning
 	// </summary>
 	// <param name="startNode">Node object where the path planning starts from</param>
 	// <param name="endNode">Node object representing where the path should move towards</param> 
-	public DynamicPathThreadJob(Node startNode, Node endNode) {
+	public DynamicPathThreadJob(Node startNode, Node endNode, HashSet<Vector3> closedNodes, double pathLength) {
 		this.startNode = startNode;
 		this.endNode = endNode;
+		this.closedNodes = closedNodes;
 		destinationNode = null;
+		this.pathLength = pathLength;
 	}
 
 	// <summary>
@@ -29,7 +32,6 @@ public class DynamicPathThreadJob : ThreadJob
 	// </summary>
 	protected override void ThreadFunction() {
 		PriorityQueue<Node> open = new PriorityQueue<Node> (PathPlanningDataStructures.graph.Size ());
-		HashSet<Node> closed = new HashSet<Node> ();
 		Dictionary<Node, Node> came_from = new Dictionary<Node, Node> ();
 		Dictionary<Node, float> cost_so_far = new Dictionary<Node, float> ();
 		came_from.Add (startNode, null);
@@ -40,13 +42,17 @@ public class DynamicPathThreadJob : ThreadJob
 
 			if (current.Equals (PathPlanningDataStructures.graph.endNode) || 
 				Node.distanceBetweenNodes (startNode, current) >= pathLength) {
+				if (came_from[current] == null) {
+					came_from[current] = startNode;
+				}
 				destinationNode = current;
 				break;
 			}
 
 			foreach (Node n in current.neighbors) {
 				float graph_cost = cost_so_far [current] + Node.distanceBetweenNodes (current, n);
-				if (cost_so_far.ContainsKey (n) == false || graph_cost < cost_so_far [n]) {
+				if ((cost_so_far.ContainsKey (n) == false || graph_cost < cost_so_far [n]) && 
+				closedNodes.Contains(n.position) == false) {
 					cost_so_far [n] = graph_cost;
 					float priority = graph_cost + PathPlanningDataStructures.heuristic.Estimate (n);
 					open.queue (priority, n);
@@ -59,6 +65,7 @@ public class DynamicPathThreadJob : ThreadJob
 		pathWayPoints = new List<Vector3> ();
 		Node currentNode = destinationNode;
 		pathWayPoints.Add (currentNode.position);
+		Debug.Log (currentNode.ToString());
 		while (currentNode.Equals(startNode) == false) {
 			currentNode = came_from [currentNode];
 			pathWayPoints.Add (currentNode.position);
@@ -72,5 +79,12 @@ public class DynamicPathThreadJob : ThreadJob
 	// </summary>
 	public List<Vector3> getPathWayPoints() {
 		return pathWayPoints;
+	}
+
+	// <summary>
+	//	Returns already visited nodes in the A* traversal
+	// </summary>
+	public HashSet<Vector3> getClosedNodes() {
+		return closedNodes;
 	}
 }

@@ -67,24 +67,51 @@ public class GenerateGraph {
 
 		}
 
+		//create list of item nodes
+		List<Node> itemNodes = new List<Node>();
+		foreach (GameObject item in ItemsAI.itemList) {
+			itemNodes.Add(new Node(ItemsAI.objectToPosition[item]));
+		}
+
 		//set neighbors of each node
 		foreach (var item in nodeToTriangles) {
 			Node currentNode = item.Key;
 			//iterate through all triangles that contain the currentNode on a side
 			foreach (Triangle t in item.Value) {
-				List<Vector3Pair> trianglePairs = new List<Vector3Pair>();
-				trianglePairs.Add(new Vector3Pair(t.vertex1, t.vertex2));
-				trianglePairs.Add(new Vector3Pair(t.vertex2, t.vertex3));
-				trianglePairs.Add(new Vector3Pair(t.vertex1, t.vertex3));
-				foreach (Vector3Pair trianglePair in trianglePairs) {
-					Vector3 currentFirst = trianglePair.first;
-					Vector3 currentSecond = trianglePair.second;
-					Vector3 currentCentroid = t.Centroid();
+				//centroid of the triangle
+				Vector3 currentCentroid = t.Centroid();
+				//list of sides of the triangle
+				List<Vector3Pair> triangleSides = new List<Vector3Pair>();
+				triangleSides.Add(new Vector3Pair(t.vertex1, t.vertex2));
+				triangleSides.Add(new Vector3Pair(t.vertex2, t.vertex3));
+				triangleSides.Add(new Vector3Pair(t.vertex1, t.vertex3));
+				//iterate through each item node to check if it is contained within the current triangle; if so,
+				//make the centroid of the triangle, currentNode, and the item neighbors of each other
+				//bool[] nodeInTriangle = new bool[itemNodes.Count];
+				for(int i = 0; i < itemNodes.Count; i++) {
+					Node currentItemNode = itemNodes [i];
+					if (t.PointInTriangle (currentItemNode.position)) {
+						addNodeNeighbor(sideToNode, ref currentItemNode, currentCentroid, currentCentroid, "middle");
+						itemNodes[i].neighbors.Add (currentNode);
+						currentNode.neighbors.Add (itemNodes [i]);
+					}
+				}
+				foreach (Vector3Pair triangleSide in triangleSides) {
+					Vector3 currentFirst = triangleSide.first;
+					Vector3 currentSecond = triangleSide.second;
 					addNodeNeighbor(sideToNode, ref currentNode, currentFirst, currentSecond, "middle");
 					addNodeNeighbor(sideToNode, ref currentNode, currentFirst, currentSecond, "outer1");
 					addNodeNeighbor(sideToNode, ref currentNode, currentFirst, currentSecond, "outer2");
-					addNodeNeighbor(sideToNode, ref currentNode, currentCentroid, currentCentroid, "middle");
+					for (int i = 0; i < itemNodes.Count; i++) {
+						Node currentItemNode = itemNodes [i];
+						if (t.PointInTriangle (currentItemNode.position)) {
+							addNodeNeighbor(sideToNode, ref currentItemNode, currentFirst, currentSecond, "middle");
+							addNodeNeighbor(sideToNode, ref currentItemNode, currentFirst, currentSecond, "outer1");
+							addNodeNeighbor(sideToNode, ref currentItemNode, currentFirst, currentSecond, "outer2");
+						}
+					}
 				}
+				addNodeNeighbor(sideToNode, ref currentNode, currentCentroid, currentCentroid, "middle");
 			}
 			nodes.Add(currentNode);
 		}
@@ -103,9 +130,6 @@ public class GenerateGraph {
 	// node
 	// </param>
 	// <param name="givenVector"> a Vector3</param>
-	// <param name="laneType"> 
-	// the lane type of the node if creating it is necessary ("middle" or "outer") 
-	// </param>
 	public Node getNodeWithVectorCoordinates(ref Dictionary<string, Node> coordinatesToNode,  
 	Vector3 givenVector) {
 		string vectorKey = givenVector.x + "," + givenVector.y + "," + givenVector.z;
@@ -136,7 +160,7 @@ public class GenerateGraph {
 		}
 		return closestNode; 
 	}
-		// <summary>
+	// <summary>
 	// Adds a neighbor to a given Node. The value of the neighbor is constructed from the
 	// sideToNode dictionary that is passed in; the dictionary requires a key specified
 	// by two Vector3 points and a laneName

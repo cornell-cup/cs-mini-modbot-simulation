@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 interface CarControllerInt {
 	// <summary>
@@ -19,9 +20,10 @@ public class CarController : CarControllerInt {
 
 	public Tuple<float, float> speedAndTurn(GameObject car) {
 		//Adjust steer accordingly if obstacles are present
-		ObstacleAvoid obstacleAvoid = car.GetComponent<ObstacleAvoid> ();
 		float speed = 0; 
 		float steer = 0;
+		/*
+		ObstacleAvoid obstacleAvoid = car.GetComponent<ObstacleAvoid> ();
 		if (obstacleAvoid.leftObs && !obstacleAvoid.rightObs)
 			steer = Mathf.Max (1.2f/obstacleAvoid.LeftDis, 0.35f);
 		if (obstacleAvoid.rightObs && !obstacleAvoid.leftObs) 
@@ -32,13 +34,35 @@ public class CarController : CarControllerInt {
 		if (obstacleAvoid.centerObs && (obstacleAvoid.leftObs || obstacleAvoid.rightObs)) {
 			steer = steer * 1.42f; 
 		}
+		*/
 			
 		//Obtain current movement direction of the car
 		//Determine current angle of car steer
 		Vector3 forward = car.transform.forward;
 		float carAngle = Mathf.Atan (forward.z / forward.x);
+
+
 		//Determine desired angle of car steer
 		PathPlanningKart kart = car.GetComponent<PathPlanningKart> ();
+
+		if (kart.dynamicReplan && kart.dynamicWayPoints != null && kart.dynamicWayPoints.Count > 0) {
+			kart.currentWayPoints = kart.dynamicWayPoints;
+			kart.nextWayPoints = null;
+			kart.dynamicReplan = false;
+		}
+
+		if (kart.nextWayPoints != null && kart.nextWayPoints.Count == 0) {
+			kart.nextWayPoints = null;
+		}
+	
+		if (kart.current_waypoint >= kart.currentWayPoints.Count && kart.nextWayPoints != null) {
+			kart.currentWayPoints = kart.nextWayPoints;
+			kart.nextWayPoints = null;
+			kart.current_waypoint = 0;
+		} else if (kart.current_waypoint >= kart.currentWayPoints.Count) {
+			kart.current_waypoint = kart.currentWayPoints.Count - 1;
+		}
+
 		Vector3 currentWayPoint = kart.currentWayPoints[kart.current_waypoint];
 		Vector3 desiredDirection = new Vector3 (0,0,0);
 		desiredDirection.y = currentWayPoint.y;
@@ -64,14 +88,25 @@ public class CarController : CarControllerInt {
 		if (desiredDirection.magnitude < 5) {
 			kart.current_waypoint = kart.current_waypoint + 1;
 			justSwitchedWaypoint = true;
-			if (kart.current_waypoint >= kart.currentWayPoints.Count) {
+			if (kart.current_waypoint >= kart.currentWayPoints.Count && kart.nextWayPoints != null) {
 				//Current waypoints have been consumed; Move onto next set of waypoints
 				kart.currentWayPoints = kart.nextWayPoints;
-				kart.pathCalculated = false;
+				kart.nextWayPoints = null;
 				kart.current_waypoint = 0;
 			}
 		} else {
 			justSwitchedWaypoint = false;
+		}
+		if (kart.current_waypoint + 1 < kart.currentWayPoints.Count) {
+			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint]) > 10) {
+				kart.dynamicReplan = true;
+				Debug.Log ("replanning2");
+			}
+		} else {
+			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint - 1]) > 10) {
+				kart.dynamicReplan = true;
+				Debug.Log ("replanning2");
+			}
 		}
 
 		speed = Mathf.Sqrt (1.05f - (steer * steer));
