@@ -142,7 +142,7 @@ public class Movement : MonoBehaviour
         if (isAI)
         {
             Debug.Log("Trigger initial path plan");
-            ItemsAI.intializeItems();
+			ItemsAI.updateItems();
             PathPlanningKart k = GetComponent<PathPlanningKart>();
             k.PathPlanInitialSegment();
             MAX_SPEED = MAX_SPEED * .95f;
@@ -160,6 +160,7 @@ public class Movement : MonoBehaviour
             Tuple<float, float> t = carController.speedAndTurn(this.gameObject);
             turnInput = (float)t.Second;
             forwardInput = (float)t.First;
+			ItemsAI.updateItems ();
             Debug.Log("Turn input " + t.Second);
             Debug.Log("Forward input " + t.First);
         }
