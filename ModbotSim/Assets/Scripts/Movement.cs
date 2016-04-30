@@ -141,7 +141,6 @@ public class Movement : MonoBehaviour
 
         if (isAI)
         {
-            Debug.Log("Trigger initial path plan");
 			ItemsAI.updateItems();
             PathPlanningKart k = GetComponent<PathPlanningKart>();
             k.PathPlanInitialSegment();
@@ -161,8 +160,6 @@ public class Movement : MonoBehaviour
             turnInput = (float)t.Second;
             forwardInput = (float)t.First;
 			ItemsAI.updateItems ();
-            Debug.Log("Turn input " + t.Second);
-            Debug.Log("Forward input " + t.First);
         }
         else if (Input.GetKeyUp(KeyCode.P))
         {

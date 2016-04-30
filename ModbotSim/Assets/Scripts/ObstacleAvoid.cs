@@ -27,10 +27,11 @@ public class ObstacleAvoid : MonoBehaviour {
 	}
 
 	void OnTriggerStay(Collider other) {
-		if (other.gameObject.tag != "non-obstacle") {
 			//avoidObstacle = false; 
 			// make sure front wheels are first two components of the car 
-			Vector3 frontposition = 0.5f * (transform.GetChild(0).position + transform.GetChild (1).position) + Vector3.up;
+			Vector3 localVector = new Vector3(0, 0, 4);
+			Vector3 frontposition = transform.TransformPoint (localVector);
+			//Vector3 frontposition = 0.5f * (transform.GetChild(0).position + transform.GetChild (1).position) + Vector3.up;
 
 			RaycastHit hitleft;
 			RaycastHit hitmiddle; 
@@ -44,6 +45,7 @@ public class ObstacleAvoid : MonoBehaviour {
 				if (hitmiddle.collider.gameObject.tag != "non-obstacle") {
 					centerObs = true; 
 					CenterDis = hitmiddle.distance;
+				Debug.Log ("MIDDLE ONE SAW YA " + hitmiddle.collider.gameObject.tag);
 				}
 				else {
 					centerObs = false; 
@@ -57,6 +59,7 @@ public class ObstacleAvoid : MonoBehaviour {
 				if (hitleft.collider.gameObject.tag != "non-obstacle") {
 					leftObs = true; 
 					LeftDis = hitleft.distance;
+					Debug.Log ("LEFT ONE SAW YA" + hitleft.collider.gameObject.tag);
 				}
 				else {
 					leftObs = false; 
@@ -70,6 +73,7 @@ public class ObstacleAvoid : MonoBehaviour {
 				if (hitright.collider.gameObject.tag != "non-obstacle") {
 					rightObs = true; 
 					RightDis = hitright.distance;
+					Debug.Log ("RIGHT ONE SAW YA" + hitright.collider.gameObject.tag);
 				}
 				else {
 					rightObs = false; 
@@ -100,7 +104,6 @@ public class ObstacleAvoid : MonoBehaviour {
 				}
 			} */
 
-		}
 	}
 
 

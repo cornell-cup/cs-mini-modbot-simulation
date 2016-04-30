@@ -12,6 +12,8 @@ TagManager:
   - Speed Boost
   - shell
   - navmeshcontainer
+  - non-obstacle
+  - New Tag
   layers:
   - Default
   - TransparentFX
