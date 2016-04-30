@@ -8,6 +8,7 @@ public class Shell : MonoBehaviour {
 	private Vector3 oldVelocity;
 	private float time = 0;
 	private bool isColliderEnabled = false;
+	private bool itemCollide = false;
 
 	// Use this for initialization
 	void Start () {		
@@ -56,12 +57,16 @@ public class Shell : MonoBehaviour {
 		oldVelocity = GetComponent<Rigidbody>().velocity;
 	}
 
+
 	void OnCollisionEnter (Collision collision) {
 		if (isColliderEnabled) {
-			if (collision.gameObject.tag == "kart" ) {
+			if (collision.gameObject.tag == "kart") {
 				collision.gameObject.GetComponent<PowerUp> ().powerUp = "Fake";
 				collision.gameObject.GetComponent<PowerUp> ().Activate ();
 				Destroy (gameObject);
+			} else if (collision.transform.GetComponent<Banana>() != null){
+				Destroy (gameObject);
+				Destroy (collision.gameObject);
 			} else {
 				// get the point of contact
 				ContactPoint contact = collision.contacts[0];
