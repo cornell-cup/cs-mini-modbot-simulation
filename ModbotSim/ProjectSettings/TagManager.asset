@@ -8,6 +8,10 @@ TagManager:
   - Green Shell
   - Fake Item
   - Boost
+  - Camera
+  - kart
+  - navmeshcontainer
+  - Banana
   layers:
   - Default
   - TransparentFX
