@@ -60,7 +60,7 @@ public class PathPlanningKart : MonoBehaviour
 			} else {
 				pathStartNode = currentThreadJob.destinationNode;
 			}
-			currentThreadJob = new DynamicPathThreadJob (pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 15.0f);
+			currentThreadJob = new DynamicPathThreadJob (pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 12.0f);
 			currentThreadJob.Start ();
 			jobInProgress = true;
 		} else if (jobInProgress == false && dynamicReplan) {

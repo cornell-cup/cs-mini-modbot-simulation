@@ -25,11 +25,13 @@ public class ItemsAI
 	public static void updateItems () {
 		lock (itemsUpdateLock) {
 			if (stopWatch.IsRunning == false || stopWatch.ElapsedMilliseconds >= 1000) {
-				GameObject[] speedBoosts = GameObject.FindGameObjectsWithTag ("Speed Boost");
+				GameObject[] boosts = GameObject.FindGameObjectsWithTag ("Boost");
 				GameObject[] greenShells = GameObject.FindGameObjectsWithTag ("Green Shell");
-				itemList = new GameObject[speedBoosts.Length + greenShells.Length];
-				speedBoosts.CopyTo (itemList, 0);
-				greenShells.CopyTo (itemList, speedBoosts.Length);
+				GameObject[] bananas = GameObject.FindGameObjectsWithTag ("Banana");
+				itemList = new GameObject[boosts.Length + greenShells.Length + bananas.Length];
+				boosts.CopyTo (itemList, 0);
+				greenShells.CopyTo (itemList, boosts.Length);
+				bananas.CopyTo (itemList, boosts.Length + greenShells.Length);
 				objectToBounds = new Dictionary<GameObject, Bounds> ();
 				objectToPosition = new Dictionary<GameObject, Vector3> ();
 				foreach (GameObject item in itemList) {
@@ -49,12 +51,13 @@ public class ItemsAI
 	// <param name="n"> a Node representing a possible waypoint</param>
 	public static float getReduction(Node n) {
 		lock (itemsUpdateLock) {
-			float reduction = 1;
+			float reduction = 1.0f;
 			foreach (GameObject item in itemList) {
-				if (Vector3.Distance (objectToPosition [item], n.position) <= 5) {
+				float itemDistance = Vector3.Distance (objectToPosition [item], n.position);
+				if (itemDistance <= 5.0f) {
 					UnityEngine.Debug.Log ("Node contains item!!!!");
 					Vector3 itemPosition = objectToPosition [item];
-					reduction = 20;
+					reduction = 50.0f / itemDistance;
 					UnityEngine.Debug.Log ("Current item size: " + itemList.Length);
 				}
 			}

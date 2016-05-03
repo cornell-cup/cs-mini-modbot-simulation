@@ -105,7 +105,7 @@ public class CarController : CarControllerInt {
 			}
 		}
 
-
+		/*
 		ObstacleAvoid obstacleAvoid = car.GetComponent<ObstacleAvoid> ();
 		if (obstacleAvoid.leftObs && !obstacleAvoid.rightObs)
 			steer = Mathf.Min (.5f/obstacleAvoid.LeftDis, 0.5f);
@@ -117,6 +117,7 @@ public class CarController : CarControllerInt {
 		if (obstacleAvoid.centerObs && (obstacleAvoid.leftObs || obstacleAvoid.rightObs)) {
 			steer = Mathf.Max(Mathf.Min (steer * 1.42f, 0.5f), -0.5f);
 		}
+		*/
 
 
 		speed = Mathf.Sqrt (1.05f - (steer * steer));
