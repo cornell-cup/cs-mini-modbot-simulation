@@ -16,17 +16,19 @@ public class itemImage : MonoBehaviour {
 		string powerUp = kart.GetComponent<PowerUp> ().powerUp;
 		if (powerUp == "") {
 			if (gameObject.GetComponent<Image> () != null) {
-				Destroy (GetComponent<Image>());
+				Destroy (GetComponent<Image> ());
 			}
 		} else {
-			if (powerUp == "Boost"){
-				gameObject.AddComponent<Image>().sprite = itemSprites[0];
-			}
-			if (powerUp == "Green Shell"){
-				gameObject.AddComponent<Image>().sprite = itemSprites[1];
-			}
-			if (powerUp == "Banana"){
-				gameObject.AddComponent<Image>().sprite = itemSprites[2];
+			if (gameObject.GetComponent<Image> () == null) {
+				if (powerUp == "Boost") {
+					gameObject.AddComponent<Image> ().sprite = itemSprites [0];
+				}
+				if (powerUp == "Green Shell") {
+					gameObject.AddComponent<Image> ().sprite = itemSprites [1];
+				}
+				if (powerUp == "Banana") {
+					gameObject.AddComponent<Image> ().sprite = itemSprites [2];
+				}
 			}
 		}
 	}

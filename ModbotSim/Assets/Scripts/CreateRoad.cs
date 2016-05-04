@@ -14,24 +14,24 @@ public class CreateRoad : MonoBehaviour {
 	private Vector3 lastLeftDxDy;
 	private Vector3 lastRightDxDy;
 
-//	void OnDrawGizmos () {
-//		Debug.Log ("_________________________");
-//		Debug.Log (counter);
-//		Debug.Log ("_________________________");
-//		if (vertices == null || counter == 5)
-//			return;
-//		Gizmos.color = Color.black;
-//		for (int i = 0; i <vertices.Length; i++) {
-//			//Debug.Log (i);
-//			if (vertices [i] != null) {
-//				Gizmos.DrawSphere (vertices [i], .05f);
-//				Debug.Log (vertices[i]);
-//				Debug.Log("Point: "+vertices[i/2]);
-//			} else {
-//				Debug.Log ("NULL");
-//			}
-//		}
-//	}
+	//	void OnDrawGizmos () {
+	//		Debug.Log ("_________________________");
+	//		Debug.Log (counter);
+	//		Debug.Log ("_________________________");
+	//		if (vertices == null || counter == 5)
+	//			return;
+	//		Gizmos.color = Color.black;
+	//		for (int i = 0; i <vertices.Length; i++) {
+	//			//Debug.Log (i);
+	//			if (vertices [i] != null) {
+	//				Gizmos.DrawSphere (vertices [i], .05f);
+	//				Debug.Log (vertices[i]);
+	//				Debug.Log("Point: "+vertices[i/2]);
+	//			} else {
+	//				Debug.Log ("NULL");
+	//			}
+	//		}
+	//	}
 
 	// Use this for initialization
 	void Start () {
@@ -42,7 +42,7 @@ public class CreateRoad : MonoBehaviour {
 		Mesh mesh = new Mesh ();
 		MeshFilter m = GetComponent<MeshFilter>();
 		m.mesh.Clear ();
-//									
+		//									
 		string text = System.IO.File.ReadAllText(Application.dataPath + "/Scripts/WriteToFile.txt");
 		string[] lines = text.Split ('\n');
 		string sep = "\t";
@@ -80,11 +80,11 @@ public class CreateRoad : MonoBehaviour {
 		Transform fence = GameObject.FindGameObjectWithTag("FenceHolder").transform;
 		ArrayList fences = new ArrayList ();
 		for (int i = 1; i < sampleinput.Length-1; i++) {
-//			if (i % 10 == 0) {
-//				GameObject o = Instantiate (Resources.Load ("BetterFence"), sampleinput [i], Quaternion.identity) as GameObject;
-//				o.transform.SetParent (fence);
-//				fences.Add (o);
-//			}
+			//			if (i % 10 == 0) {
+			//				GameObject o = Instantiate (Resources.Load ("BetterFence"), sampleinput [i], Quaternion.identity) as GameObject;
+			//				o.transform.SetParent (fence);
+			//				fences.Add (o);
+			//			}
 			dz = sampleinput[i+1].z - sampleinput[i-1].z;
 			dx = sampleinput[i+1].x - sampleinput[i-1].x;
 			temp.Set (-1 * dz, dx);
@@ -199,9 +199,9 @@ public class CreateRoad : MonoBehaviour {
 		print ("Here");
 		this.enabled = false;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 }

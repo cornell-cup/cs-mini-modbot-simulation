@@ -25,9 +25,17 @@ public class UDPVisionReceive : MonoBehaviour
 
     // receiving Thread
     private Thread receiveThread;
+	private static VisionData[] dataObjs = new VisionData[4];
+
+	public VisionData getDataObj(int i){
+		return dataObjs [i];
+	}
 
     public void Start()
     {
+		for(int i = 0; i< 4; i++)
+			dataObjs[i] = new VisionData();
+		
         localIP = "127.0.0.1";
         remoteIP = "127.0.0.1";
         port = 607;
@@ -69,21 +77,22 @@ public class UDPVisionReceive : MonoBehaviour
         byte[] data = packet;
 
         int id = BitConverter.ToInt32(data, 0);
-        double time = BitConverter.ToDouble(data, 4);
-        double x = BitConverter.ToDouble(data, 12);
-        double y = BitConverter.ToDouble(data, 20);
+		dataObjs[id].time = (float)BitConverter.ToDouble(data, 4);
+		dataObjs[id].positionX = (float)BitConverter.ToDouble(data, 12);
+		dataObjs[id].positionY = (float)BitConverter.ToDouble(data, 20);
         int innerColor = BitConverter.ToInt32(data, 28);
         int outerColor = BitConverter.ToInt32(data, 32);
-        double orientation = BitConverter.ToDouble(data, 36);
-        double velocityRot = BitConverter.ToDouble(data, 44);
-        double velocityx = BitConverter.ToDouble(data, 52);
-        double velocityy = BitConverter.ToDouble(data, 60);
 
-        string msg = "id: " + id + " time: " + time + " x: " + x + " y: " + y +
-                     " innerColor: " + innerColor + " outerColor: " + outerColor +
-                     " orientation: " + orientation + " velocityRot: " + velocityRot +
-                     " velocityx: " + velocityx + " velocityy: " + velocityy;
-        Debug.Log(msg);
+		dataObjs[id].orientation = (float)BitConverter.ToDouble(data, 36);
+		dataObjs[id].velocityRot = (float)BitConverter.ToDouble(data, 44);
+		dataObjs[id].velocityx = (float)BitConverter.ToDouble(data, 52);
+		dataObjs[id].velocityy = (float)BitConverter.ToDouble(data, 60);
+
+//        string msg = "id: " + id + " time: " + time + " x: " + x + " y: " + y +
+//                     " innerColor: " + innerColor + " outerColor: " + outerColor +
+//                     " orientation: " + orientation + " velocityRot: " + velocityRot +
+//                     " velocityx: " + velocityx + " velocityy: " + velocityy;
+//        Debug.Log(msg);
     }
 
     public void OnApplicationQuit()
