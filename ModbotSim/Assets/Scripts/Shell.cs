@@ -64,6 +64,7 @@ public class Shell : MonoBehaviour {
 				collision.gameObject.GetComponent<PowerUp> ().powerUp = "Fake";
 				collision.gameObject.GetComponent<PowerUp> ().Activate ();
 				Destroy (gameObject);
+				Debug.Log ("Got 'em!!!");
 			} else if (collision.transform.GetComponent<Banana>() != null){
 				Destroy (gameObject);
 				Destroy (collision.gameObject);

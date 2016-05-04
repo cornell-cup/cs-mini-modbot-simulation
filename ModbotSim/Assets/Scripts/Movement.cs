@@ -245,7 +245,6 @@ public class Movement : MonoBehaviour
         }
 
         //applies boost, if any
-		Debug.Log("Boost: " + boost);
         speed = speed * boost;
 
         //calculates the direction displacement vector

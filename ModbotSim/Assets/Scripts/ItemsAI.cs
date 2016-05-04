@@ -55,10 +55,8 @@ public class ItemsAI
 			foreach (GameObject item in itemList) {
 				float itemDistance = Vector3.Distance (objectToPosition [item], n.position);
 				if (itemDistance <= 5.0f) {
-					UnityEngine.Debug.Log ("Node contains item!!!!");
 					Vector3 itemPosition = objectToPosition [item];
 					reduction = 50.0f / itemDistance;
-					UnityEngine.Debug.Log ("Current item size: " + itemList.Length);
 				}
 			}
 			return reduction;

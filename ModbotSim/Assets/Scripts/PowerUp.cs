@@ -32,14 +32,12 @@ public class PowerUp : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown ("e")) {
-			print ("use key was pressed");
 			Activate ();
 		}
 
 		if (isActive) {
 			if (powerUp == "Boost") {
 				time += Time.deltaTime;
-				Debug.Log ("The time: " + time);
 				if (time > 2f) {
 					GetComponent<Movement> ().boost = 1f;
 					GetComponent<Movement> ().MAX_SPEED = 40f / 4.5f;
@@ -48,7 +46,7 @@ public class PowerUp : MonoBehaviour {
 			}
 
 			if (powerUp == "Fake") {
-				GetComponent<Movement> ().MAX_SPEED = GetComponent<Movement> ().MAX_SPEED * 0.95f;
+				GetComponent<Movement> ().MAX_SPEED = GetComponent<Movement> ().MAX_SPEED * 0.6f;
 				time += Time.deltaTime;
 				if (time > 1f) {
 					GetComponent<Movement> ().MAX_SPEED = 40f / 4.5f;
