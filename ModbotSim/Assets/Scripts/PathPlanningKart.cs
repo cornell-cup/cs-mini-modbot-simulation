@@ -105,9 +105,9 @@ public class PathPlanningKart : MonoBehaviour
 				stopWatch.Start ();
 			}
 			if (stopWatch.ElapsedMilliseconds >= 1000 && canUseItem == false) {
-				stopWatch.Stop ();
+				stopWatch = new Stopwatch ();
 				canUseItem = true;
-			} else {
+			} else if (canUseItem == false) {
 				return;
 			}
 			if (currentPowerUp.powerUp == "Banana") {
@@ -141,7 +141,7 @@ public class PathPlanningKart : MonoBehaviour
 								Vector3 targetDirection = currentKarts[i].transform.position - transform.position; 
 								Vector3 forwardDirection = transform.forward; 
 								float angle = Vector3.Angle(targetDirection, forwardDirection); 
-								if (angle < 5.0F) {
+								if (angle < 10.0F) {
 									currentShell.Fire();
 									currentPowerUp.Deactivate ();
 									canUseItem = false;
