@@ -1,10 +1,11 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 // <summary>
 // The PathPlanningKart class contains the state and operations necessary for the kart to 
-// perform path planning
+// perform path planning and related decision making.
 // </summary>
 public class PathPlanningKart : MonoBehaviour 
 {
@@ -28,6 +29,10 @@ public class PathPlanningKart : MonoBehaviour
 	public Vector3 nodeInProgress;
 	//used for dynamic replanning
 	public bool dynamicReplan;
+	//object for keeping track of elapsed time to ensure an item isn't fired off immediately
+	public Stopwatch stopWatch = new Stopwatch();
+	//indicates whether the kart is allowed to use the item yet
+	public bool canUseItem = false;
 
 	// <summary>
 	// Performs path planning for the first path segment by utilizing a DynamicPathThreadJob
@@ -86,6 +91,66 @@ public class PathPlanningKart : MonoBehaviour
 				}
 				closedNodes = currentThreadJob.getClosedNodes ();
 				jobInProgress = false;
+			}
+		}
+	}
+
+	// <summary>
+	// Implements logic for the AI kart to an item if it currently has one
+	// </summary>
+	public void UseItem () {
+		PowerUp currentPowerUp = GetComponent<PowerUp> ();
+		if (currentPowerUp.itemObject != null) {
+			if (stopWatch.IsRunning == false && canUseItem == false) {
+				stopWatch.Start ();
+			}
+			if (stopWatch.ElapsedMilliseconds >= 1000 && canUseItem == false) {
+				stopWatch.Stop ();
+				canUseItem = true;
+			} else {
+				return;
+			}
+			if (currentPowerUp.powerUp == "Banana") {
+				Banana currentBanana = currentPowerUp.itemObject.GetComponent<Banana> ();
+				if (currentBanana.fired == false) {
+					//Iterate through all existing karts and check if another kart is behind
+					//this kart
+					GameObject[] currentKarts = GameObject.FindGameObjectsWithTag ("kart");
+					for (int i = 0; i < currentKarts.Length; i++) {
+						if (currentKarts [i].activeInHierarchy && currentKarts [i] != gameObject) {
+							Vector3 inversePoint = transform.InverseTransformPoint (currentKarts [i].transform.position);
+							if (inversePoint.z < 0) {
+								currentBanana.Fire ();
+								currentPowerUp.Deactivate ();
+								canUseItem = false;
+								break;
+							}
+						}
+					}
+				}
+			} else if (currentPowerUp.powerUp == "Green Shell") {
+				Shell currentShell = currentPowerUp.itemObject.GetComponent<Shell> ();
+				if (currentShell.fired == false) {
+					//Iterate through all existing karts and check if another kart is in
+					//front of this kart and somewhat inline with this kart's direction
+					GameObject[] currentKarts = GameObject.FindGameObjectsWithTag ("kart");
+					for (int i = 0; i < currentKarts.Length; i++) {
+						if (currentKarts [i].activeInHierarchy && currentKarts [i] != gameObject) {
+							Vector3 inversePoint = transform.InverseTransformPoint (currentKarts [i].transform.position);
+							if (inversePoint.z > 0) {
+								Vector3 targetDirection = currentKarts[i].transform.position - transform.position; 
+								Vector3 forwardDirection = transform.forward; 
+								float angle = Vector3.Angle(targetDirection, forwardDirection); 
+								if (angle < 5.0F) {
+									currentShell.Fire();
+									currentPowerUp.Deactivate ();
+									canUseItem = false;
+									break;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}

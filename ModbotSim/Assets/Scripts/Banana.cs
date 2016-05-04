@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Banana : MonoBehaviour {
 	public GameObject target;
-	private bool fired = false;
+	public bool fired = false;
 	private bool isColliderEnabled = false;
 
 	// Use this for initialization

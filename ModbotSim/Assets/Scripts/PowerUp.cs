@@ -13,7 +13,7 @@ public class PowerUp : MonoBehaviour {
 
 	public GameObject shell; 
 	public GameObject banana;
-	private GameObject itemObject; 
+	public GameObject itemObject; 
 
 	// Use this for initialization
 	void Start () {
@@ -32,14 +32,12 @@ public class PowerUp : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown ("e")) {
-			print ("use key was pressed");
 			Activate ();
 		}
 
 		if (isActive) {
 			if (powerUp == "Boost") {
 				time += Time.deltaTime;
-				Debug.Log ("The time: " + time);
 				if (time > 2f) {
 					GetComponent<wheelMovement> ().boost = 1f;
 					GetComponent<wheelMovement> ().MAX_SPEED = 40f / 4.5f;

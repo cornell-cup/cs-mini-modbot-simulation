@@ -94,9 +94,8 @@ public class CarController : CarControllerInt {
 				kart.dynamicReplan = true;
 			}
 		}
-
-		//
-		Vector3 inversePoint = (kart.transform.InverseTransformPoint (kart.currentThreadJob.endNode.position));
+			
+		Vector3 inversePoint = kart.transform.InverseTransformPoint (kart.currentThreadJob.endNode.position);
 		if (inversePoint.z < 0) {
 			if (inversePoint.x > 0) {
 				steer = 1;

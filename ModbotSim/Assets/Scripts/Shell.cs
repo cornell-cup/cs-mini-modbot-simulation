@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Shell : MonoBehaviour {
 	public GameObject target;
-	private bool fired = false;
+	public bool fired = false;
 	public float speed = 22;
 	private Vector3 oldVelocity;
 	private float time = 0;
@@ -64,6 +64,7 @@ public class Shell : MonoBehaviour {
 				collision.gameObject.GetComponent<PowerUp> ().powerUp = "Fake";
 				collision.gameObject.GetComponent<PowerUp> ().Activate ();
 				Destroy (gameObject);
+				Debug.Log ("Got 'em!!!");
 			} else if (collision.transform.GetComponent<Banana>() != null){
 				Destroy (gameObject);
 				Destroy (collision.gameObject);
