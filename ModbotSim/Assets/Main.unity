@@ -9390,6 +9390,7 @@ MonoBehaviour:
   isActive: 0
   shell: {fileID: 143126, guid: 1b5748ab01e5f48768ee60e6eef7cdc0, type: 2}
   banana: {fileID: 142492, guid: cd494041e53f14273af49cff9be9459d, type: 2}
+  itemObject: {fileID: 0}
 --- !u!114 &475428642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9408,6 +9409,7 @@ MonoBehaviour:
   jobInProgress: 0
   nodeInProgress: {x: 0, y: 0, z: 0}
   dynamicReplan: 0
+  canUseItem: 0
 --- !u!114 &475428643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9934,6 +9936,7 @@ MonoBehaviour:
   jobInProgress: 0
   nodeInProgress: {x: 0, y: 0, z: 0}
   dynamicReplan: 0
+  canUseItem: 0
 --- !u!114 &485339484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9946,6 +9949,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  fired: 0
   speed: 20
 --- !u!114 &485339485
 MonoBehaviour:
@@ -9962,6 +9966,7 @@ MonoBehaviour:
   isActive: 0
   shell: {fileID: 143126, guid: 1b5748ab01e5f48768ee60e6eef7cdc0, type: 2}
   banana: {fileID: 142492, guid: cd494041e53f14273af49cff9be9459d, type: 2}
+  itemObject: {fileID: 0}
 --- !u!135 &485339486
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -46239,6 +46244,7 @@ MonoBehaviour:
   isActive: 0
   shell: {fileID: 0}
   banana: {fileID: 0}
+  itemObject: {fileID: 0}
 --- !u!114 &2018099480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46257,6 +46263,7 @@ MonoBehaviour:
   jobInProgress: 0
   nodeInProgress: {x: 0, y: 0, z: 0}
   dynamicReplan: 0
+  canUseItem: 0
 --- !u!1 &2019312791
 GameObject:
   m_ObjectHideFlags: 0

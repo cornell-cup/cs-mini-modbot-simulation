@@ -160,6 +160,7 @@ public class Movement : MonoBehaviour
             turnInput = (float)t.Second;
             forwardInput = (float)t.First;
 			ItemsAI.updateItems ();
+			k.UseItem();
         }
         else if (Input.GetKeyUp(KeyCode.P))
         {

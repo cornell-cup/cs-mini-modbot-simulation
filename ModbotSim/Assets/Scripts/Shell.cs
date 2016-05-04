@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Shell : MonoBehaviour {
 	public GameObject target;
-	private bool fired = false;
+	public bool fired = false;
 	public float speed = 22;
 	private Vector3 oldVelocity;
 	private float time = 0;

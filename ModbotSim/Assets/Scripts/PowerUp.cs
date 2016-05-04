@@ -13,7 +13,7 @@ public class PowerUp : MonoBehaviour {
 
 	public GameObject shell; 
 	public GameObject banana;
-	private GameObject itemObject; 
+	public GameObject itemObject; 
 
 	// Use this for initialization
 	void Start () {
