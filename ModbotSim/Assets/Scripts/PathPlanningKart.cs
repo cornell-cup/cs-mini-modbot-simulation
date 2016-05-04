@@ -131,7 +131,25 @@ public class PathPlanningKart : MonoBehaviour
 			} else if (currentPowerUp.powerUp == "Green Shell") {
 				Shell currentShell = currentPowerUp.itemObject.GetComponent<Shell> ();
 				if (currentShell.fired == false) {
-
+					//Iterate through all existing karts and check if another kart is in
+					//front of this kart and somewhat inline with this kart's direction
+					GameObject[] currentKarts = GameObject.FindGameObjectsWithTag ("kart");
+					for (int i = 0; i < currentKarts.Length; i++) {
+						if (currentKarts [i].activeInHierarchy && currentKarts [i] != gameObject) {
+							Vector3 inversePoint = transform.InverseTransformPoint (currentKarts [i].transform.position);
+							if (inversePoint.z > 0) {
+								Vector3 targetDirection = currentKarts[i].transform.position - transform.position; 
+								Vector3 forwardDirection = transform.forward; 
+								float angle = Vector3.Angle(targetDirection, forwardDirection); 
+								if (angle < 5.0F) {
+									currentShell.Fire();
+									currentPowerUp.Deactivate ();
+									canUseItem = false;
+									break;
+								}
+							}
+						}
+					}
 				}
 			}
 		}
