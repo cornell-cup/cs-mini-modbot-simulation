@@ -68,7 +68,7 @@ public class PowerUp : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (!GetComponent<Movement> ().isArtificialIntelligence ()) {
+		if (!GetComponent<wheelMovement> ().isArtificialIntelligence ()) {
 			if (powerUp == "") {
 				if (other.transform.tag == "Boost") {
 					powerUp = "Boost";

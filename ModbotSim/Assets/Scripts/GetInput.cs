@@ -19,8 +19,18 @@ public class GetInput : MonoBehaviour {
 		string[] name = this.ToString().Split(' ');
 		if (name[0] != "Kart")
 		{
-			Debug.Log(name[0]);
-			throw new System.Exception("Movement script attached to non Kart object");
+			if (name [0] == "carModel") {
+				horizontal = "Horizontal";
+				vertical = "Vertical";
+				left = KeyCode.LeftArrow;
+				right = KeyCode.RightArrow;
+				up = KeyCode.UpArrow;
+				down = KeyCode.DownArrow;
+				return;
+			} else {
+				Debug.Log (name [0]);
+				throw new System.Exception ("Movement script attached to non Kart object");
+			}
 		}
 		switch (name[1])
 		{
@@ -75,6 +85,12 @@ public class GetInput : MonoBehaviour {
 				return 0;
 			return turnInput;
 		}
+	}
+
+	public float getBraking(){
+		if (Input.GetKey (KeyCode.Space))
+			return 1;
+		return 0;
 	}
 
 	public int getForwardInput(){

@@ -12,6 +12,11 @@ TagManager:
   - kart
   - navmeshcontainer
   - Banana
+  - wcbl
+  - wcfr
+  - wcfl
+  - wcbr
+  - mainCar
   layers:
   - Default
   - TransparentFX

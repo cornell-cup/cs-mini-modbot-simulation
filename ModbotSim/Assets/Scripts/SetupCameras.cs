@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class SetupCameras : MonoBehaviour {
-	public int numPlayers = 2;
+	public int numPlayers = 0;
 	// Use this for initialization
 	void Start () {
 		GameObject[] cameraObjects = GameObject.FindGameObjectsWithTag ("Camera");
