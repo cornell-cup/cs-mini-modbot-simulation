@@ -12,3 +12,4 @@
 
 # include meta files
 !*.*.meta
+.DS_Store

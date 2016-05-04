@@ -12,9 +12,11 @@ public class wheelMovement : MonoBehaviour {
 	private float turnInput;
 	private float forwardInput;
 	private float brakeInput;
-	private float maxSpeed=15;
+	public float MAX_SPEED=15;
+	public float boost = 1f;
 	GetInput input;
 	Rigidbody rb;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -28,6 +30,7 @@ public class wheelMovement : MonoBehaviour {
 		br.enabled = true;
 		bl.enabled = true;
 		rb = GameObject.FindGameObjectWithTag ("kart").GetComponent<Rigidbody> ();
+		boost = 1f;
 
 	}
 	
@@ -36,10 +39,11 @@ public class wheelMovement : MonoBehaviour {
 		turnInput = input.getTurnInput ();
 		forwardInput = input.getForwardInput ();
 		brakeInput = input.getBraking ();
-		if (rb.velocity.magnitude < maxSpeed && forwardInput!=0) {
-			print ("Y" + rb.velocity.magnitude);
-			br.motorTorque = forwardInput * motorForce;
-			bl.motorTorque = forwardInput * motorForce;
+		if (rb.velocity.magnitude < MAX_SPEED && forwardInput!=0) {
+			print ("Y" + rb.velocity.magnitude+ " X:"+forwardInput+" Z:"+boost);
+
+			br.motorTorque = forwardInput * motorForce * boost;
+			bl.motorTorque = forwardInput * motorForce * boost;
 		} else {
 			br.motorTorque = 0;
 			bl.motorTorque = 0;
@@ -58,10 +62,10 @@ public class wheelMovement : MonoBehaviour {
 		fr.steerAngle = turnInput * turnForce;
 		fl.steerAngle = turnInput * turnForce;
 
-		br.brakeTorque = brakeInput * brakeForce;
-		bl.brakeTorque = brakeInput * brakeForce;
-		fr.brakeTorque = brakeInput * brakeForce;
-		fl.brakeTorque = brakeInput * brakeForce;
+		br.brakeTorque = brakeInput * brakeForce * boost;
+		bl.brakeTorque = brakeInput * brakeForce * boost;
+		fr.brakeTorque = brakeInput * brakeForce * boost;
+		fl.brakeTorque = brakeInput * brakeForce * boost;
 
 
 	}

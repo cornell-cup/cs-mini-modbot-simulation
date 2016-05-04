@@ -22,19 +22,7 @@ public class CarController : CarControllerInt {
 		//Adjust steer accordingly if obstacles are present
 		float speed = 0; 
 		float steer = 0;
-		/*
-		ObstacleAvoid obstacleAvoid = car.GetComponent<ObstacleAvoid> ();
-		if (obstacleAvoid.leftObs && !obstacleAvoid.rightObs)
-			steer = Mathf.Max (1.2f/obstacleAvoid.LeftDis, 0.35f);
-		if (obstacleAvoid.rightObs && !obstacleAvoid.leftObs) 
-			steer = -1 * Mathf.Max (1.2f/obstacleAvoid.RightDis, 0.35f);
-		if (obstacleAvoid.centerObs && !obstacleAvoid.rightObs && !obstacleAvoid.leftObs) {
-			steer = Mathf.Max (1.2f/obstacleAvoid.CenterDis, 0.35f); 
-		}
-		if (obstacleAvoid.centerObs && (obstacleAvoid.leftObs || obstacleAvoid.rightObs)) {
-			steer = steer * 1.42f; 
-		}
-		*/
+
 			
 		//Obtain current movement direction of the car
 		//Determine current angle of car steer
@@ -100,14 +88,37 @@ public class CarController : CarControllerInt {
 		if (kart.current_waypoint + 1 < kart.currentWayPoints.Count) {
 			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint]) > 10) {
 				kart.dynamicReplan = true;
-				Debug.Log ("replanning2");
 			}
 		} else {
 			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint - 1]) > 10) {
 				kart.dynamicReplan = true;
-				Debug.Log ("replanning2");
 			}
 		}
+
+		//
+		Vector3 inversePoint = (kart.transform.InverseTransformPoint (kart.currentThreadJob.endNode.position));
+		if (inversePoint.z < 0) {
+			if (inversePoint.x > 0) {
+				steer = 1;
+			} else {
+				steer = -1;
+			}
+		}
+
+		/*
+		ObstacleAvoid obstacleAvoid = car.GetComponent<ObstacleAvoid> ();
+		if (obstacleAvoid.leftObs && !obstacleAvoid.rightObs)
+			steer = Mathf.Min (.5f/obstacleAvoid.LeftDis, 0.5f);
+		if (obstacleAvoid.rightObs && !obstacleAvoid.leftObs) 
+			steer = -1 * Mathf.Min (.5f/obstacleAvoid.RightDis, 0.5f);
+		if (obstacleAvoid.centerObs && !obstacleAvoid.rightObs && !obstacleAvoid.leftObs) {
+			steer = Mathf.Min (.5f/obstacleAvoid.CenterDis, 0.5f); 
+		}
+		if (obstacleAvoid.centerObs && (obstacleAvoid.leftObs || obstacleAvoid.rightObs)) {
+			steer = Mathf.Max(Mathf.Min (steer * 1.42f, 0.5f), -0.5f);
+		}
+		*/
+
 
 		speed = Mathf.Sqrt (1.05f - (steer * steer));
 

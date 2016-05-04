@@ -9,6 +9,7 @@ public class GetInput : MonoBehaviour {
 	private KeyCode right;
 	private KeyCode up;
 	private KeyCode down;
+	public VisionData dataObj;
 
 	// Use this for initialization
 	void Start () {

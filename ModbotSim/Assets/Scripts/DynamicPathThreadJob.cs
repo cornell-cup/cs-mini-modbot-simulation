@@ -65,12 +65,13 @@ public class DynamicPathThreadJob : ThreadJob
 		pathWayPoints = new List<Vector3> ();
 		Node currentNode = destinationNode;
 		pathWayPoints.Add (currentNode.position);
-		Debug.Log (currentNode.ToString());
+		Debug.Log ("Waypoint: " + currentNode.position.ToString ());
 		while (currentNode.Equals(startNode) == false) {
 			currentNode = came_from [currentNode];
 			pathWayPoints.Add (currentNode.position);
-			Debug.Log (currentNode.ToString());
+			Debug.Log ("Waypoint: " + currentNode.position.ToString ());
 		}
+		Debug.Log ("Path Size: " + pathWayPoints.Count);
 		pathWayPoints.Reverse ();
 	}
 

@@ -91,7 +91,7 @@ public class Movement : MonoBehaviour
 
 	private CarController carController = new CarController();
 
-
+	private bool paused = false;
 	//movement variable descriptions
 
 	//force from motor
@@ -142,92 +142,124 @@ public class Movement : MonoBehaviour
 			MAX_SPEED = MAX_SPEED * .95f;
 		}
 	}
-
+		
 
 	//uncomment for original movement code
-	void Update()
-	{
-		if (isAI) {
-			PathPlanningKart k = GetComponent<PathPlanningKart> ();
-			k.PathPlanNextSegment ();
-			Tuple<float, float> t = carController.speedAndTurn (this.gameObject);
-			turnInput = (float)t.Second;
-			forwardInput = (float)t.First;
-		} else {
-			turnInput = input.getTurnInput ();
-			forwardInput = input.getForwardInput ();
-		}
+    void FixedUpdate()
+    {
+        if (isAI)
+        {
+            PathPlanningKart k = GetComponent<PathPlanningKart>();
+            k.PathPlanNextSegment();
+            Tuple<float, float> t = carController.speedAndTurn(this.gameObject);
+            turnInput = (float)t.Second;
+            forwardInput = (float)t.First;
+			ItemsAI.updateItems ();
+        }
+        else if (Input.GetKeyUp(KeyCode.P))
+        {
+            Time.timeScale = paused ? 1 : 0;
+            paused = !paused;
+        }
+        else {
+            turnInput = input.getTurnInput();
+            forwardInput = input.getForwardInput();
+        }
 
-		//how quickly do we want to turn
-		currentDeltaTurn = DELTA_TURN * turnInput;
-		//takes care of ideling to go back straight && also turning
+        //how quickly do we want to turn
+        currentDeltaTurn = DELTA_TURN * turnInput;
+        //takes care of ideling to go back straight && also turning
 
-		//Debug.Log ("(turnValue + currentDeltaTurn): "+(turnValue + currentDeltaTurn)+"  MAXTU: "+(MAX_TURN)+"  speed: "+speed);
-		if (Mathf.Abs(turnInput) <.1 && turnValue > 0)
-		{
-			turnValue = 0;
-			// Debug.Log("Idle Pos");
-			if (turnValue < DELTA_TURN)
-				turnValue = 0;
-			else 
-				turnValue -= DELTA_TURN;
-		}
-		else if (Mathf.Abs(turnInput) <.1  && turnValue < 0)
-		{
-			turnValue = 0;
-			// Debug.Log("Idle Neg");
-			if (turnValue > -DELTA_TURN)
-				turnValue = 0;
-			else
-				turnValue += DELTA_TURN;
-		}
-		else if ((turnValue + currentDeltaTurn) < (MAX_TURN) && (turnValue + currentDeltaTurn) > (-MAX_TURN))
-		{
-			// Debug.Log("Turn");
-			turnValue += currentDeltaTurn;
-		}
-		//Debug.Log("DeltaTurn: " + currentDeltaTurn);
-		//Debug.Log("turnValue: " + turnValue);
+        //Debug.Log ("(turnValue + currentDeltaTurn): "+(turnValue + currentDeltaTurn)+"  MAXTU: "+(MAX_TURN)+"  speed: "+speed);
+        if (Mathf.Abs(turnInput) < .1 && turnValue > 0)
+        {
+            turnValue = 0;
+            // Debug.Log("Idle Pos");
+            if (turnValue < DELTA_TURN)
+                turnValue = 0;
+            else
+                turnValue -= DELTA_TURN;
+        }
+        else if (Mathf.Abs(turnInput) < .1 && turnValue < 0)
+        {
+            turnValue = 0;
+            // Debug.Log("Idle Neg");
+            if (turnValue > -DELTA_TURN)
+                turnValue = 0;
+            else
+                turnValue += DELTA_TURN;
+        }
+        else if ((turnValue + currentDeltaTurn) < (MAX_TURN) && (turnValue + currentDeltaTurn) > (-MAX_TURN))
+        {
+            // Debug.Log("Turn");
+            turnValue += currentDeltaTurn;
+        }
+        //Debug.Log("DeltaTurn: " + currentDeltaTurn);
+        //Debug.Log("turnValue: " + turnValue);
 
-		//Debug.Log("Vert: "+Input.GetAxis(vertical));
-		//which way do we want to go
+        //Debug.Log("Vert: "+Input.GetAxis(vertical));
+        //which way do we want to go
 
 
-		//takes care of ACCELeration
-		speed+= ACCEL *forwardInput;
-		if (speed < -MAX_SPEED) {
-			speed = -MAX_SPEED;
-		}
-		if (speed > MAX_SPEED) {
-			speed = MAX_SPEED;
-		}
-		if (forwardInput == 1 && speed < MAX_SPEED) {
-			speed += ACCEL;
-		} else if (forwardInput == -1 && speed > -MAX_SPEED) {
-			speed -= ACCEL;
-		} else if (forwardInput == 0 && speed < 0) {
-			if (speed > -IDLE_ACCEL)
-				speed = 0;
-			else
-				speed += IDLE_ACCEL;
-		} else if (forwardInput == 0 && speed > 0) {
-			if (speed < IDLE_ACCEL)
-				speed = 0;
-			else
-				speed -= IDLE_ACCEL;
-		} else if (Mathf.Abs (speed) > MAX_SPEED) {
-			speed = Mathf.Sign (speed) * MAX_SPEED;
-		}
+        //takes care of ACCELeration
+        speed += ACCEL * forwardInput;
+        if (speed < -MAX_SPEED)
+        {
+            speed = -MAX_SPEED;
+        }
+        if (speed > MAX_SPEED)
+        {
+            speed = MAX_SPEED;
+        }
+        if (forwardInput == 1 && speed < MAX_SPEED)
+        {
+            speed += ACCEL;
+        }
+        else if (forwardInput == -1 && speed > -MAX_SPEED)
+        {
+            speed -= ACCEL;
+        }
+        else if (forwardInput == 0 && speed < 0)
+        {
+            if (speed > -IDLE_ACCEL)
+                speed = 0;
+            else
+                speed += IDLE_ACCEL;
+        }
+        else if (forwardInput == 0 && speed > 0)
+        {
+            if (speed < IDLE_ACCEL)
+                speed = 0;
+            else
+                speed -= IDLE_ACCEL;
+        }
+        else if (Mathf.Abs(speed) > MAX_SPEED)
+        {
+            speed = Mathf.Sign(speed) * MAX_SPEED;
+        }
 
-		//applies boost, if any
-		speed = speed * boost;
+        //applies boost, if any
+		Debug.Log("Boost: " + boost);
+        speed = speed * boost;
 
-		//calculates the direction displacement vector
-		rotationVector.Set(0, turnValue * speed * Time.deltaTime, 0);
-		direction = Quaternion.Euler(rotationVector) * direction;
+        //calculates the direction displacement vector
+        rotationVector.Set(0, turnValue * speed * Time.deltaTime, 0);
+        direction = Quaternion.Euler(rotationVector) * direction;
 
-		//Debug.Log ("Direction: "+ direction);
-		//Debug.Log ("Speed: " +speed);
+        //Debug.Log ("Direction: "+ direction);
+        //Debug.Log ("Speed: " +speed);
+
+		transform.position += direction* (speed * Time.deltaTime);
+		if (!goingBackwards)
+			transform.rotation = Quaternion.LookRotation(direction);
+		else
+			transform.rotation = Quaternion.LookRotation(-1 * direction);
+		//newEquations ();
+		//equations();
+		//updateLogVectors ();
+		if(writePositionsToFile)
+			WriteToRepo ();
+		//uncomment for original movement code
 	}
 
 
@@ -277,23 +309,6 @@ public class Movement : MonoBehaviour
 	}
 
 
-
-
-	//Update transform position and rotation - Write to file
-	void FixedUpdate()
-	{
-		// update the transform
-		transform.position += direction* (speed * Time.deltaTime);
-		if (!goingBackwards)
-			transform.rotation = Quaternion.LookRotation(direction);
-		else
-			transform.rotation = Quaternion.LookRotation(-1 * direction);
-		//newEquations ();
-		//equations();
-		//updateLogVectors ();
-		if(writePositionsToFile)
-			WriteToRepo ();
-	}
 
 	void WriteToRepo()
 	{

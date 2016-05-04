@@ -38,23 +38,20 @@ public class PowerUp : MonoBehaviour {
 
 		if (isActive) {
 			if (powerUp == "Boost") {
-				if (GetComponent<Movement> ().MAX_SPEED == 40f / 4.5f) {
-					GetComponent<Movement> ().MAX_SPEED = 40f / 9f;
-				}
-				GetComponent<Movement> ().boost += 0.4f;
 				time += Time.deltaTime;
+				Debug.Log ("The time: " + time);
 				if (time > 2f) {
-					GetComponent<Movement> ().boost = 1f;
-					GetComponent<Movement> ().MAX_SPEED = 40f / 4.5f;
+					GetComponent<wheelMovement> ().boost = 1f;
+					GetComponent<wheelMovement> ().MAX_SPEED = 40f / 4.5f;
 					Deactivate ();
 				}
 			}
 
 			if (powerUp == "Fake") {
-				GetComponent<Movement> ().MAX_SPEED = GetComponent<Movement> ().MAX_SPEED * 0.95f;
+				GetComponent<wheelMovement> ().MAX_SPEED = GetComponent<wheelMovement> ().MAX_SPEED * 0.95f;
 				time += Time.deltaTime;
-				if (time > 2f) {
-					GetComponent<Movement> ().MAX_SPEED = 40f / 4.5f;
+				if (time > 1f) {
+					GetComponent<wheelMovement> ().MAX_SPEED = 40f / 4.5f;
 					Deactivate ();
 				}
 			}
@@ -72,9 +69,10 @@ public class PowerUp : MonoBehaviour {
 			if (powerUp == "") {
 				if (other.transform.tag == "Boost") {
 					powerUp = "Boost";
+					GetComponent<wheelMovement> ().boost += 0.5f;
+					Activate ();
 					Destroy (other.gameObject);
 				}
-
 				if (other.transform.tag == "Fake Item") {
 					powerUp = "Fake";
 					Activate ();
@@ -113,14 +111,7 @@ public class PowerUp : MonoBehaviour {
 			} else {
 				Destroy (other.gameObject);
 			}
-		} else {
-			if (other.transform.tag == "Boost") {
-				powerUp = "Boost";
-				Destroy (other.gameObject);
-			}
 		}
-		
 	}
-
 }
 

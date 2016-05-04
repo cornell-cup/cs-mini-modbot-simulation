@@ -11,6 +11,8 @@ TagManager:
   - Camera
   - kart
   - navmeshcontainer
+  - non-obstacle
+  - New Tag
   - Banana
   - wcbl
   - wcfr
