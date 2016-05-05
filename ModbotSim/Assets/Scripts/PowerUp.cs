@@ -39,17 +39,17 @@ public class PowerUp : MonoBehaviour {
 			if (powerUp == "Boost") {
 				time += Time.deltaTime;
 				if (time > 2f) {
-					GetComponent<wheelMovement> ().boost = 1f;
-					GetComponent<wheelMovement> ().MAX_SPEED = 40f / 4.5f;
+					GetComponent<Movement> ().boost = 1f;
+					GetComponent<Movement> ().MAX_SPEED = 40f / 4.5f;
 					Deactivate ();
 				}
 			}
 
 			if (powerUp == "Fake") {
-				GetComponent<wheelMovement> ().MAX_SPEED = GetComponent<wheelMovement> ().MAX_SPEED * 0.95f;
+				GetComponent<Movement> ().MAX_SPEED = GetComponent<Movement> ().MAX_SPEED * 0.95f;
 				time += Time.deltaTime;
 				if (time > 1f) {
-					GetComponent<wheelMovement> ().MAX_SPEED = 40f / 4.5f;
+					GetComponent<Movement> ().MAX_SPEED = 40f / 4.5f;
 					Deactivate ();
 				}
 			}
@@ -63,52 +63,50 @@ public class PowerUp : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (!GetComponent<wheelMovement> ().isArtificialIntelligence ()) {
-			if (powerUp == "") {
-				if (other.transform.tag == "Boost") {
-					powerUp = "Boost";
-					GetComponent<wheelMovement> ().boost += 0.5f;
-					Activate ();
-					Destroy (other.gameObject);
-				}
-				if (other.transform.tag == "Fake Item") {
-					powerUp = "Fake";
-					Activate ();
-					Destroy (other.gameObject);
-				}
-
-				if (other.transform.tag == "Banana") {
-					powerUp = "Banana";
-					Vector3 kartPos = transform.position;
-					Vector3 kartDir = -1f * transform.forward;
-					Vector3 spawnPos = transform.position + kartDir * 2.0f;
-					itemObject = Instantiate (banana, spawnPos, transform.rotation) as GameObject;
-					Material material = Resources.Load ("Materials/orange-plastic", typeof(Material)) as Material;
-					itemObject.GetComponent<MeshRenderer> ().material = material;
-					//currentShell.GetComponent<BoxCollider> ().enabled = false;
-					itemObject.AddComponent<Banana> ();
-					itemObject.GetComponent<Banana> ().target = gameObject;
-					Activate ();
-					Destroy (other.gameObject);
-				}
-
-				if (other.transform.tag == "Green Shell") {
-					powerUp = "Green Shell";
-					Vector3 kartPos = transform.position;
-					Vector3 kartDir = -1f * transform.forward;
-					Vector3 spawnPos = transform.position + kartDir * 1.8f;
-					itemObject = Instantiate (shell, spawnPos, transform.rotation) as GameObject;
-					Material material = Resources.Load ("Materials/orange-plastic", typeof(Material)) as Material;
-					itemObject.GetComponent<MeshRenderer> ().material = material;
-					//currentShell.GetComponent<BoxCollider> ().enabled = false;
-					itemObject.AddComponent<Shell> ();
-					itemObject.GetComponent<Shell> ().target = gameObject;
-					Activate ();
-					Destroy (other.gameObject);
-				}
-			} else {
+		if (powerUp == "") {
+			if (other.transform.tag == "Boost") {
+				powerUp = "Boost";
+				GetComponent<Movement> ().boost += 0.4f;
+				Activate ();
 				Destroy (other.gameObject);
 			}
+			if (other.transform.tag == "Fake Item") {
+				powerUp = "Fake";
+				Activate ();
+				Destroy (other.gameObject);
+			}
+
+			if (other.transform.tag == "Banana") {
+				powerUp = "Banana";
+				Vector3 kartPos = transform.position;
+				Vector3 kartDir = -1f * transform.forward;
+				Vector3 spawnPos = transform.position + kartDir * 2.0f;
+				itemObject = Instantiate (banana, spawnPos, transform.rotation) as GameObject;
+				Material material = Resources.Load ("Materials/orange-plastic", typeof(Material)) as Material;
+				itemObject.GetComponent<MeshRenderer> ().material = material;
+				//currentShell.GetComponent<BoxCollider> ().enabled = false;
+				itemObject.AddComponent<Banana> ();
+				itemObject.GetComponent<Banana> ().target = gameObject;
+				Activate ();
+				Destroy (other.gameObject);
+			}
+
+			if (other.transform.tag == "Green Shell") {
+				powerUp = "Green Shell";
+				Vector3 kartPos = transform.position;
+				Vector3 kartDir = -1f * transform.forward;
+				Vector3 spawnPos = transform.position + kartDir * 1.8f;
+				itemObject = Instantiate (shell, spawnPos, transform.rotation) as GameObject;
+				Material material = Resources.Load ("Materials/orange-plastic", typeof(Material)) as Material;
+				itemObject.GetComponent<MeshRenderer> ().material = material;
+				//currentShell.GetComponent<BoxCollider> ().enabled = false;
+				itemObject.AddComponent<Shell> ();
+				itemObject.GetComponent<Shell> ().target = gameObject;
+				Activate ();
+				Destroy (other.gameObject);
+			}
+		} else {
+			Destroy (other.gameObject);
 		}
 	}
 }

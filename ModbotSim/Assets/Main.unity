@@ -2775,9 +2775,28 @@ Prefab:
       propertyPath: m_Name
       value: Kart 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11433706, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &164405352 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 116574, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
+  m_PrefabInternal: {fileID: 164405351}
+--- !u!114 &164405353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 164405352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af33f454ce3d90840bb5722843367b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isAI: 0
+  MAX_SPEED: 15
+  boost: 1
 --- !u!1 &172252918
 GameObject:
   m_ObjectHideFlags: 0
@@ -9325,7 +9344,7 @@ Transform:
   - {fileID: 1556715802}
   - {fileID: 721572196}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
 --- !u!54 &475428635
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9353,7 +9372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAI: 1
-  writePositionsToFile: 0
+  MAX_SPEED: 15
   boost: 1
 --- !u!114 &475428637
 MonoBehaviour:
@@ -9366,7 +9385,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfffe9845f4bcac44a252972fa9f2236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
 --- !u!146 &475428638
 WheelCollider:
   m_ObjectHideFlags: 0
@@ -9777,13 +9795,13 @@ GameObject:
   - 114: {fileID: 485339475}
   - 114: {fileID: 485339474}
   - 146: {fileID: 485339473}
-  - 114: {fileID: 485339481}
   - 114: {fileID: 485339476}
   - 114: {fileID: 485339485}
   - 114: {fileID: 485339484}
   - 114: {fileID: 485339483}
   - 114: {fileID: 485339482}
   - 135: {fileID: 485339486}
+  - 114: {fileID: 485339481}
   m_Layer: 0
   m_Name: Kart 4
   m_TagString: kart
@@ -9804,7 +9822,7 @@ Transform:
   - {fileID: 1528100524}
   - {fileID: 1525088836}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 3
 --- !u!146 &485339473
 WheelCollider:
   m_ObjectHideFlags: 0
@@ -9858,7 +9876,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfffe9845f4bcac44a252972fa9f2236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
 --- !u!114 &485339476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9942,8 +9959,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af33f454ce3d90840bb5722843367b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAI: 0
-  writePositionsToFile: 0
+  isAI: 1
+  MAX_SPEED: 15
   boost: 1
 --- !u!114 &485339482
 MonoBehaviour:
@@ -11051,7 +11068,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 17
 --- !u!1 &545159899
 GameObject:
   m_ObjectHideFlags: 0
@@ -15325,7 +15342,7 @@ Transform:
   - {fileID: 25066236}
   - {fileID: 810158911}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
 --- !u!146 &683499887
 WheelCollider:
   m_ObjectHideFlags: 0
@@ -15379,7 +15396,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfffe9845f4bcac44a252972fa9f2236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
 --- !u!114 &683499890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15464,7 +15480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAI: 0
-  writePositionsToFile: 0
+  MAX_SPEED: 15
   boost: 1
 --- !u!1 &685317902
 GameObject:
@@ -24214,9 +24230,28 @@ Prefab:
       propertyPath: m_Name
       value: Kart 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11433706, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1035493670 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 116574, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
+  m_PrefabInternal: {fileID: 1035493669}
+--- !u!114 &1035493671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1035493670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af33f454ce3d90840bb5722843367b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isAI: 0
+  MAX_SPEED: 15
+  boost: 1
 --- !u!1 &1046746090
 GameObject:
   m_ObjectHideFlags: 0
@@ -41189,7 +41224,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!1 &1811901324
 GameObject:
   m_ObjectHideFlags: 0
@@ -46161,7 +46196,7 @@ Transform:
   - {fileID: 180592085}
   - {fileID: 925323094}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
 --- !u!146 &2018099469
 WheelCollider:
   m_ObjectHideFlags: 0
@@ -46215,7 +46250,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfffe9845f4bcac44a252972fa9f2236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
 --- !u!114 &2018099472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46300,7 +46334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAI: 0
-  writePositionsToFile: 0
+  MAX_SPEED: 15
   boost: 1
 --- !u!114 &2018099478
 MonoBehaviour:

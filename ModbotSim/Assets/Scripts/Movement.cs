@@ -1,15 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.IO;
+using System.Collections.Generic;
 
-public class Movement : MonoBehaviour
-{
+public class Movement : MonoBehaviour {
+	//whether or not this movement script is attached to an AI or player controlled car
+	public bool isAI = false;
 
-	public bool isAI=false;
-	public bool writePositionsToFile = false;
-	[System.NonSerialized]
-	public bool usingPhone = false;
-	[System.NonSerialized]
+	//basic movement variables that both an AI car and player controlled car utilizes
+	private float turnInput;
+	private float forwardInput;
+	private float brakeInput;
+
+	//Player controlled car movement variables
+	float motorForce=4000;
+	float turnForce=25;
+	float brakeForce=8000;
+	WheelCollider fr;
+	WheelCollider fl;
+	WheelCollider br;
+	WheelCollider bl;
+	public float MAX_SPEED=15;
+	public float boost = 1f;
+	GetInput input;
+	Rigidbody rb;
+
+	//AI car movement variables
+	private float currentDeltaTurn = 0f;
+	private float speed = 0f;
+	private float turnValue = 0f;
 	public static float ACCEL = 3.4f/4.5f; // m/s^2
 	[System.NonSerialized]
 	public static float DELTA_TURN = .5f*4.5f; 
@@ -17,350 +35,212 @@ public class Movement : MonoBehaviour
 	public static float MAX_TURN = 5.91f*4.5f;// turn radius in meters ~ 64 / MAX_TURN (car is 1 meter long, .5 meters wide)
 	[System.NonSerialized]
 	public static float IDLE_ACCEL = ACCEL / 10;
-	//	[System.NonSerialized]
-	//	public static float MAX_TURN = 0.5f;
-	[HideInInspector]
-	[System.NonSerialized]
-	public float MAX_SPEED = 140f / 4.5f; // this is meters per second! woo
-
-
-
-	private float currentDeltaTurn = 0f;
-	private float speed = 0f;
-	private float turnValue = 0f;
-	private float turnInput = 0f;
-	private Vector3 direction = Vector3.forward;
-	private Vector3 rotationVector;
-	private bool goingBackwards = false;
-	private float forwardInput = 0;
-	public float boost = 1f;
-
-	private string horizontal;
-	private string vertical;
-	GetInput input;
-
-	//Log Stuff
-	private Vector3 position = new Vector3();
-	private Vector3 oldPosition = new Vector3();
-	private Vector3 velocity = new Vector3();
-	private Vector3 acceleration = new Vector3();
-	private Vector3 rotation = new Vector3();
-	private Vector3 oldvelocity = new Vector3();
-
-
-	private Vector3 velocityX = new Vector3();
-	private Vector3 velocityY = new Vector3();
-	private Vector3 moveVector = new Vector3();
-
-	private float yAngleOffsetVelocity=0;
-	private float yAngleOffset=0;
-
-
-	private float height=.215f;
-	private float width=.15f;
-	private float motorOutForce;
-	private float resistForce;
-	private float rollingResistForce;
-	private float airResistForce;
-	private float centripetalForce;
-
-	private float Ic;
-	private float mTor = .1f;
-	private float effec = 1;
-	private float gearRatio = 1;
-	private float angularSpeed = 350;
-	private float wheelRad = .035f;
-
-	//kg
-	private float mass = 2;
-	private float g = 9.81f;
-	private float gradAngle = 0;
-
-	private float rollResist = .015f;
-
-	private float airDensity = 1.21f;
-	private float dragCoef = 1.2f;
-	private float areaCross = .004f;
-
-	private float lW = .125f;
-
-	private float maxTurnAngle = Mathf.PI /6;
-
-	private Vector3 temp3 = new Vector3();
-	private Quaternion tempQ = new Quaternion();
-
 	private CarController carController = new CarController();
-
+	private Vector3 rotationVector;
+	private Vector3 direction = Vector3.forward;
+	private bool goingBackwards = false;
 	private bool paused = false;
-	//movement variable descriptions
 
-	//force from motor
-	//	maxTourque (scaling for forward input)
-	//	Effeciency (assume 1)
-	//	Gear Ratio (1 - 150 some int)
-	//	Angular speed (rpms)
-	//	Wheel Radius
-
-	//	uphill vs downhill (1 for uphill -1 for downhill)
-	//	m =mass
-	//	g = 9.8
-	//	Gradient Angle (Gradient alpha) (angle of slope - 0)
-	//	
-	//rolling resistance
-	//	rolling resistance coeffecient (fr)
-	//	wieight
-	//	cos(alpha) slope
-	//	
-	//drag force
-	//	density of air (p=1.21 kg/m^3)
-	//	drag coeffecient (cd=1.2)
-	//	Area (cross sectional = .004 m^2)
-	//	Velocity vector (y) squared magnitude
-	//  Lw = car geoemetry = 0.15
-
-
-
-	//mass m - ydot squared = velocity squared in forward direction
-	//tan(phi) phi is max turning angle (30 degrees) * turning input to get current phi
-
-
+	// <summary>
 	// Use this for initialization
-	void Start()
-	{
-		input = GetComponent<GetInput>();
-		position.Set (50, 50, 0);
-		motorOutForce = (mTor * effec * gearRatio * angularSpeed/60)/wheelRad;
-		//resistForce = 0;
-		rollingResistForce = rollResist * mass * g * Mathf.Cos (gradAngle);
-		//rollingResistForce = 0;
-		airResistForce = .5f * airDensity * dragCoef * areaCross;
-		centripetalForce = mass / lW;
+	// </summary>
+	void Start () {
+		
+		input = GetComponent<GetInput> ();
+		fr = GameObject.FindGameObjectWithTag ("wcfr").GetComponent<WheelCollider> ();
+		fl = GameObject.FindGameObjectWithTag ("wcfl").GetComponent<WheelCollider> ();
+		br = GameObject.FindGameObjectWithTag ("wcbr").GetComponent<WheelCollider> ();
+		bl = GameObject.FindGameObjectWithTag ("wcbl").GetComponent<WheelCollider> ();
+		fr.enabled = true;
+		fl.enabled = true;
+		br.enabled = true;
+		bl.enabled = true;
+		rb = GameObject.FindGameObjectWithTag ("kart").GetComponent<Rigidbody> ();
+		boost = 1f;
 
 		if (isAI) {
+			ItemsAI.updateItems ();
 			PathPlanningKart k = GetComponent<PathPlanningKart> ();
 			k.PathPlanInitialSegment ();
-			MAX_SPEED = MAX_SPEED * .95f;
+			MAX_SPEED = 40f / 4.5f;
 		}
+
 	}
-		
 
-	//uncomment for original movement code
-    void FixedUpdate()
-    {
-        if (isAI)
-        {
-            PathPlanningKart k = GetComponent<PathPlanningKart>();
-            k.PathPlanNextSegment();
-            Tuple<float, float> t = carController.speedAndTurn(this.gameObject);
-            turnInput = (float)t.Second;
-            forwardInput = (float)t.First;
-			ItemsAI.updateItems ();
-			k.UseItem();
-        }
-        else if (Input.GetKeyUp(KeyCode.P))
-        {
-            Time.timeScale = paused ? 1 : 0;
-            paused = !paused;
-        }
-        else {
-            turnInput = input.getTurnInput();
-            forwardInput = input.getForwardInput();
-        }
-
-        //how quickly do we want to turn
-        currentDeltaTurn = DELTA_TURN * turnInput;
-        //takes care of ideling to go back straight && also turning
-
-        //Debug.Log ("(turnValue + currentDeltaTurn): "+(turnValue + currentDeltaTurn)+"  MAXTU: "+(MAX_TURN)+"  speed: "+speed);
-        if (Mathf.Abs(turnInput) < .1 && turnValue > 0)
-        {
-            turnValue = 0;
-            // Debug.Log("Idle Pos");
-            if (turnValue < DELTA_TURN)
-                turnValue = 0;
-            else
-                turnValue -= DELTA_TURN;
-        }
-        else if (Mathf.Abs(turnInput) < .1 && turnValue < 0)
-        {
-            turnValue = 0;
-            // Debug.Log("Idle Neg");
-            if (turnValue > -DELTA_TURN)
-                turnValue = 0;
-            else
-                turnValue += DELTA_TURN;
-        }
-        else if ((turnValue + currentDeltaTurn) < (MAX_TURN) && (turnValue + currentDeltaTurn) > (-MAX_TURN))
-        {
-            // Debug.Log("Turn");
-            turnValue += currentDeltaTurn;
-        }
-        //Debug.Log("DeltaTurn: " + currentDeltaTurn);
-        //Debug.Log("turnValue: " + turnValue);
-
-        //Debug.Log("Vert: "+Input.GetAxis(vertical));
-        //which way do we want to go
+	// <summary>
+	// Update is called once per frame
+	// </summary>
+	void Update () {
+		if (isAI)
+		{
+			UpdateAI ();
+		}
+		else if (Input.GetKeyUp(KeyCode.P))
+		{
+			Time.timeScale = paused ? 1 : 0;
+			paused = !paused;
+		}
+		else {
+			UpdatePlayer ();
+		}
 
 
-        //takes care of ACCELeration
-        speed += ACCEL * forwardInput;
-        if (speed < -MAX_SPEED)
-        {
-            speed = -MAX_SPEED;
-        }
-        if (speed > MAX_SPEED)
-        {
-            speed = MAX_SPEED;
-        }
-        if (forwardInput == 1 && speed < MAX_SPEED)
-        {
-            speed += ACCEL;
-        }
-        else if (forwardInput == -1 && speed > -MAX_SPEED)
-        {
-            speed -= ACCEL;
-        }
-        else if (forwardInput == 0 && speed < 0)
-        {
-            if (speed > -IDLE_ACCEL)
-                speed = 0;
-            else
-                speed += IDLE_ACCEL;
-        }
-        else if (forwardInput == 0 && speed > 0)
-        {
-            if (speed < IDLE_ACCEL)
-                speed = 0;
-            else
-                speed -= IDLE_ACCEL;
-        }
-        else if (Mathf.Abs(speed) > MAX_SPEED)
-        {
-            speed = Mathf.Sign(speed) * MAX_SPEED;
-        }
+	}
 
-        //applies boost, if any
-        speed = speed * boost;
+	public void UpdateAI() {
+		PathPlanningKart k = GetComponent<PathPlanningKart>();
+		k.PathPlanNextSegment();
+		Tuple<float, float> t = carController.speedAndTurn(this.gameObject);
+		turnInput = (float)t.Second;
+		forwardInput = (float)t.First;
+		ItemsAI.updateItems ();
+		k.UseItem();
 
-        //calculates the direction displacement vector
-        rotationVector.Set(0, turnValue * speed * Time.deltaTime, 0);
-        direction = Quaternion.Euler(rotationVector) * direction;
+		//how quickly do we want to turn
+		currentDeltaTurn = DELTA_TURN * turnInput;
+		//takes care of ideling to go back straight && also turning
 
-        //Debug.Log ("Direction: "+ direction);
-        //Debug.Log ("Speed: " +speed);
+		//Debug.Log ("(turnValue + currentDeltaTurn): "+(turnValue + currentDeltaTurn)+"  MAXTU: "+(MAX_TURN)+"  speed: "+speed);
+		if (Mathf.Abs(turnInput) < .1 && turnValue > 0)
+		{
+			turnValue = 0;
+			// Debug.Log("Idle Pos");
+			if (turnValue < DELTA_TURN)
+				turnValue = 0;
+			else
+				turnValue -= DELTA_TURN;
+		}
+		else if (Mathf.Abs(turnInput) < .1 && turnValue < 0)
+		{
+			turnValue = 0;
+			// Debug.Log("Idle Neg");
+			if (turnValue > -DELTA_TURN)
+				turnValue = 0;
+			else
+				turnValue += DELTA_TURN;
+		}
+		else if ((turnValue + currentDeltaTurn) < (MAX_TURN) && (turnValue + currentDeltaTurn) > (-MAX_TURN))
+		{
+			// Debug.Log("Turn");
+			turnValue += currentDeltaTurn;
+		}
+
+		//takes care of Acceleration
+		speed += ACCEL * forwardInput;
+		if (speed < -MAX_SPEED)
+		{
+			speed = -MAX_SPEED;
+		}
+		if (speed > MAX_SPEED)
+		{
+			speed = MAX_SPEED;
+		}
+		if (forwardInput == 1 && speed < MAX_SPEED)
+		{
+			speed += ACCEL;
+		}
+		else if (forwardInput == -1 && speed > -MAX_SPEED)
+		{
+			speed -= ACCEL;
+		}
+		else if (forwardInput == 0 && speed < 0)
+		{
+			if (speed > -IDLE_ACCEL)
+				speed = 0;
+			else
+				speed += IDLE_ACCEL;
+		}
+		else if (forwardInput == 0 && speed > 0)
+		{
+			if (speed < IDLE_ACCEL)
+				speed = 0;
+			else
+				speed -= IDLE_ACCEL;
+		}
+		else if (Mathf.Abs(speed) > MAX_SPEED)
+		{
+			speed = Mathf.Sign(speed) * MAX_SPEED;
+		}
+
+		//applies boost, if any
+		speed = speed * boost;
+
+		//calculates the direction displacement vector
+		rotationVector.Set(0, turnValue * speed * Time.deltaTime, 0);
+		direction = Quaternion.Euler(rotationVector) * direction;
 
 		transform.position += direction* (speed * Time.deltaTime);
 		if (!goingBackwards)
 			transform.rotation = Quaternion.LookRotation(direction);
 		else
 			transform.rotation = Quaternion.LookRotation(-1 * direction);
-		//newEquations ();
-		//equations();
-		//updateLogVectors ();
-		if(writePositionsToFile)
-			WriteToRepo ();
-		//uncomment for original movement code
 	}
 
+	// <summary>
+	// Updates a player controlled car's position and movement state
+	// </summary>
+	public void UpdatePlayer() {
+		turnInput = input.getTurnInput ();
+		forwardInput = input.getForwardInput ();
+		brakeInput = input.getBraking ();
+		if (rb.velocity.magnitude < MAX_SPEED && forwardInput!=0) {
+			print ("Y" + rb.velocity.magnitude+ " X:"+forwardInput+" Z:"+boost);
 
-	void equations(){
-		float F1 = motorOutForce * forwardInput;
-		float F2 = resistForce;
-		float F3 = rollingResistForce;
-		float F4 = -1*Mathf.Sign(velocity.y)*airResistForce * (velocity.y * velocity.y);
-		float F5 = centripetalForce * (velocity.y*velocity.y)* Mathf.Tan (maxTurnAngle * turnInput);
+			br.motorTorque = forwardInput * motorForce * boost;
+			bl.motorTorque = forwardInput * motorForce * boost;
+		} else {
+			br.motorTorque = 0;
+			bl.motorTorque = 0;
+		}
+		//		} else {
+		//			br.brakeTorque = -1*forwardInput * brakeForce;
+		//			bl.brakeTorque = -1*forwardInput * brakeForce;
+		//			fr.brakeTorque = -1*forwardInput * brakeForce;
+		//			fl.brakeTorque = -1*forwardInput * brakeForce;
+		//		}
+		//		if (brakeInput > 0) {
+		//			br.motorTorque = 0;
+		//			bl.motorTorque = 0;
+		//		}
 
-		float xAccel = F5 / mass;
-		float yAccel = (F1 + F2 + F3 + F4) / mass;
-		float angleAccel = .00001f *(6 * velocity.y * velocity.y * Mathf.Tan (maxTurnAngle * turnInput))/(height * height + width * width);
-		Debug.Log ("angleAccel: " + angleAccel);
-		Debug.Log ("velocity: " + velocity);
-		velocity.x = velocity.x + xAccel * Time.deltaTime;
-		velocity.y = velocity.y +yAccel * Time.deltaTime;
+		fr.steerAngle = turnInput * turnForce;
+		fl.steerAngle = turnInput * turnForce;
 
-
-
-		yAngleOffsetVelocity = yAngleOffsetVelocity + (angleAccel * Time.deltaTime);
-		//moveVector.Set (velocity.x, 0, velocity.y);
-		//Debug.Log ("transform forward: " + transform.forward);
-		//		float forwardV = Vector3.Dot (moveVector, transform.forward);
-		//		float perpV = Vector3.Dot (moveVector, transform.right);
-		//velocity.Set (perpV, forwardV, 0);		
-		position.x = position.x + (velocity.x * Time.deltaTime) + (.5f * xAccel * Time.deltaTime * Time.deltaTime);
-		position.y = position.y + (velocity.y * Time.deltaTime) + (.5f * yAccel * Time.deltaTime * Time.deltaTime);
-		yAngleOffsetVelocity = -2 * velocity.x / lW;
-		//yAngleOffsetVelocity = yAngleOffsetVelocity + angleAccel * Time.deltaTime;
-		//yAngleOffset = yAngleOffset + (yAngleOffsetVelocity * Time.deltaTime) + (angleAccel * Time.deltaTime * Time.deltaTime);
-		yAngleOffset = yAngleOffset + (yAngleOffsetVelocity * Time.deltaTime);
-		position.x = position.x * Mathf.Cos (yAngleOffset) + position.y * Mathf.Sin (yAngleOffset);
-		position.y = -1f * position.x * Mathf.Sin (yAngleOffset) + position.y * Mathf.Cos (yAngleOffset);
-		//		position.x = position.x + (forwardV * Time.deltaTime) + (.5f * xAccel * Time.deltaTime * Time.deltaTime);
-		//		position.y = position.y + (perpV * Time.deltaTime) + (.5f * yAccel * Time.deltaTime * Time.deltaTime);
-		temp3.Set (position.x, position.z, position.y);
-		transform.localPosition = temp3;
-		//transform.position = temp3;
-
-
-		temp3.Set (0, yAngleOffset * 180/Mathf.PI,0);
-		Debug.Log (temp3);
-		//transform.localEulerAngles = temp3;
-		//transform.rotation.Set(0,yAngleOffset * 180/Mathf.PI,0,0);
-		//transform.rotation.SetLookRotation(temp3);
+		br.brakeTorque = brakeInput * brakeForce * boost;
+		bl.brakeTorque = brakeInput * brakeForce * boost;
+		fr.brakeTorque = brakeInput * brakeForce * boost;
+		fl.brakeTorque = brakeInput * brakeForce * boost;
 	}
 
-
-
-	void WriteToRepo()
-	{
-		int id = 1;
-		var sw = new StreamWriter(Application.dataPath + "/Scripts/WriteToFile.txt", true);
-		sw.Write(string.Format("{0}\t{1}\t{2}\n",transform.position.x, transform.position.y, transform.position.z));
-		sw.Close();
-	}
-
+	// <summary>
+	// Returns whether the car is an AI car or a player controlled car
+	// </summary>
 	public bool isArtificialIntelligence(){
 		return isAI;
 	}
 
-	//my attempt at unity forces instead of displacements
-	void newEquations(){
-		//velocity = transform.TransformDirection(transform.forward);
-		float yVel = transform.InverseTransformDirection(GetComponentInParent<Rigidbody>().velocity).y;
-		Debug.Log (yVel);
-		float F1 = motorOutForce * forwardInput;
-		float F2 = resistForce;
-		float F3 = rollingResistForce;
-		float F4 = -1*Mathf.Sign(yVel) * airResistForce * (yVel * yVel);
-		float F5 = centripetalForce * (yVel * yVel)* Mathf.Tan (maxTurnAngle * turnInput);
+	// <summary>
+	// Draws the current waypoints for an AI car
+	// </summary>
+	public void OnDrawGizmosSelected()
+	{
+		if (isAI) {
+			PathPlanningKart k = GetComponent<PathPlanningKart> ();
+			List<Vector3> currentWayPoints = k.currentWayPoints;
+			if (currentWayPoints == null) {
+				return;
+			}
+			for (int i = 0; i < currentWayPoints.Count; i++) {
+				Vector3 point = currentWayPoints [i];
+				Gizmos.color = new Color (0.0f, 0.0f, 1.0f, 0.3f);
+				Gizmos.DrawCube (point, new Vector3 (3.0f, 3.0f, 3.0f));
 
-		float xAccel = F5 / mass;
-		float yAccel = (F1 + F2 + F3 + F4) / mass;
-
-		Debug.Log ("xAccel: "+xAccel);
-		Debug.Log ("yAccel: "+yAccel);
-
-
-		Vector3 force = new Vector3 ();
-		force = transform.forward * yAccel * mass;
-		float z = yAccel * mass;
-
-		//		GetComponentInParent<Rigidbody> ().AddForce (force);
-		force = transform.right * xAccel * mass;
-		float x = xAccel * mass;
-		//		Debug.Log ("force: " + force);
-		//		GetComponentInParent<Rigidbody> ().AddForce (force);
-		//
-		//		transform.Rotate(Vector3.up * force.magnitude * Time.deltaTime);
-		//force.Set(x,0,z);
-		//force = transform.TransformDirection (force);
-		//Quaternion targetRotation = Quaternion.LookRotation(force, Vector3.up);
-		//transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 100.0f);    
-		GetComponentInParent<Rigidbody> ().AddRelativeForce (0, 0, z);
-		GetComponentInParent<Rigidbody> ().AddRelativeTorque (0, 10000 * x, 0);
-		if (GetComponentInParent<Rigidbody> ().velocity.magnitude > MAX_SPEED) {
-			GetComponentInParent<Rigidbody> ().velocity = GetComponentInParent<Rigidbody> ().velocity.normalized * MAX_SPEED;
+				int x = i + 1;
+				if (x < currentWayPoints.Count) {
+					Gizmos.color = Color.magenta;
+					Gizmos.DrawLine (point, currentWayPoints [x]);
+				}
+			}
 		}
-
 	}
-
 }
