@@ -19,6 +19,9 @@ TagManager:
   - wcfl
   - wcbr
   - mainCar
+  - FenceHolder
+  - obstacle
+  - New Tag
   layers:
   - Default
   - TransparentFX

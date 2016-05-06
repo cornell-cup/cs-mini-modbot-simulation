@@ -95,8 +95,9 @@ public class CarController : CarControllerInt {
 			}
 		}
 			
-		Vector3 inversePoint = kart.transform.InverseTransformPoint (kart.currentThreadJob.endNode.position);
+		Vector3 inversePoint = kart.transform.InverseTransformPoint (kart.currentThreadJob.destinationNode.position);
 		if (inversePoint.z < 0) {
+			Debug.Log ("Going Backwards");
 			if (inversePoint.x > 0) {
 				steer = 1;
 			} else {
@@ -104,7 +105,6 @@ public class CarController : CarControllerInt {
 			}
 		}
 
-		/*
 		ObstacleAvoid obstacleAvoid = car.GetComponent<ObstacleAvoid> ();
 		if (obstacleAvoid.leftObs && !obstacleAvoid.rightObs)
 			steer = Mathf.Min (.5f/obstacleAvoid.LeftDis, 0.5f);
@@ -113,10 +113,6 @@ public class CarController : CarControllerInt {
 		if (obstacleAvoid.centerObs && !obstacleAvoid.rightObs && !obstacleAvoid.leftObs) {
 			steer = Mathf.Min (.5f/obstacleAvoid.CenterDis, 0.5f); 
 		}
-		if (obstacleAvoid.centerObs && (obstacleAvoid.leftObs || obstacleAvoid.rightObs)) {
-			steer = Mathf.Max(Mathf.Min (steer * 1.42f, 0.5f), -0.5f);
-		}
-		*/
 
 
 		speed = Mathf.Sqrt (1.05f - (steer * steer));
