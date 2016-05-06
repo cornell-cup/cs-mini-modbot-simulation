@@ -106,7 +106,7 @@ public class PowerUp : MonoBehaviour {
 				Destroy (other.gameObject);
 			}
 		} else {
-			Destroy (other.gameObject);
+			//Destroy (other.gameObject);
 		}
 	}
 }
