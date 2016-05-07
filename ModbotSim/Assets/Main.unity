@@ -2775,6 +2775,18 @@ Prefab:
       propertyPath: m_Name
       value: Kart 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11452336, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11446254, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11446452, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
+      propertyPath: banana
+      value: 
+      objectReference: {fileID: 142492, guid: cd494041e53f14273af49cff9be9459d, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
   m_IsPrefabParent: 0
@@ -9366,7 +9378,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfffe9845f4bcac44a252972fa9f2236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
 --- !u!146 &475428638
 WheelCollider:
   m_ObjectHideFlags: 0
@@ -9858,7 +9869,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfffe9845f4bcac44a252972fa9f2236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
 --- !u!114 &485339476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11051,7 +11061,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 17
 --- !u!1 &545159899
 GameObject:
   m_ObjectHideFlags: 0
@@ -15379,7 +15389,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfffe9845f4bcac44a252972fa9f2236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
 --- !u!114 &683499890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17159,7 +17168,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 142922, guid: d6d720039495b44988c785f3b45b6ce9, type: 2}
       propertyPath: m_TagString
-      value: Green Shell
+      value: Banana
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d6d720039495b44988c785f3b45b6ce9, type: 2}
@@ -24213,6 +24222,14 @@ Prefab:
     - target: {fileID: 116574, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
       propertyPath: m_Name
       value: Kart 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11452336, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11446254, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 61c7ed27a7bc54aeb8b0c30dd73f3e02, type: 2}
@@ -46215,7 +46232,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfffe9845f4bcac44a252972fa9f2236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
 --- !u!114 &2018099472
 MonoBehaviour:
   m_ObjectHideFlags: 0

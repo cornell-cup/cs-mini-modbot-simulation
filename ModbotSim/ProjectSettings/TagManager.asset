@@ -19,6 +19,8 @@ TagManager:
   - wcfl
   - wcbr
   - mainCar
+  - FenceHolder
+  - udpvision
   layers:
   - Default
   - TransparentFX
