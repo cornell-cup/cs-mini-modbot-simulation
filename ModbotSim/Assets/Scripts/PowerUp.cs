@@ -63,7 +63,7 @@ public class PowerUp : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (powerUp == "") {
+		if (powerUp == "" && Vector3.Distance(other.transform.position, transform.position) <= 2) {
 			if (other.transform.tag == "Boost") {
 				powerUp = "Boost";
 				GetComponent<Movement> ().boost += 0.4f;
