@@ -16,8 +16,8 @@ public class SetupCameras : MonoBehaviour {
 		} else if (numPlayers == 2) {
 			cameras [0].rect = new Rect (0f, .5f, .7f, .5f);
 			cameras [1].rect = new Rect (.3f, 0f, .7f, .5f);
-			karts [2].SetActive (false);
-			karts [3].SetActive (false);
+//			karts [2].SetActive (false);
+//			karts [3].SetActive (false);
 		} else if (numPlayers == 3) {
 			cameras [0].rect = new Rect (0f, .5f, 1f, .5f);
 			cameras [1].rect = new Rect (0f, 0f, .5f, .5f);
@@ -30,9 +30,9 @@ public class SetupCameras : MonoBehaviour {
 		}
 
 
-		//for (int i = numPlayers; i < 4; i++) {
-		//	karts [i].SetActive(false);
-		//}
+		for (int i = numPlayers; i < 4; i++) {
+			karts [i].SetActive(false);
+		}
 
 
 	}

@@ -33,7 +33,6 @@ public class MoveFromVisionData1 : MonoBehaviour
 			m.Set (pos.x + transform.position.x / 2, pos.y + transform.position.y / 2, pos.z + transform.position.z / 2);
 			didCollide = Physics.CheckBox (m, s);
 		}
-		Physics.CheckBox (Midpoint, sizeVector);
 	}
 
 }
