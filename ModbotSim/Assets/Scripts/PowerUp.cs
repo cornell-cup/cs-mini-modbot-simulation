@@ -75,30 +75,24 @@ public class PowerUp : MonoBehaviour {
 				Activate ();
 				Destroy (other.gameObject);
 			}
-
 			if (other.transform.tag == "Banana") {
 				powerUp = "Banana";
 				Vector3 kartPos = transform.position;
 				Vector3 kartDir = -1f * transform.forward;
 				Vector3 spawnPos = transform.position + kartDir * 2.0f;
 				itemObject = Instantiate (banana, spawnPos, transform.rotation) as GameObject;
-				Material material = Resources.Load ("Materials/orange-plastic", typeof(Material)) as Material;
-				itemObject.GetComponent<MeshRenderer> ().material = material;
 				//currentShell.GetComponent<BoxCollider> ().enabled = false;
 				itemObject.AddComponent<Banana> ();
 				itemObject.GetComponent<Banana> ().target = gameObject;
 				Activate ();
 				Destroy (other.gameObject);
 			}
-
 			if (other.transform.tag == "Green Shell") {
 				powerUp = "Green Shell";
 				Vector3 kartPos = transform.position;
 				Vector3 kartDir = -1f * transform.forward;
 				Vector3 spawnPos = transform.position + kartDir * 1.8f;
 				itemObject = Instantiate (shell, spawnPos, transform.rotation) as GameObject;
-				Material material = Resources.Load ("Materials/orange-plastic", typeof(Material)) as Material;
-				itemObject.GetComponent<MeshRenderer> ().material = material;
 				//currentShell.GetComponent<BoxCollider> ().enabled = false;
 				itemObject.AddComponent<Shell> ();
 				itemObject.GetComponent<Shell> ().target = gameObject;
@@ -106,7 +100,7 @@ public class PowerUp : MonoBehaviour {
 				Destroy (other.gameObject);
 			}
 		} else {
-			//Destroy (other.gameObject);
+			Destroy (other.gameObject);
 		}
 	}
 }

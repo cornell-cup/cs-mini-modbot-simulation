@@ -9,6 +9,9 @@ public class MoveFromVisionData1 : MonoBehaviour
 	private float rotation;
 	private static float SCALE;
 	private float elapsedTime;
+	public bool didCollide;
+	Vector3 m = new Vector3 ();
+	Vector3 s = new Vector3 ();
 
 	VisionData dataObj;
 	// Use this for initialization
@@ -27,6 +30,8 @@ public class MoveFromVisionData1 : MonoBehaviour
 			rotation = dataObj.orientation;
 			transform.position = pos;
 			transform.rotation = Quaternion.Euler (0, 5, 0);
+			m.Set (pos.x + transform.position.x / 2, pos.y + transform.position.y / 2, pos.z + transform.position.z / 2);
+			didCollide = Physics.CheckBox (m, s);
 		}
 	}
 

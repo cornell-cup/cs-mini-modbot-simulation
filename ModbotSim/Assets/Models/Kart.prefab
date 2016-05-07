@@ -1196,6 +1196,9 @@ GameObject:
   - 114: {fileID: 11433706}
   - 54: {fileID: 5406724}
   - 114: {fileID: 11446650}
+  - 114: {fileID: 11446452}
+  - 114: {fileID: 11452336}
+  - 114: {fileID: 11446254}
   m_Layer: 0
   m_Name: Kart
   m_TagString: kart
@@ -23855,6 +23858,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6725b8128def444e97f79126cca054f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MAX_SPEED: 15
+  boost: 0
+--- !u!114 &11446254
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 116574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99f91543a4dae400f92175ec72660acb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11446452
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 116574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a39fb9b1d101e440ea3ef24cc5065089, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  powerUp: 
+  isActive: 0
+  shell: {fileID: 143126, guid: 1b5748ab01e5f48768ee60e6eef7cdc0, type: 2}
+  banana: {fileID: 142492, guid: d9f99c4ff9da44677a5c4af6e5d43dd6, type: 2}
+  itemObject: {fileID: 0}
 --- !u!114 &11446650
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23867,6 +23899,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usingPhone: 0
+--- !u!114 &11452336
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 116574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfffe9845f4bcac44a252972fa9f2236, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &13626250
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -24015,7 +24058,15 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: shell
+      value: 
+      objectReference: {fileID: 143126, guid: 1b5748ab01e5f48768ee60e6eef7cdc0, type: 2}
+    - target: {fileID: 0}
+      propertyPath: banana
+      value: 
+      objectReference: {fileID: 142492, guid: d9f99c4ff9da44677a5c4af6e5d43dd6, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 116574}
