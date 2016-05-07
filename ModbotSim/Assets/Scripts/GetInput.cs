@@ -46,11 +46,19 @@ public class GetInput : MonoBehaviour {
 		case "2":
 			horizontal = "Horizontal2";
 			vertical = "Vertical2";
+			left = KeyCode.LeftArrow;
+			right = KeyCode.RightArrow;
+			up = KeyCode.UpArrow;
+			down = KeyCode.DownArrow;
 
 			break;
 		case "3":
 			horizontal = "Horizontal3";
 			vertical = "Vertical3";
+			left = KeyCode.LeftArrow;
+			right = KeyCode.RightArrow;
+			up = KeyCode.UpArrow;
+			down = KeyCode.DownArrow;
 			break;
 		case "4":
 			horizontal = "Horizontal4";

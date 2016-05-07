@@ -85,7 +85,15 @@ public class Movement : MonoBehaviour {
 		}
 
 
+
+
 	}
+
+	//Update is called once per frame and sends information using UDPSend
+//	void Update()
+//	{
+//		sendData();
+//	}
 
 	public void UpdateAI() {
 		PathPlanningKart k = GetComponent<PathPlanningKart>();
@@ -243,4 +251,14 @@ public class Movement : MonoBehaviour {
 			}
 		}
 	}
+
+//	private void sendData(){
+//		UDPSend.newPacket();
+//		UDPSend.addFloat(scale * Movement.instance.getLinVel().magnitude);
+//		UDPSend.addVector(scale * Movement.instance.getAngVel());
+//		UDPSend.addVector(scale * Movement.instance.getLinAcc());
+//		UDPSend.addVector(scale * Movement.instance.getAngAcc());
+//		UDPSend.addVector(transform.rotation.eulerAngles);
+//		UDPSend.sendPacket();
+//	}
 }
