@@ -119,6 +119,10 @@ public class GetInput : MonoBehaviour {
 			} 
 			else
 				forwardInput = 0;
+            if(Input.GetKey(KeyCode.JoystickButton2))
+            {
+                forwardInput *= -1;
+            }
 		}
 		else
 		{

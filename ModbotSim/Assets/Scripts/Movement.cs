@@ -13,7 +13,7 @@ public class Movement : MonoBehaviour {
 
 	//Player controlled car movement variables
 	float motorForce=4000;
-	float turnForce=25;
+	float turnForce=45;
 	float brakeForce=8000;
 	WheelCollider fr;
 	WheelCollider fl;

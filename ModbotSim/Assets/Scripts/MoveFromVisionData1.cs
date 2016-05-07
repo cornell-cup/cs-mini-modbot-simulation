@@ -7,7 +7,7 @@ public class MoveFromVisionData1 : MonoBehaviour
 	private Vector3 pos;
 	private float time;
 	private float rotation;
-	private static float SCALE;
+	public static float SCALE;
 	private float elapsedTime;
 	public bool didCollide;
 	Vector3 m = new Vector3 ();
