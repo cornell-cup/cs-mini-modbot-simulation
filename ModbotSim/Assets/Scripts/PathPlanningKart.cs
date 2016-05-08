@@ -62,7 +62,7 @@ public class PathPlanningKart : MonoBehaviour
 	// that calculates the path in the background
 	// </summary>
 	public void PathPlanNextSegment () {
-		bool noItem = (GetComponent<PowerUp>().itemObject == null);
+		bool noItem = (GetComponent<PowerUp>().powerUp == "");
 		//Check if the next path segment needs to be calculated in a thread
 		if (jobInProgress == false && nextWayPoints == null && dynamicReplan == false) {
 			//trigger thread job for this car to obtain the next set of waypoints
