@@ -45,24 +45,25 @@ public class Movement : MonoBehaviour {
 	// Use this for initialization
 	// </summary>
 	void Start () {
-		
 		input = GetComponent<GetInput> ();
-		fr = GameObject.FindGameObjectWithTag ("wcfr").GetComponent<WheelCollider> ();
-		fl = GameObject.FindGameObjectWithTag ("wcfl").GetComponent<WheelCollider> ();
-		br = GameObject.FindGameObjectWithTag ("wcbr").GetComponent<WheelCollider> ();
-		bl = GameObject.FindGameObjectWithTag ("wcbl").GetComponent<WheelCollider> ();
-		fr.enabled = true;
-		fl.enabled = true;
-		br.enabled = true;
-		bl.enabled = true;
 		rb = GameObject.FindGameObjectWithTag ("kart").GetComponent<Rigidbody> ();
 		boost = 1f;
 
 		if (isAI) {
 			ItemsAI.updateItems ();
+			PathPlanningDataStructures.initializePathPlanning ();
 			PathPlanningKart k = GetComponent<PathPlanningKart> ();
 			k.PathPlanInitialSegment ();
 			MAX_SPEED = 40f / 4.5f;
+		} else {
+			fr = GameObject.FindGameObjectWithTag ("wcfr").GetComponent<WheelCollider> ();
+			fl = GameObject.FindGameObjectWithTag ("wcfl").GetComponent<WheelCollider> ();
+			br = GameObject.FindGameObjectWithTag ("wcbr").GetComponent<WheelCollider> ();
+			bl = GameObject.FindGameObjectWithTag ("wcbl").GetComponent<WheelCollider> ();
+			fr.enabled = true;
+			fl.enabled = true;
+			br.enabled = true;
+			bl.enabled = true;
 		}
 
 	}

@@ -36,7 +36,8 @@ public class DynamicPathThreadJob : ThreadJob
 		Dictionary<Node, float> cost_so_far = new Dictionary<Node, float> ();
 		came_from.Add (startNode, null);
 		cost_so_far.Add (startNode, 0);
-		open.queue (PathPlanningDataStructures.heuristic.Estimate (startNode), startNode);
+		open.queue (PathPlanningDataStructures.heuristic.Estimate (startNode), 
+			startNode);
 		while (open.getSize() > 0) {
 			Node current = open.dequeue ();
 
@@ -65,9 +66,15 @@ public class DynamicPathThreadJob : ThreadJob
 		pathWayPoints = new List<Vector3> ();
 		Node currentNode = destinationNode;
 		pathWayPoints.Add (currentNode.position);
+		lock (PathPlanningDataStructures.globalLock) {
+			PathPlanningDataStructures.nodeToCount [currentNode.position] += 1;
+		}
 		while (currentNode.Equals(startNode) == false) {
 			currentNode = came_from [currentNode];
 			pathWayPoints.Add (currentNode.position);
+			lock (PathPlanningDataStructures.globalLock) {
+				PathPlanningDataStructures.nodeToCount [currentNode.position] += 1;
+			}
 		}
 		pathWayPoints.Reverse ();
 	}

@@ -43,7 +43,6 @@ public class ObstacleAvoid : MonoBehaviour {
 			if (isObstacle(hitmiddle.collider.gameObject.tag)) {
 				centerObs = true; 
 				CenterDis = hitmiddle.distance;
-				Debug.Log ("MIDDLE ONE SAW YA " + hitmiddle.collider.gameObject.tag);
 			} else {
 				centerObs = false; 
 				CenterDis = 0;
@@ -56,7 +55,6 @@ public class ObstacleAvoid : MonoBehaviour {
 			if (isObstacle(hitleft.collider.gameObject.tag)) {
 				leftObs = true; 
 				LeftDis = hitleft.distance;
-				Debug.Log ("LEFT ONE SAW YA" + hitleft.collider.gameObject.tag);
 			} else {
 				leftObs = false; 
 				LeftDis = 0;
@@ -69,7 +67,6 @@ public class ObstacleAvoid : MonoBehaviour {
 			if (isObstacle(hitright.collider.gameObject.tag)) {
 				rightObs = true; 
 				RightDis = hitright.distance;
-				Debug.Log ("RIGHT ONE SAW YA" + hitright.collider.gameObject.tag);
 			} else {
 				rightObs = false; 
 				RightDis = 0;

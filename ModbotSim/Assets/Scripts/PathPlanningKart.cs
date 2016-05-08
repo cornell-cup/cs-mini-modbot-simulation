@@ -11,6 +11,8 @@ public class PathPlanningKart : MonoBehaviour
 {
 	//list of waypoints of the current path segment
 	public List<Vector3> currentWayPoints;
+	//boolean list describing whether a waypoint at an index is still being used by this car
+	public bool[] usesWaypoints;
 	//list of waypoints of the next path segment
 	public List<Vector3> nextWayPoints;
 	//list of waypoints for savior
@@ -45,6 +47,10 @@ public class PathPlanningKart : MonoBehaviour
 		currentThreadJob.Start();
 		currentThreadJob.Join();
 		currentWayPoints = currentThreadJob.getPathWayPoints();
+		usesWaypoints = new bool[currentWayPoints.Count];
+		for (int i = 0; i < usesWaypoints.Length; i++) {
+			usesWaypoints [i] = true;
+		}
 		closedNodes = currentThreadJob.getClosedNodes ();
 		//indicate that next path segment needs to calculated
 		jobInProgress = false;

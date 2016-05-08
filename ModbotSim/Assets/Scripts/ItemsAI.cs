@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+
 
 // ItemsAI is a class that contains the essential data structures and functions necessary
 // for implementing item retrieval and detection for an AI
@@ -15,7 +17,7 @@ public class ItemsAI
 	//represents a mapping from each item game object to its position
 	public static Dictionary<GameObject, Vector3> objectToPosition;
 
-	public static Object itemsUpdateLock = new Object();
+	public static object itemsUpdateLock = new object();
 	public static Stopwatch stopWatch = new Stopwatch();
 
 	// <summary>
@@ -56,7 +58,7 @@ public class ItemsAI
 				float itemDistance = Vector3.Distance (objectToPosition [item], n.position);
 				if (itemDistance <= 5.0f) {
 					Vector3 itemPosition = objectToPosition [item];
-					reduction = 50.0f / itemDistance;
+					reduction = Math.Min(5.0f / itemDistance, 1.5f);
 				}
 			}
 			return reduction;

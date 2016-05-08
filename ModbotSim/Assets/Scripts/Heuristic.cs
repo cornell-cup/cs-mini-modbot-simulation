@@ -8,9 +8,6 @@ public class HeuristicD {
 
 	public HeuristicD(GenerateGraph graph) {
 		heuristicCost = new Dictionary<Node, float>();
-		//itemList = new List<GameObject> ();
-		//GameObject item = GameObject.Find ("Item1");
-		//itemList.Add (item);
 
 		PriorityQueue<Node> pq = new PriorityQueue<Node>(graph.Size ());
 		Dictionary<Node, float> cost_so_far = new Dictionary<Node, float> ();
@@ -28,8 +25,16 @@ public class HeuristicD {
 			}
 		}
 	}
-	
+
 	public float Estimate(Node n) {
-		return heuristicCost [n] / ItemsAI.getReduction (n);
+		int numCarsClaiming = PathPlanningDataStructures.nodeToCount [n.position];
+		if (numCarsClaiming > 0) {
+			Debug.Log (numCarsClaiming + " claiming " + n.position);
+			Debug.Log ("Original Heuristic Cost: " + heuristicCost [n]);
+			return 1.5f * ((PathPlanningDataStructures.nodeToCount [n.position] * 0.1f) + 1.0f) * heuristicCost [n] /
+				ItemsAI.getReduction (n);
+		} else {
+			return heuristicCost [n] / ItemsAI.getReduction (n);
+		}
 	}
 }
