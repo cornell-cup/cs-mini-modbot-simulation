@@ -14,7 +14,7 @@ public class PathPlanningDataStructures {
 	//indicates for each node in the graph the number of AI cars that have it as a current waypoint
 	public static Dictionary<Vector3, int> nodeToCount = new Dictionary<Vector3, int>();
 	// Global lock for synchronizing access to the nodeToCount dictionary
-	public static object globalLock = new object();
+	public static System.Object globalLock = new System.Object();
 	//indicates whether or not the path planning data structures have been initialized
 	public static bool pathPlanningInitialized = false;
 

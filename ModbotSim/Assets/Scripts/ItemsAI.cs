@@ -16,8 +16,7 @@ public class ItemsAI
 	public static Dictionary<GameObject, Bounds> objectToBounds;
 	//represents a mapping from each item game object to its position
 	public static Dictionary<GameObject, Vector3> objectToPosition;
-
-	public static object itemsUpdateLock = new object();
+	public static System.Object itemsUpdateLock = new System.Object();
 	public static Stopwatch stopWatch = new Stopwatch();
 
 	// <summary>
@@ -56,9 +55,9 @@ public class ItemsAI
 			float reduction = 1.0f;
 			foreach (GameObject item in itemList) {
 				float itemDistance = Vector3.Distance (objectToPosition [item], n.position);
-				if (itemDistance <= 5.0f) {
+				if (itemDistance <= 3.0f) {
 					Vector3 itemPosition = objectToPosition [item];
-					reduction = Math.Min(5.0f / itemDistance, 1.5f);
+					reduction = Math.Min(3.0f / itemDistance, 1.6f);
 				}
 			}
 			return reduction;

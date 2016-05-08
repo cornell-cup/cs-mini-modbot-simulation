@@ -48,6 +48,7 @@ public class CarController : CarControllerInt {
 				kart.usesWaypoints [i] = true;
 			}
 			kart.nextWayPoints = null;
+			kart.current_waypoint = 0;
 			kart.dynamicReplan = false;
 		}
 
@@ -63,8 +64,6 @@ public class CarController : CarControllerInt {
 			}
 			kart.nextWayPoints = null;
 			kart.current_waypoint = 0;
-		} else if (kart.current_waypoint >= kart.currentWayPoints.Count) {
-			kart.current_waypoint = kart.currentWayPoints.Count - 1;
 		}
 
 		Vector3 currentWayPoint = kart.currentWayPoints[kart.current_waypoint];
