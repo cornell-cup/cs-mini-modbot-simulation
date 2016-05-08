@@ -26,15 +26,15 @@ public class HeuristicD {
 		}
 	}
 
-	public float Estimate(Node n) {
+	public float Estimate(Node n, bool useItems) {
 		int numCarsClaiming = PathPlanningDataStructures.nodeToCount [n.position];
 		if (numCarsClaiming > 0) {
 			Debug.Log (numCarsClaiming + " claiming " + n.position);
 			Debug.Log ("Original Heuristic Cost: " + heuristicCost [n]);
-			return 1.5f * ((PathPlanningDataStructures.nodeToCount [n.position] * 0.1f) + 1.0f) * heuristicCost [n] /
-				ItemsAI.getReduction (n);
+			return ((PathPlanningDataStructures.nodeToCount [n.position] * 0.1f) + 1.0f) * heuristicCost [n] /
+				(useItems ? ItemsAI.getReduction (n) : 1.0f);
 		} else {
-			return heuristicCost [n] / ItemsAI.getReduction (n);
+			return heuristicCost [n] / (useItems ? ItemsAI.getReduction (n) : 1.0f);
 		}
 	}
 }

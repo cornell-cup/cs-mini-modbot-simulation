@@ -34,14 +34,7 @@ public class CarController : CarControllerInt {
 		PathPlanningKart kart = car.GetComponent<PathPlanningKart> ();
 
 		if (kart.dynamicReplan && kart.dynamicWayPoints != null && kart.dynamicWayPoints.Count > 0) {
-			lock (PathPlanningDataStructures.globalLock) {
-				for (int i = 0; i < kart.currentWayPoints.Count; i++) {
-					if (kart.usesWaypoints[i]) {
-						PathPlanningDataStructures.nodeToCount [kart.currentWayPoints[i]] -= 1;
-						kart.usesWaypoints [i] = false;
-					}
-				}
-			}
+			freeUpNodes(kart);
 			kart.currentWayPoints = kart.dynamicWayPoints;
 			kart.usesWaypoints = new bool[kart.currentWayPoints.Count];
 			for (int i = 0; i < kart.usesWaypoints.Length; i++) {
@@ -98,6 +91,7 @@ public class CarController : CarControllerInt {
 			kart.current_waypoint = kart.current_waypoint + 1;
 			justSwitchedWaypoint = true;
 			if (kart.current_waypoint >= kart.currentWayPoints.Count && kart.nextWayPoints != null) {
+				freeUpNodes(kart);
 				//Current waypoints have been consumed; Move onto next set of waypoints
 				kart.currentWayPoints = kart.nextWayPoints;
 				kart.usesWaypoints = new bool[kart.currentWayPoints.Count];
@@ -143,6 +137,16 @@ public class CarController : CarControllerInt {
 		speed = Mathf.Sqrt (1.05f - (steer * steer));
 
 		return new Tuple<float, float> (speed, steer);
+	}
+
+	private void freeUpNodes(PathPlanningKart kart) {
+		lock(PathPlanningDataStructures.globalLock) {
+			for (int i = 0; i < kart.currentWayPoints.Count; i++) {
+				if (kart.usesWaypoints[i]) {
+					PathPlanningDataStructures.nodeToCount[kart.currentWayPoints[i]] -= 1;
+				}
+			}
+		}
 	}
 }
 

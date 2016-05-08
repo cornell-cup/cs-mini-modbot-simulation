@@ -43,7 +43,7 @@ public class PathPlanningKart : MonoBehaviour
 	public void PathPlanInitialSegment () {
 		//first triggered thread job for this car
 		startNode = PathPlanningDataStructures.graph.getClosestNode (transform.position);
-		currentThreadJob = new DynamicPathThreadJob (startNode, PathPlanningDataStructures.graph.endNode, closedNodes, 15.0f);
+		currentThreadJob = new DynamicPathThreadJob (startNode, PathPlanningDataStructures.graph.endNode, closedNodes, 15.0f, true);
 		currentThreadJob.Start();
 		currentThreadJob.Join();
 		currentWayPoints = currentThreadJob.getPathWayPoints();
@@ -62,6 +62,7 @@ public class PathPlanningKart : MonoBehaviour
 	// that calculates the path in the background
 	// </summary>
 	public void PathPlanNextSegment () {
+		bool noItem = (GetComponent<PowerUp> () == null);
 		//Check if the next path segment needs to be calculated in a thread
 		if (jobInProgress == false && nextWayPoints == null && dynamicReplan == false) {
 			//trigger thread job for this car to obtain the next set of waypoints
@@ -71,7 +72,7 @@ public class PathPlanningKart : MonoBehaviour
 			} else {
 				pathStartNode = currentThreadJob.destinationNode;
 			}
-			currentThreadJob = new DynamicPathThreadJob (pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 12.0f);
+			currentThreadJob = new DynamicPathThreadJob (pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 12.0f, noItem);
 			currentThreadJob.Start ();
 			jobInProgress = true;
 		} else if (jobInProgress == false && dynamicReplan) {
@@ -81,7 +82,7 @@ public class PathPlanningKart : MonoBehaviour
 			} else {
 				pathStartNode = PathPlanningDataStructures.graph.getClosestNode(transform.position + 3 * transform.forward);
 			}
-			currentThreadJob = new DynamicPathThreadJob(pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 5.0f);
+			currentThreadJob = new DynamicPathThreadJob(pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 5.0f, noItem);
 			currentThreadJob.Start ();
 			jobInProgress = true;
 		}
