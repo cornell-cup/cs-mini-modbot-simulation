@@ -57,7 +57,7 @@ public class ItemsAI
 				float itemDistance = Vector3.Distance (objectToPosition [item], n.position);
 				if (itemDistance <= 3.0f) {
 					Vector3 itemPosition = objectToPosition [item];
-					reduction = Math.Min(3.0f / itemDistance, 1.6f);
+					reduction = Math.Min(4.0f / itemDistance, 2.0f);
 				}
 			}
 			return reduction;
