@@ -17,6 +17,7 @@ interface CarControllerInt {
 
 public class CarController : CarControllerInt {
 	private bool justSwitchedWaypoint = false;
+    private const float thresholdDeviation = 5.0f;
 
 	public Tuple<float, float> speedAndTurn(GameObject car) {
 		//Adjust steer accordingly if obstacles are present
@@ -105,18 +106,23 @@ public class CarController : CarControllerInt {
 			justSwitchedWaypoint = false;
 		}
 		if (kart.current_waypoint + 1 < kart.currentWayPoints.Count) {
-			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint]) > 10) {
-				kart.dynamicReplan = true;
-			}
+            Vector3 direction = kart.currentWayPoints[kart.current_waypoint] - kart.currentWayPoints[kart.current_waypoint +1];
+            Ray ray = new Ray(kart.currentWayPoints[kart.current_waypoint], direction);
+            float distance = Vector3.Cross(ray.direction, kart.transform.position - ray.origin).magnitude;
+            if (distance > thresholdDeviation) {
+                kart.dynamicReplan = true;
+                Debug.Log("Recalculating! + distance: " + distance);
+            }
 		} else {
 			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint - 1]) > 10) {
-				kart.dynamicReplan = true;
+				//kart.dynamicReplan = true;
+                Debug.Log("Should I recalc?");
 			}
 		}
 			
 		Vector3 inversePoint = kart.transform.InverseTransformPoint (kart.currentWayPoints[kart.currentWayPoints.Count - 1]);
 		if (inversePoint.z < 0) {
-			Debug.Log ("Going Backwards");
+			//Debug.Log ("Going Backwards");
 			if (inversePoint.x > 0) {
 				steer = 1;
 			} else {

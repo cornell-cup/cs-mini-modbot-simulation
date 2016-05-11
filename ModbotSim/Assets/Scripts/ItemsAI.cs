@@ -18,8 +18,9 @@ public class ItemsAI
 	public static Dictionary<GameObject, Vector3> objectToPosition;
 	public static System.Object itemsUpdateLock = new System.Object();
 	public static Stopwatch stopWatch = new Stopwatch();
-    private const float thresholdDistance = 3.0f;
+    private const float thresholdDistance = 2.0f;
     private const float maxReduction = 1.5f;
+    private const float itemReduction = 2.0f;
     private const float baseReduction = 3.5f;
 
 
@@ -62,7 +63,10 @@ public class ItemsAI
 				if (itemDistance <= thresholdDistance) {
 					Vector3 itemPosition = objectToPosition [item];
 					reduction = Math.Min(baseReduction / itemDistance, maxReduction); 
-				}
+				} 
+                if (itemDistance == 0) {
+                    reduction = itemReduction;     
+                }
 			}
 			return reduction;
 		}
