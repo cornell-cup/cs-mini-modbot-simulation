@@ -18,6 +18,10 @@ public class ItemsAI
 	public static Dictionary<GameObject, Vector3> objectToPosition;
 	public static System.Object itemsUpdateLock = new System.Object();
 	public static Stopwatch stopWatch = new Stopwatch();
+    private const float thresholdDistance = 3.0f;
+    private const float maxReduction = 1.5f;
+    private const float baseReduction = 3.5f;
+
 
 	// <summary>
 	// Initializes/Updates items by retrieving and storing them in a list; also stores a mapping
@@ -55,9 +59,9 @@ public class ItemsAI
 			float reduction = 1.0f;
 			foreach (GameObject item in itemList) {
 				float itemDistance = Vector3.Distance (objectToPosition [item], n.position);
-				if (itemDistance <= 3.0f) {
+				if (itemDistance <= thresholdDistance) {
 					Vector3 itemPosition = objectToPosition [item];
-					reduction = Math.Min(4.0f / itemDistance, 2.0f);
+					reduction = Math.Min(baseReduction / itemDistance, maxReduction); 
 				}
 			}
 			return reduction;
