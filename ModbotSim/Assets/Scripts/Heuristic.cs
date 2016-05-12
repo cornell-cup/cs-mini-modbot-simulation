@@ -29,10 +29,10 @@ public class HeuristicD {
 	public float Estimate(Node n, bool useItems) {
 		int numCarsClaiming = PathPlanningDataStructures.nodeToCount [n.position];
 		if (numCarsClaiming > 0) {
-			return ((numCarsClaiming * 0.1f) + 1.0f) * heuristicCost [n] -
-				(useItems ? ItemsAI.getReduction (n) : 0.0f);
+			return ((numCarsClaiming * 0.1f) + 1.0f) * heuristicCost [n] /
+				(useItems ? ItemsAI.getReduction (n) : 1.0f);
 		} else {
-			return heuristicCost [n] - (useItems ? ItemsAI.getReduction (n) : 0.0f);
+			return heuristicCost [n] / (useItems ? ItemsAI.getReduction (n) : 1.0f);
 		}
 	}
 }

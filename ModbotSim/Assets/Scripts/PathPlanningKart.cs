@@ -75,12 +75,12 @@ public class PathPlanningKart : MonoBehaviour
 			currentThreadJob = new DynamicPathThreadJob (pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 12.0f, noItem);
 			currentThreadJob.Start ();
 			jobInProgress = true;
-		} else if (!jobInProgress && dynamicReplan) {
+		} else if (jobInProgress == false && dynamicReplan) {
 			Node pathStartNode;
 			if (currentThreadJob.destinationNode == PathPlanningDataStructures.graph.endNode) {
 				pathStartNode = startNode;
 			} else {
-				pathStartNode = PathPlanningDataStructures.graph.getClosestNode(transform.position + transform.forward);
+				pathStartNode = PathPlanningDataStructures.graph.getClosestNode(transform.position + 3 * transform.forward);
 			}
 			currentThreadJob = new DynamicPathThreadJob(pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 5.0f, noItem);
 			currentThreadJob.Start ();
