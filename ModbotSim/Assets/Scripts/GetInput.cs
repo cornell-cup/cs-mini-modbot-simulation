@@ -73,7 +73,11 @@ public class GetInput : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	}
+        if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.JoystickButton0))
+        {
+            Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        }
+    }
 
 	public float getTurnInput(){
 		Vector3 Udp = Vector3.zero;

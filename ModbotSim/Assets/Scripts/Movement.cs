@@ -10,10 +10,11 @@ public class Movement : MonoBehaviour {
 	private float turnInput;
 	private float forwardInput;
 	private float brakeInput;
+    public bool writePositionsToFile = false;
 
-	//Player controlled car movement variables
-	float motorForce=4000;
-	float turnForce=45;
+    //Player controlled car movement variables
+    float motorForce=4000;
+	float turnForce=25;
 	float brakeForce=8000;
 	WheelCollider fr;
 	WheelCollider fl;
@@ -39,7 +40,6 @@ public class Movement : MonoBehaviour {
 	private Vector3 rotationVector;
 	private Vector3 direction = Vector3.forward;
 	private bool goingBackwards = false;
-	private bool paused = false;
 
 	// <summary>
 	// Use this for initialization
@@ -74,11 +74,6 @@ public class Movement : MonoBehaviour {
 		if (isAI)
 		{
 			UpdateAI ();
-		}
-		else if (Input.GetKeyUp(KeyCode.P))
-		{
-			Time.timeScale = paused ? 1 : 0;
-			paused = !paused;
 		}
 		else {
 			UpdatePlayer ();
@@ -176,11 +171,63 @@ public class Movement : MonoBehaviour {
 			transform.rotation = Quaternion.LookRotation(-1 * direction);
 	}
 
+    public bool isForward()
+    {
+        Vector3 localVel = transform.InverseTransformDirection(rb.velocity);
+        if (localVel.z > 0)
+            return true;
+        //  if (fr.motorTorque > 0)
+        //   return true;
+
+      //  if (forwardInput > 0)
+           // return true;
+        return false;
+    }
+
 	// <summary>
 	// Updates a player controlled car's position and movement state
 	// </summary>
 	public void UpdatePlayer() {
-		turnInput = input.getTurnInput ();
+        //Debug.Log("Delta Time: " + Time.deltaTime);
+        WheelHit hit;
+        float travelL = 1.0f;
+        float travelR = 1.0f;
+        float AntiRoll = 5000;
+
+        bool groundedL = fl.GetGroundHit(out hit);
+        if (groundedL)
+            travelL = (-fl.transform.InverseTransformPoint(hit.point).y - fl.radius) / fl.suspensionDistance;
+
+        bool groundedR = fr.GetGroundHit(out hit);
+        if (groundedR)
+            travelR = (-fr.transform.InverseTransformPoint(hit.point).y - fr.radius) / fr.suspensionDistance;
+
+        var antiRollForce = (travelL - travelR) * AntiRoll;
+
+        if (groundedL)
+            rb.AddForceAtPosition(fl.transform.up * -antiRollForce,
+                   fl.transform.position);
+        if (groundedR)
+            rb.AddForceAtPosition(fr.transform.up * antiRollForce,
+                   fr.transform.position);
+
+        bool bgroundedL = bl.GetGroundHit(out hit);
+        if (bgroundedL)
+            travelL = (-bl.transform.InverseTransformPoint(hit.point).y - bl.radius) / bl.suspensionDistance;
+
+        bool bgroundedR = br.GetGroundHit(out hit);
+        if (bgroundedR)
+            travelR = (-br.transform.InverseTransformPoint(hit.point).y - br.radius) / br.suspensionDistance;
+
+
+        if (bgroundedL)
+            rb.AddForceAtPosition(bl.transform.up * -antiRollForce,
+                   bl.transform.position);
+        if (bgroundedR)
+            rb.AddForceAtPosition(br.transform.up * antiRollForce,
+                   br.transform.position);
+
+        turnInput = input.getTurnInput ();
 		forwardInput = input.getForwardInput ();
 		brakeInput = input.getBraking ();
 		if (rb.velocity.magnitude < MAX_SPEED && forwardInput!=0) {
@@ -210,12 +257,24 @@ public class Movement : MonoBehaviour {
 		bl.brakeTorque = brakeInput * brakeForce * boost;
 		fr.brakeTorque = brakeInput * brakeForce * boost;
 		fl.brakeTorque = brakeInput * brakeForce * boost;
-	}
 
-	// <summary>
-	// Returns whether the car is an AI car or a player controlled car
-	// </summary>
-	public bool isArtificialIntelligence(){
+        if (writePositionsToFile)
+            WriteToRepo();
+    }
+
+    void WriteToRepo()
+    {
+        int id = 1;
+        var sw = new System.IO.StreamWriter(Application.dataPath + "/Scripts/WriteToFile.txt", true);
+        sw.Write(string.Format("{0}\t{1}\t{2}\n", transform.position.x, transform.position.y, transform.position.z));
+        sw.Close();
+    }
+
+    // <summary>
+    // Returns whether the car is an AI car or a player controlled car
+
+    // </summary>
+    public bool isArtificialIntelligence(){
 		return isAI;
 	}
 
