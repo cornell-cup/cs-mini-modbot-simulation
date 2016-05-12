@@ -35,14 +35,8 @@ public class CarController : CarControllerInt {
 		PathPlanningKart kart = car.GetComponent<PathPlanningKart> ();
 
 		if (kart.dynamicReplan && kart.dynamicWayPoints != null && kart.dynamicWayPoints.Count > 0) {
-			freeUpNodes(kart);
-			kart.currentWayPoints = kart.dynamicWayPoints;
-			kart.usesWaypoints = new bool[kart.currentWayPoints.Count];
-			for (int i = 0; i < kart.usesWaypoints.Length; i++) {
-				kart.usesWaypoints [i] = true;
-			}
-			kart.nextWayPoints = null;
-			kart.current_waypoint = 0;
+            kart.nextWayPoints = kart.dynamicWayPoints;
+            replaceWayPoints(kart);
 			kart.dynamicReplan = false;
 		}
 
@@ -51,13 +45,7 @@ public class CarController : CarControllerInt {
 		}
 	
 		if (kart.current_waypoint >= kart.currentWayPoints.Count && kart.nextWayPoints != null) {
-			kart.currentWayPoints = kart.nextWayPoints;
-			kart.usesWaypoints = new bool[kart.currentWayPoints.Count];
-			for (int i = 0; i < kart.usesWaypoints.Length; i++) {
-				kart.usesWaypoints [i] = true;
-			}
-			kart.nextWayPoints = null;
-			kart.current_waypoint = 0;
+           replaceWayPoints(kart); 
 		}
 
 		Vector3 currentWayPoint = kart.currentWayPoints[kart.current_waypoint];
@@ -92,15 +80,7 @@ public class CarController : CarControllerInt {
 			kart.current_waypoint = kart.current_waypoint + 1;
 			justSwitchedWaypoint = true;
 			if (kart.current_waypoint >= kart.currentWayPoints.Count && kart.nextWayPoints != null) {
-				freeUpNodes(kart);
-				//Current waypoints have been consumed; Move onto next set of waypoints
-				kart.currentWayPoints = kart.nextWayPoints;
-				kart.usesWaypoints = new bool[kart.currentWayPoints.Count];
-				for (int i = 0; i < kart.usesWaypoints.Length; i++) {
-					kart.usesWaypoints [i] = true;
-				}
-				kart.nextWayPoints = null;
-				kart.current_waypoint = 0;
+                replaceWayPoints(kart);
 			}
 		} else {
 			justSwitchedWaypoint = false;
@@ -114,10 +94,12 @@ public class CarController : CarControllerInt {
                 Debug.Log("Recalculating! + distance: " + distance);
             }
 		} else {
-			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint - 1]) > 10) {
-				//kart.dynamicReplan = true;
-                Debug.Log("Should I recalc?");
-			}
+            if (kart.nextWayPoints == null) {
+                kart.dynamicReplan = true;
+                Debug.Log("Next Way Points null, recalculating");
+            } else {
+                replaceWayPoints(kart);
+            }
 		}
 			
 		Vector3 inversePoint = kart.transform.InverseTransformPoint (kart.currentWayPoints[kart.currentWayPoints.Count - 1]);
@@ -154,6 +136,19 @@ public class CarController : CarControllerInt {
 			}
 		}
 	}
+
+    private void replaceWayPoints(PathPlanningKart kart) {
+        freeUpNodes(kart);
+        //Current waypoints have been consumed; Move onto next set of waypoints
+        kart.currentWayPoints = kart.nextWayPoints;
+        kart.usesWaypoints = new bool[kart.currentWayPoints.Count];
+        for (int i = 0; i < kart.usesWaypoints.Length; i++) {
+            kart.usesWaypoints [i] = true;
+        }
+        kart.nextWayPoints = null;
+        kart.current_waypoint = 0;
+    }
+        
 }
 
 public class Tuple<T1, T2> {

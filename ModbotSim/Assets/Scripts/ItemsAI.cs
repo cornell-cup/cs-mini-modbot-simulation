@@ -18,10 +18,8 @@ public class ItemsAI
 	public static Dictionary<GameObject, Vector3> objectToPosition;
 	public static System.Object itemsUpdateLock = new System.Object();
 	public static Stopwatch stopWatch = new Stopwatch();
-    private const float thresholdDistance = 2.0f;
-    private const float maxReduction = 1.5f;
-    private const float itemReduction = 2.0f;
-    private const float baseReduction = 3.5f;
+    private const float itemReduction = 15.0f;
+    private const float linearScale = 3.0f;
 
 
 	// <summary>
@@ -57,18 +55,17 @@ public class ItemsAI
 	// <param name="n"> a Node representing a possible waypoint</param>
 	public static float getReduction(Node n) {
 		lock (itemsUpdateLock) {
-			float reduction = 1.0f;
+			float reduction = 0.0f;
 			foreach (GameObject item in itemList) {
 				float itemDistance = Vector3.Distance (objectToPosition [item], n.position);
+                float thresholdDistance = itemReduction/linearScale;
 				if (itemDistance <= thresholdDistance) {
 					Vector3 itemPosition = objectToPosition [item];
-					reduction = Math.Min(baseReduction / itemDistance, maxReduction); 
+					reduction = (thresholdDistance - itemDistance) * linearScale; 
 				} 
-                if (itemDistance == 0) {
-                    reduction = itemReduction;     
-                }
 			}
-			return reduction;
+			//return reduction;
+            return 0.0f;
 		}
 	}
 
