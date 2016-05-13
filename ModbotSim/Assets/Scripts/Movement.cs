@@ -95,12 +95,7 @@ public class Movement : MonoBehaviour {
         bool groundedL = fl.GetGroundHit(out hit);
         if (groundedL)
             travelL = (-fl.transform.InverseTransformPoint(hit.point).y - fl.radius) / fl.suspensionDistance;
-
-<<<<<<< HEAD
-
-
-	}
-=======
+		
         bool groundedR = fr.GetGroundHit(out hit);
         if (groundedR)
             travelR = (-fr.transform.InverseTransformPoint(hit.point).y - fr.radius) / fr.suspensionDistance;
@@ -204,7 +199,6 @@ public class Movement : MonoBehaviour {
 
 
     }
->>>>>>> 2fc66ecc298e40669e0b912287d9b92e6667045d
 
 	//Update is called once per frame and sends information using UDPSend
 //	void Update()
