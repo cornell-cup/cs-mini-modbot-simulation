@@ -51,7 +51,7 @@ public class Movement : MonoBehaviour {
 
     public float studder = 0;
 	private float startTime = 0;
-	private Boolean start = false;
+	private bool start = false;
 
     // <summary>
     // Use this for initialization
@@ -88,7 +88,7 @@ public class Movement : MonoBehaviour {
     // Update is called once per frame
     // </summary>
     void FixedUpdate() {
-		if (Time.realtimeSinceStartup - startTime > 10.0f) {
+		if (Time.realtimeSinceStartup - startTime > 4.5f) {
 			print ("counting down");
 			start = true;
 		}
