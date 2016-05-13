@@ -2,17 +2,18 @@
 using System.Collections;
 
 public class Place : MonoBehaviour {
-    public int carPlace;
-    public int index;
-    public int numLaps;
+    public int carPlace=0;
+    public int index=0;
+    public int numNodes=0;
+    public int numLaps=0;
     public string[] arr = new string[2];
 	// Use this for initialization
 	void Start () {
 	
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update() {
         GameObject[] gos;
         gos = GameObject.FindGameObjectsWithTag("place");
         GameObject closest = null;
@@ -29,6 +30,16 @@ public class Place : MonoBehaviour {
             }
         }
         arr = closest.name.Split(' ');
-        index = int.Parse(arr[1]);
+        if (int.Parse(arr[1]) - index < 40 && index != int.Parse(arr[1])) { 
+            numNodes++;
+            index = int.Parse(arr[1]);
+        }
+            
+
+        if (numNodes > 40 && index > 80)
+        {
+            numLaps++;
+            numNodes = 0;
+        }
     }
 }
