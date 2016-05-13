@@ -35,47 +35,65 @@ public class ObstacleAvoid : MonoBehaviour {
 		RaycastHit hitmiddle; 
 		RaycastHit hitright; 
 		Vector3 leftBeam = 10 * transform.TransformDirection (-0.3f, 0, 0.5f);
-		Vector3 rightBeam = 10 * transform.TransformDirection (0.3f, 0, 0.5f); 
-		//Debug.DrawRay (frontposition, leftBeam, Color.red, 0.03f);
-		//Debug.DrawRay (frontposition, 10 * transform.forward, Color.green, 0.03f);	
-		//Debug.DrawRay (frontposition, rightBeam, Color.blue, 0.03f); 
-		if (Physics.SphereCast (frontposition, carRadiusApprox, transform.forward, out hitmiddle, col.radius)) {
-			if (isObstacle(hitmiddle.collider.gameObject.tag)) {
-				centerObs = true; 
-				CenterDis = hitmiddle.distance;
-			} else {
-				centerObs = false; 
-				CenterDis = 0;
-			}
-		} else {
-			centerObs = false;
-			CenterDis = 0;
-		}
-		if (Physics.SphereCast (frontposition, carRadiusApprox, leftBeam, out hitleft, col.radius)) {
-            if (isObstacle(hitleft.collider.gameObject.tag)) {
-				leftObs = true; 
-				LeftDis = hitleft.distance;
-			} else {
-				leftObs = false; 
-				LeftDis = 0;
-			}
-		} else {
-			leftObs = false; 
-			LeftDis = 0;
-		}
-		if (Physics.SphereCast (frontposition, carRadiusApprox, rightBeam, out hitright, col.radius)) {
-            if (isObstacle(hitright.collider.gameObject.tag)) {
-				rightObs = true; 
-				RightDis = hitright.distance;
-			} else {
-				rightObs = false; 
-				RightDis = 0;
-			}
-		} else {
-			rightObs = false; 
-			RightDis = 0;
-		}
-	}
+		Vector3 rightBeam = 10 * transform.TransformDirection (0.3f, 0, 0.5f);
+        //Debug.DrawRay (frontposition, leftBeam, Color.red, 0.03f);
+        //Debug.DrawRay (frontposition, 10 * transform.forward, Color.green, 0.03f);	
+        //Debug.DrawRay(frontposition, rightBeam, Color.blue, 0.03f);
+        if (Physics.SphereCast(frontposition, carRadiusApprox, transform.forward, out hitmiddle, col.radius))
+        {
+            if (isObstacle(hitmiddle.collider.gameObject.tag))
+            {
+                centerObs = true;
+                CenterDis = hitmiddle.distance;
+            }
+            else
+            {
+                centerObs = false;
+                CenterDis = 0;
+            }
+        }
+        else
+        {
+            centerObs = false;
+            CenterDis = 0;
+        }
+        if (Physics.SphereCast(frontposition, carRadiusApprox, leftBeam, out hitleft, col.radius))
+        {
+            if (isObstacle(hitleft.collider.gameObject.tag))
+            {
+                leftObs = true;
+                LeftDis = hitleft.distance;
+            }
+            else
+            {
+                leftObs = false;
+                LeftDis = 0;
+            }
+        }
+        else
+        {
+            leftObs = false;
+            LeftDis = 0;
+        }
+        if (Physics.SphereCast(frontposition, carRadiusApprox, rightBeam, out hitright, col.radius))
+        {
+            if (isObstacle(hitright.collider.gameObject.tag))
+            {
+                rightObs = true;
+                RightDis = hitright.distance;
+            }
+            else
+            {
+                rightObs = false;
+                RightDis = 0;
+            }
+        }
+        else
+        {
+            rightObs = false;
+            RightDis = 0;
+        }
+    }
 
 	private bool isObstacle(string gameObjectTag) {
         Debug.Log("Obstacle tag: " + gameObjectTag);
