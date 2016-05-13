@@ -6,10 +6,6 @@ public class Banana : MonoBehaviour {
 	public bool fired = false;
 	private bool isColliderEnabled = false;
 
-	// Use this for initialization
-	void Start () {		
-	}
-
 	public void Fire() {
 		fired = true;
 		isColliderEnabled = true;
@@ -23,7 +19,7 @@ public class Banana : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown ("e") && !fired) {
+		if (Input.GetKeyDown(KeyCode.JoystickButton1) && !fired) {
 			Fire ();
 		}
 

@@ -29,7 +29,7 @@ namespace UnityStandardAssets.Utility
 			// Early out if we don't have a target
 			if (!target)
 				return;
-
+            /*
 			// Calculate the current rotation angles
 			var wantedRotationAngle = target.eulerAngles.y;
 			var wantedHeight = target.position.y + height;
@@ -55,7 +55,16 @@ namespace UnityStandardAssets.Utility
 			transform.position = new Vector3(transform.position.x ,currentHeight , transform.position.z);
 
 			// Always look at the target
-			transform.LookAt(target);
-		}
+			transform.LookAt(target);*/
+
+            Vector3 velocity = Vector3.zero;
+            Vector3 forward = target.transform.forward * 10.0f;
+            forward.Set(forward.x, forward.y - height, forward.z);
+            Vector3 needPos = target.transform.position - forward;
+            transform.position = Vector3.SmoothDamp(transform.position, needPos,
+                                                    ref velocity, 0.05f);
+            transform.LookAt(target.transform);
+            transform.rotation = target.transform.rotation;
+        }
 	}
 }

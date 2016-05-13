@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-public class VisionData
+public class VisionData : MonoBehaviour
 {
 	public float time;
 	public float positionX;
@@ -16,6 +16,7 @@ public class VisionData
 	public float velocityRot;
 	public float velocityx;
 	public float velocityy;
+    public bool used;
 
 	public VisionData ()
 	{

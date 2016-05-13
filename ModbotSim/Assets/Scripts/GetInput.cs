@@ -73,7 +73,17 @@ public class GetInput : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	}
+        if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.JoystickButton0))
+        {
+            Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        }
+    }
+
+    public bool isFiring()
+    {
+        //return true;
+        return Input.GetKeyDown(KeyCode.JoystickButton1);
+    }
 
 	public float getTurnInput(){
 		Vector3 Udp = Vector3.zero;
@@ -102,12 +112,13 @@ public class GetInput : MonoBehaviour {
 		return 0;
 	}
 
-	public int getForwardInput(){
+	public float getForwardInput(){
 		Vector3 Udp = Vector3.zero;
-		int forwardInput;
+		int forwardInput = 0;
 		if (!usingPhone)
 		{
-			if (Input.GetAxis(vertical) > 0)
+            
+		/*	if (Input.GetAxis(vertical) > 0)
 				forwardInput = 1;
 			else if (Input.GetAxis(vertical) < 0)
 				forwardInput = -1;
@@ -118,8 +129,14 @@ public class GetInput : MonoBehaviour {
 				return -1;
 			} 
 			else
-				forwardInput = 0;
-		}
+				forwardInput = 0;*/
+                float temp = Input.GetAxis(vertical);
+            if (Input.GetKey(KeyCode.JoystickButton2))
+            {
+                temp *= -1;
+            }
+            return temp;
+        }
 		else
 		{
 			float z = Udp.z;

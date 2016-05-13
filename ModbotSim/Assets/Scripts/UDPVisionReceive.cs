@@ -33,11 +33,16 @@ public class UDPVisionReceive : MonoBehaviour
 
     public void Start()
     {
-		for(int i = 0; i< 4; i++)
-			dataObjs[i] = new VisionData();
-		
-        localIP = "127.0.0.1";
-        remoteIP = "127.0.0.1";
+        GameObject[] o = GameObject.FindGameObjectsWithTag("kart");
+        for(int i=0; i<1; i++)
+        {
+            Debug.Log(o[i].name);
+            dataObjs[i] = o[i].GetComponent<VisionData>();
+
+        }
+
+        localIP = "192.168.4.23";
+        remoteIP = "192.168.4.209";
         port = 607;
 
         unityEP = new IPEndPoint(IPAddress.Parse(localIP), port);
@@ -75,24 +80,43 @@ public class UDPVisionReceive : MonoBehaviour
     public static void decodeDatagram()
     {
         byte[] data = packet;
+        if (data == null)
+            return;
+        
+        int id = BitConverter.ToInt32(data, 0)-1;
+        if (id >= 0)
+        {
+            dataObjs[id].used = false;
+            dataObjs[id].time = (float)BitConverter.ToDouble(data, 4);
+            dataObjs[id].positionX = (float)BitConverter.ToDouble(data, 12);
+            dataObjs[id].positionY = (float)BitConverter.ToDouble(data, 20);
+           
 
-        int id = BitConverter.ToInt32(data, 0);
-		dataObjs[id].time = (float)BitConverter.ToDouble(data, 4);
-		dataObjs[id].positionX = (float)BitConverter.ToDouble(data, 12);
-		dataObjs[id].positionY = (float)BitConverter.ToDouble(data, 20);
+            dataObjs[id].orientation = (float)BitConverter.ToDouble(data, 36);
+            dataObjs[id].velocityRot = (float)BitConverter.ToDouble(data, 44);
+            dataObjs[id].velocityx = (float)BitConverter.ToDouble(data, 52);
+            dataObjs[id].velocityy = (float)BitConverter.ToDouble(data, 60);
+        }
+       // Debug.Log("id: " + id);
+        /*
+        //int id = BitConverter.ToInt32(data, 0);
+        double time = BitConverter.ToDouble(data, 4);
+        double positionX = BitConverter.ToDouble(data, 12);
+        double positionY = BitConverter.ToDouble(data, 20);
         int innerColor = BitConverter.ToInt32(data, 28);
         int outerColor = BitConverter.ToInt32(data, 32);
 
-		dataObjs[id].orientation = (float)BitConverter.ToDouble(data, 36);
-		dataObjs[id].velocityRot = (float)BitConverter.ToDouble(data, 44);
-		dataObjs[id].velocityx = (float)BitConverter.ToDouble(data, 52);
-		dataObjs[id].velocityy = (float)BitConverter.ToDouble(data, 60);
+        double orientation = BitConverter.ToDouble(data, 36);
+        double velocityRot = BitConverter.ToDouble(data, 44);
+        double velocityx = BitConverter.ToDouble(data, 52);
+        double velocityy = BitConverter.ToDouble(data, 60);
 
-//        string msg = "id: " + id + " time: " + time + " x: " + x + " y: " + y +
-//                     " innerColor: " + innerColor + " outerColor: " + outerColor +
-//                     " orientation: " + orientation + " velocityRot: " + velocityRot +
-//                     " velocityx: " + velocityx + " velocityy: " + velocityy;
-//        Debug.Log(msg);
+        string msg = "id: " + id + " time: " + time + " x: " + positionX + " y: " + positionY +
+                     " innerColor: " + innerColor + " outerColor: " + outerColor +
+                     " orientation: " + orientation + " velocityRot: " + velocityRot +
+                     " velocityx: " + velocityx + " velocityy: " + velocityy;
+        Debug.Log(msg);
+        */
     }
 
     public void OnApplicationQuit()

@@ -19,8 +19,34 @@ public class CarController : CarControllerInt {
 	private bool justSwitchedWaypoint = false;
 
 	public Tuple<float, float> speedAndTurn(GameObject car) {
-		//Adjust steer accordingly if obstacles are present
-		float speed = 0; 
+        PathPlanningKart kart = car.GetComponent<PathPlanningKart>();
+
+        //Set current position and check if car needs to move backwards
+        if (kart.iterationOffset == 0) {
+            kart.currentPosition = car.transform.position;
+        }
+
+        if (kart.isStuck && kart.isStuckOffset < 60)
+        {
+            kart.isStuckOffset += 1;
+            return new Tuple<float, float>(-1.0f, 0);
+        } else
+        {
+            kart.isStuck = false;
+            kart.isStuckOffset = 0;
+        }
+
+        kart.iterationOffset = (kart.iterationOffset + 1) % 100;
+
+        if (kart.iterationOffset == 99){
+            if (Vector3.Distance(kart.currentPosition, car.transform.position) <= 1.5f){
+                kart.isStuck = true;
+                return new Tuple<float, float>(-1.0f, 0);
+            }
+        }
+
+        //Adjust steer accordingly if obstacles are present
+        float speed = 0; 
 		float steer = 0;
 
 			
@@ -29,14 +55,10 @@ public class CarController : CarControllerInt {
 		Vector3 forward = car.transform.forward;
 		float carAngle = Mathf.Atan (forward.z / forward.x);
 
-
-		//Determine desired angle of car steer
-		PathPlanningKart kart = car.GetComponent<PathPlanningKart> ();
-
 		if (kart.dynamicReplan && kart.dynamicWayPoints != null && kart.dynamicWayPoints.Count > 0) {
-			kart.currentWayPoints = kart.dynamicWayPoints;
-			kart.nextWayPoints = null;
-			kart.dynamicReplan = false;
+            kart.nextWayPoints = kart.dynamicWayPoints;
+            kart.dynamicReplan = false;
+            cleanUpPath(kart);
 		}
 
 		if (kart.nextWayPoints != null && kart.nextWayPoints.Count == 0) {
@@ -44,11 +66,7 @@ public class CarController : CarControllerInt {
 		}
 	
 		if (kart.current_waypoint >= kart.currentWayPoints.Count && kart.nextWayPoints != null) {
-			kart.currentWayPoints = kart.nextWayPoints;
-			kart.nextWayPoints = null;
-			kart.current_waypoint = 0;
-		} else if (kart.current_waypoint >= kart.currentWayPoints.Count) {
-			kart.current_waypoint = kart.currentWayPoints.Count - 1;
+            cleanUpPath(kart);
 		}
 
 		Vector3 currentWayPoint = kart.currentWayPoints[kart.current_waypoint];
@@ -74,28 +92,31 @@ public class CarController : CarControllerInt {
 
 		//If within small distance away to the current waypoint, move onto the next waypoint
 		if (desiredDirection.magnitude < 5) {
+			lock (PathPlanningDataStructures.globalLock) {
+				if (kart.usesWaypoints [kart.current_waypoint]) {
+					PathPlanningDataStructures.nodeToCount[kart.currentWayPoints[kart.current_waypoint]] -= 1;
+					kart.usesWaypoints [kart.current_waypoint] = false;
+				}
+			}
 			kart.current_waypoint = kart.current_waypoint + 1;
 			justSwitchedWaypoint = true;
 			if (kart.current_waypoint >= kart.currentWayPoints.Count && kart.nextWayPoints != null) {
-				//Current waypoints have been consumed; Move onto next set of waypoints
-				kart.currentWayPoints = kart.nextWayPoints;
-				kart.nextWayPoints = null;
-				kart.current_waypoint = 0;
+                cleanUpPath(kart);
 			}
 		} else {
 			justSwitchedWaypoint = false;
 		}
 		if (kart.current_waypoint + 1 < kart.currentWayPoints.Count) {
-			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint]) > 10) {
+			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint]) > 15) {
 				kart.dynamicReplan = true;
 			}
 		} else {
-			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint - 1]) > 10) {
+			if (Vector3.Distance (kart.transform.position, kart.currentWayPoints [kart.current_waypoint - 1]) > 15) {
 				kart.dynamicReplan = true;
 			}
 		}
 			
-		Vector3 inversePoint = kart.transform.InverseTransformPoint (kart.currentThreadJob.destinationNode.position);
+		Vector3 inversePoint = kart.transform.InverseTransformPoint (kart.currentWayPoints[kart.currentWayPoints.Count - 1]);
 		if (inversePoint.z < 0) {
 			Debug.Log ("Going Backwards");
 			if (inversePoint.x > 0) {
@@ -115,10 +136,31 @@ public class CarController : CarControllerInt {
 		}
 
 
-		speed = Mathf.Sqrt (1.05f - (steer * steer));
+		speed = Mathf.Sqrt (1.15f - (steer * steer));
 
 		return new Tuple<float, float> (speed, steer);
 	}
+
+	private void freeUpNodes(PathPlanningKart kart) {
+		lock(PathPlanningDataStructures.globalLock) {
+			for (int i = 0; i < kart.currentWayPoints.Count; i++) {
+				if (kart.usesWaypoints[i]) {
+					PathPlanningDataStructures.nodeToCount[kart.currentWayPoints[i]] -= 1;
+				}
+			}
+		}
+	}
+
+    private void cleanUpPath(PathPlanningKart kart) {
+        freeUpNodes(kart);
+        kart.currentWayPoints = kart.nextWayPoints;
+        kart.usesWaypoints = new bool[kart.currentWayPoints.Count];
+        for (int i = 0; i < kart.usesWaypoints.Length; i++) {
+            kart.usesWaypoints[i] = true;
+        }
+        kart.nextWayPoints = null;
+        kart.current_waypoint = 0;
+    }
 }
 
 public class Tuple<T1, T2> {
