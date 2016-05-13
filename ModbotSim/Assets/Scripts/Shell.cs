@@ -9,9 +9,11 @@ public class Shell : MonoBehaviour {
 	private float time = 0;
 	private bool isColliderEnabled = false;
 	private bool itemCollide = false;
+    private GetInput input;
 
 	// Use this for initialization
-	void Start () {		
+	void Start () {
+        input = target.GetComponent<GetInput>();
 	}
 
 	public void Fire() {
@@ -29,7 +31,7 @@ public class Shell : MonoBehaviour {
 		
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown ("e")) {
+		if (Input.GetKeyDown(KeyCode.JoystickButton1)) {
 			Fire ();
 		}
 
@@ -75,7 +77,6 @@ public class Shell : MonoBehaviour {
 				Vector3 reflectedVelocity = Vector3.Reflect(oldVelocity, contact.normal);        
 
 				// assign the reflected velocity back to the rigidbody
-				print(reflectedVelocity);
 				GetComponent<Rigidbody>().velocity = reflectedVelocity;
 			}
 		}

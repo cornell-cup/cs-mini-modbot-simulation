@@ -79,6 +79,12 @@ public class GetInput : MonoBehaviour {
         }
     }
 
+    public bool isFiring()
+    {
+        //return true;
+        return Input.GetKeyDown(KeyCode.JoystickButton1);
+    }
+
 	public float getTurnInput(){
 		Vector3 Udp = Vector3.zero;
 		if (!usingPhone) {

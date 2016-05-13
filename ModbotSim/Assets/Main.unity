@@ -15820,6 +15820,10 @@ MonoBehaviour:
   nodeInProgress: {x: 0, y: 0, z: 0}
   dynamicReplan: 0
   canUseItem: 0
+  iterationOffset: 0
+  currentPosition: {x: 0, y: 0, z: 0}
+  isStuck: 0
+  isStuckOffset: 0
 --- !u!1 &285800235
 GameObject:
   m_ObjectHideFlags: 0
@@ -17032,7 +17036,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 142922, guid: d6d720039495b44988c785f3b45b6ce9, type: 2}
       propertyPath: m_TagString
-      value: Boost
+      value: Banana
       objectReference: {fileID: 0}
     - target: {fileID: 142922, guid: d6d720039495b44988c785f3b45b6ce9, type: 2}
       propertyPath: m_Name
@@ -22193,7 +22197,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 142922, guid: d6d720039495b44988c785f3b45b6ce9, type: 2}
       propertyPath: m_TagString
-      value: Banana
+      value: Green Shell
       objectReference: {fileID: 0}
     - target: {fileID: 142922, guid: d6d720039495b44988c785f3b45b6ce9, type: 2}
       propertyPath: m_Name
@@ -26917,6 +26921,10 @@ MonoBehaviour:
   nodeInProgress: {x: 0, y: 0, z: 0}
   dynamicReplan: 0
   canUseItem: 0
+  iterationOffset: 0
+  currentPosition: {x: 0, y: 0, z: 0}
+  isStuck: 0
+  isStuckOffset: 0
 --- !u!114 &475428643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27914,6 +27922,10 @@ MonoBehaviour:
   nodeInProgress: {x: 0, y: 0, z: 0}
   dynamicReplan: 0
   canUseItem: 0
+  iterationOffset: 0
+  currentPosition: {x: 0, y: 0, z: 0}
+  isStuck: 0
+  isStuckOffset: 0
 --- !u!114 &485339484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48663,6 +48675,10 @@ MonoBehaviour:
   nodeInProgress: {x: 0, y: 0, z: 0}
   dynamicReplan: 0
   canUseItem: 0
+  iterationOffset: 0
+  currentPosition: {x: 0, y: 0, z: 0}
+  isStuck: 0
+  isStuckOffset: 0
 --- !u!114 &826653559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118176,6 +118192,10 @@ MonoBehaviour:
   nodeInProgress: {x: 0, y: 0, z: 0}
   dynamicReplan: 0
   canUseItem: 0
+  iterationOffset: 0
+  currentPosition: {x: 0, y: 0, z: 0}
+  isStuck: 0
+  isStuckOffset: 0
 --- !u!1 &2019231208
 GameObject:
   m_ObjectHideFlags: 0

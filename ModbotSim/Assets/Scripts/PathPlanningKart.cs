@@ -35,6 +35,14 @@ public class PathPlanningKart : MonoBehaviour
 	public Stopwatch stopWatch = new Stopwatch();
 	//indicates whether the kart is allowed to use the item yet
 	public bool canUseItem = false;
+    //iteration/timestep counter
+    public int iterationOffset = 0;
+    //current position of the car
+    public Vector3 currentPosition;
+
+    public bool isStuck = false;
+    public int isStuckOffset = 0;
+
 
 	// <summary>
 	// Performs path planning for the first path segment by utilizing a DynamicPathThreadJob
@@ -118,7 +126,6 @@ public class PathPlanningKart : MonoBehaviour
 				return;
 			}
 			if (currentPowerUp.powerUp == "Banana") {
-                UnityEngine.Debug.Log("GOT A BANANA");
 				Banana currentBanana = currentPowerUp.itemObject.GetComponent<Banana> ();
 				if (currentBanana.fired == false) {
 					//Iterate through all existing karts and check if another kart is behind
@@ -137,7 +144,6 @@ public class PathPlanningKart : MonoBehaviour
 					}
 				}
 			} else if (currentPowerUp.powerUp == "Green Shell") {
-                UnityEngine.Debug.Log("GOT A SHELL");
                 Shell currentShell = currentPowerUp.itemObject.GetComponent<Shell> ();
 				if (currentShell.fired == false) {
 					//Iterate through all existing karts and check if another kart is in

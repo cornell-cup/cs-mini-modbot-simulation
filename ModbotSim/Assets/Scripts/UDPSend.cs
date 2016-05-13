@@ -85,7 +85,6 @@ public class UDPSend : MonoBehaviour
         float speed = sd.speed;
         int direction = sd.forward;
         int orientation = (int)sd.orien;
-        Debug.Log("speed: " + speed + "  direction: " + direction + "  orientation: " + orientation);
         //b.Add(BitConverter.GetBytes(magnitudex));
         // b.Add(BitConverter.GetBytes(magnitudey));
         b.Add(BitConverter.GetBytes(orientation));

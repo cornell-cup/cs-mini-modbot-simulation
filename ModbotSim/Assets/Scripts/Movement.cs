@@ -86,7 +86,7 @@ public class Movement : MonoBehaviour {
     // </summary>
     void FixedUpdate() {
         //Debug.Log("Delta Time: " + Time.deltaTime);
-        Debug.Log("move: " + MAX_SPEED);
+        Debug.Log("boost: " + boost);
         WheelHit hit;
         float travelL = 1.0f;
         float travelR = 1.0f;

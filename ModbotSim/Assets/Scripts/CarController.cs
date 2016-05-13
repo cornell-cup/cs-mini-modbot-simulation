@@ -19,8 +19,34 @@ public class CarController : CarControllerInt {
 	private bool justSwitchedWaypoint = false;
 
 	public Tuple<float, float> speedAndTurn(GameObject car) {
-		//Adjust steer accordingly if obstacles are present
-		float speed = 0; 
+        PathPlanningKart kart = car.GetComponent<PathPlanningKart>();
+
+        //Set current position and check if car needs to move backwards
+        if (kart.iterationOffset == 0) {
+            kart.currentPosition = car.transform.position;
+        }
+
+        if (kart.isStuck && kart.isStuckOffset < 60)
+        {
+            kart.isStuckOffset += 1;
+            return new Tuple<float, float>(-1.0f, 0);
+        } else
+        {
+            kart.isStuck = false;
+            kart.isStuckOffset = 0;
+        }
+
+        kart.iterationOffset = (kart.iterationOffset + 1) % 100;
+
+        if (kart.iterationOffset == 99){
+            if (Vector3.Distance(kart.currentPosition, car.transform.position) <= 1.5f){
+                kart.isStuck = true;
+                return new Tuple<float, float>(-1.0f, 0);
+            }
+        }
+
+        //Adjust steer accordingly if obstacles are present
+        float speed = 0; 
 		float steer = 0;
 
 			
@@ -28,10 +54,6 @@ public class CarController : CarControllerInt {
 		//Determine current angle of car steer
 		Vector3 forward = car.transform.forward;
 		float carAngle = Mathf.Atan (forward.z / forward.x);
-
-
-		//Determine desired angle of car steer
-		PathPlanningKart kart = car.GetComponent<PathPlanningKart> ();
 
 		if (kart.dynamicReplan && kart.dynamicWayPoints != null && kart.dynamicWayPoints.Count > 0) {
             kart.nextWayPoints = kart.dynamicWayPoints;
@@ -114,7 +136,7 @@ public class CarController : CarControllerInt {
 		}
 
 
-		speed = Mathf.Sqrt (1.05f - (steer * steer));
+		speed = Mathf.Sqrt (1.15f - (steer * steer));
 
 		return new Tuple<float, float> (speed, steer);
 	}
