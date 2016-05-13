@@ -97,7 +97,7 @@ public class UDPVisionReceive : MonoBehaviour
             dataObjs[id].velocityx = (float)BitConverter.ToDouble(data, 52);
             dataObjs[id].velocityy = (float)BitConverter.ToDouble(data, 60);
         }
-        Debug.Log("id: " + id);
+       // Debug.Log("id: " + id);
         /*
         //int id = BitConverter.ToInt32(data, 0);
         double time = BitConverter.ToDouble(data, 4);

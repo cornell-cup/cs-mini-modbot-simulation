@@ -70,7 +70,9 @@ public class GenerateGraph {
 		//create list of item nodes
 		List<Node> itemNodes = new List<Node>();
 		foreach (GameObject item in ItemsAI.itemList) {
-			itemNodes.Add(new Node(ItemsAI.objectToPosition[item]));
+			Node currentItemNode = new Node (ItemsAI.objectToPosition [item]);
+			itemNodes.Add(currentItemNode);
+			PathPlanningDataStructures.nodeToCount[currentItemNode.position] = 0;
 		}
 
 		//set neighbors of each node
@@ -114,6 +116,7 @@ public class GenerateGraph {
 				addNodeNeighbor(sideToNode, ref currentNode, currentCentroid, currentCentroid, "middle");
 			}
 			nodes.Add(currentNode);
+			PathPlanningDataStructures.nodeToCount[currentNode.position] = 0;
 		}
 		//set end node of the cars
 		endNode = getClosestNode (GameObject.Find("FinishLine").transform.position);

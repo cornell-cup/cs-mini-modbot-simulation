@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Movement : MonoBehaviour {
 	//whether or not this movement script is attached to an AI or player controlled car
-	public bool isAI = false;
-
+	public bool isAI;
+    public int kartNum;
 	//basic movement variables that both an AI car and player controlled car utilizes
 	private float turnInput;
 	private float forwardInput;
@@ -14,7 +15,7 @@ public class Movement : MonoBehaviour {
 
     //Player controlled car movement variables
     float motorForce=4000;
-	float turnForce=25;
+	float turnForce=45;
 	float brakeForce=8000;
 	WheelCollider fr;
 	WheelCollider fl;
@@ -37,50 +38,167 @@ public class Movement : MonoBehaviour {
 	[System.NonSerialized]
 	public static float IDLE_ACCEL = ACCEL / 10;
 	private CarController carController = new CarController();
-	private Vector3 rotationVector;
+
+    public float getWheelOrien()
+    {
+        return turnInput * turnForce;
+    }
+
+    private Vector3 rotationVector;
 	private Vector3 direction = Vector3.forward;
 	private bool goingBackwards = false;
+    PathPlanningKart kartp;
 
-	// <summary>
-	// Use this for initialization
-	// </summary>
-	void Start () {
-		
+    public float studder = 0;
+
+    // <summary>
+    // Use this for initialization
+    // </summary>
+    void Start () {
 		input = GetComponent<GetInput> ();
-		fr = GameObject.FindGameObjectWithTag ("wcfr").GetComponent<WheelCollider> ();
-		fl = GameObject.FindGameObjectWithTag ("wcfl").GetComponent<WheelCollider> ();
-		br = GameObject.FindGameObjectWithTag ("wcbr").GetComponent<WheelCollider> ();
-		bl = GameObject.FindGameObjectWithTag ("wcbl").GetComponent<WheelCollider> ();
-		fr.enabled = true;
-		fl.enabled = true;
-		br.enabled = true;
-		bl.enabled = true;
-		rb = GameObject.FindGameObjectWithTag ("kart").GetComponent<Rigidbody> ();
-		boost = 1f;
+        //GameObject o = GameObject.Find("Kart " + kartNum);
+        Debug.Log("here");
+        //Debug.Log("rrr"+o.transform);
+		rb = GetComponent<Rigidbody> ();
+        Debug.Log("rrr" + rb);
+        boost = 1f;
+        fr = GameObject.Find("wcfr "+kartNum).GetComponent<WheelCollider>();
+        fl = GameObject.Find("wcfl " + kartNum).GetComponent<WheelCollider>();
+        br = GameObject.Find("wcbr " + kartNum).GetComponent<WheelCollider>();
+        bl = GameObject.Find("wcbl " + kartNum).GetComponent<WheelCollider>();
+        fr.enabled = true;
+        fl.enabled = true;
+        br.enabled = true;
+        bl.enabled = true;
 
-		if (isAI) {
+        if (isAI) {
 			ItemsAI.updateItems ();
-			PathPlanningKart k = GetComponent<PathPlanningKart> ();
-			k.PathPlanInitialSegment ();
-			MAX_SPEED = 40f / 4.5f;
-		}
+			PathPlanningDataStructures.initializePathPlanning ();
+			kartp = GetComponentInChildren<PathPlanningKart> ();
+			kartp.PathPlanInitialSegment ();
+            MAX_SPEED *= .8f;
+		} 
 
 	}
 
-	// <summary>
-	// Update is called once per frame
-	// </summary>
-	void FixedUpdate () {
-		if (isAI)
-		{
-			UpdateAI ();
-		}
-		else {
-			UpdatePlayer ();
-		}
+    // <summary>
+    // Update is called once per frame
+    // </summary>
+    void FixedUpdate() {
+        //Debug.Log("Delta Time: " + Time.deltaTime);
+        Debug.Log("move: " + MAX_SPEED);
+        WheelHit hit;
+        float travelL = 1.0f;
+        float travelR = 1.0f;
+        float AntiRoll = 5000;
+
+        bool groundedL = fl.GetGroundHit(out hit);
+        if (groundedL)
+            travelL = (-fl.transform.InverseTransformPoint(hit.point).y - fl.radius) / fl.suspensionDistance;
+
+        bool groundedR = fr.GetGroundHit(out hit);
+        if (groundedR)
+            travelR = (-fr.transform.InverseTransformPoint(hit.point).y - fr.radius) / fr.suspensionDistance;
+
+        var antiRollForce = (travelL - travelR) * AntiRoll;
+
+        if (groundedL)
+            rb.AddForceAtPosition(fl.transform.up * -antiRollForce,
+                   fl.transform.position);
+        if (groundedR)
+            rb.AddForceAtPosition(fr.transform.up * antiRollForce,
+                   fr.transform.position);
+
+        bool bgroundedL = bl.GetGroundHit(out hit);
+        if (bgroundedL)
+            travelL = (-bl.transform.InverseTransformPoint(hit.point).y - bl.radius) / bl.suspensionDistance;
+
+        bool bgroundedR = br.GetGroundHit(out hit);
+        if (bgroundedR)
+            travelR = (-br.transform.InverseTransformPoint(hit.point).y - br.radius) / br.suspensionDistance;
 
 
-	}
+        if (bgroundedL)
+            rb.AddForceAtPosition(bl.transform.up * -antiRollForce,
+                   bl.transform.position);
+        if (bgroundedR)
+            rb.AddForceAtPosition(br.transform.up * antiRollForce,
+                   br.transform.position);
+        if (isAI){
+            //PathPlanningKart k = GetComponentInChildren<PathPlanningKart>();
+            kartp.PathPlanNextSegment();
+            Tuple<float, float> t = carController.speedAndTurn(this.gameObject);
+            turnInput = (float)t.Second;
+            forwardInput = (float)t.First;
+            //Debug.Log("Forward Input:" + forwardInput + " Turn Input:" + turnInput);
+            ItemsAI.updateItems();
+            kartp.UseItem();
+        } else {
+            turnInput = input.getTurnInput();
+            forwardInput = input.getForwardInput();
+            //Debug.Log("Forward Input:" + forwardInput + " Turn Input:" + turnInput);
+        }
+
+        brakeInput = input.getBraking();
+        if (rb.velocity.magnitude < MAX_SPEED && forwardInput != 0)
+        {
+            //print("Y" + rb.velocity.magnitude + " X:" + forwardInput + " Z:" + boost);
+
+            br.motorTorque = forwardInput * motorForce * boost;
+            bl.motorTorque = forwardInput * motorForce * boost;
+
+        }
+        else
+        {
+            br.motorTorque = 0;
+            bl.motorTorque = 0;
+
+        }
+        //		} else {
+        //			br.brakeTorque = -1*forwardInput * brakeForce;
+        //			bl.brakeTorque = -1*forwardInput * brakeForce;
+        //			fr.brakeTorque = -1*forwardInput * brakeForce;
+        //			fl.brakeTorque = -1*forwardInput * brakeForce;
+        //		}
+        //		if (brakeInput > 0) {
+        //			br.motorTorque = 0;
+        //			bl.motorTorque = 0;
+        //		}
+
+        fr.steerAngle = turnInput * turnForce;
+        fl.steerAngle = turnInput * turnForce;
+
+        br.brakeTorque = brakeInput * brakeForce * boost;
+        bl.brakeTorque = brakeInput * brakeForce * boost;
+        fr.brakeTorque = brakeInput * brakeForce * boost;
+        fl.brakeTorque = brakeInput * brakeForce * boost;
+
+        br.brakeTorque += studder * brakeForce;
+        bl.brakeTorque += studder * brakeForce;
+        fr.brakeTorque += studder * brakeForce;
+        fl.brakeTorque += studder * brakeForce;
+
+
+        if (writePositionsToFile)
+            WriteToRepo();
+
+        Quaternion temp = transform.rotation;
+        Vector3 tt = temp.eulerAngles;
+        if (tt.x > 300 && tt.x < 357)
+            tt.x = 359.5f;
+        if (tt.x < 50 && tt.x > .5f)
+            tt.x = .5f;
+
+        if (tt.z > 300 && tt.z < 359.5f)
+            tt.z = 359.5f;
+        if (tt.z < 50 && tt.z > .5f)
+            tt.z = .5f;
+        tt.Set(tt.x, tt.y, tt.z);
+        temp.eulerAngles = tt;
+        transform.rotation = temp;
+
+
+    }
 
 	public void UpdateAI() {
 		PathPlanningKart k = GetComponent<PathPlanningKart>();
@@ -173,6 +291,7 @@ public class Movement : MonoBehaviour {
 
     public bool isForward()
     {
+        //Debug.Log("YYY" + rb.velocity);
         Vector3 localVel = transform.InverseTransformDirection(rb.velocity);
         if (localVel.z > 0)
             return true;
@@ -188,78 +307,7 @@ public class Movement : MonoBehaviour {
 	// Updates a player controlled car's position and movement state
 	// </summary>
 	public void UpdatePlayer() {
-        //Debug.Log("Delta Time: " + Time.deltaTime);
-        WheelHit hit;
-        float travelL = 1.0f;
-        float travelR = 1.0f;
-        float AntiRoll = 5000;
 
-        bool groundedL = fl.GetGroundHit(out hit);
-        if (groundedL)
-            travelL = (-fl.transform.InverseTransformPoint(hit.point).y - fl.radius) / fl.suspensionDistance;
-
-        bool groundedR = fr.GetGroundHit(out hit);
-        if (groundedR)
-            travelR = (-fr.transform.InverseTransformPoint(hit.point).y - fr.radius) / fr.suspensionDistance;
-
-        var antiRollForce = (travelL - travelR) * AntiRoll;
-
-        if (groundedL)
-            rb.AddForceAtPosition(fl.transform.up * -antiRollForce,
-                   fl.transform.position);
-        if (groundedR)
-            rb.AddForceAtPosition(fr.transform.up * antiRollForce,
-                   fr.transform.position);
-
-        bool bgroundedL = bl.GetGroundHit(out hit);
-        if (bgroundedL)
-            travelL = (-bl.transform.InverseTransformPoint(hit.point).y - bl.radius) / bl.suspensionDistance;
-
-        bool bgroundedR = br.GetGroundHit(out hit);
-        if (bgroundedR)
-            travelR = (-br.transform.InverseTransformPoint(hit.point).y - br.radius) / br.suspensionDistance;
-
-
-        if (bgroundedL)
-            rb.AddForceAtPosition(bl.transform.up * -antiRollForce,
-                   bl.transform.position);
-        if (bgroundedR)
-            rb.AddForceAtPosition(br.transform.up * antiRollForce,
-                   br.transform.position);
-
-        turnInput = input.getTurnInput ();
-		forwardInput = input.getForwardInput ();
-		brakeInput = input.getBraking ();
-		if (rb.velocity.magnitude < MAX_SPEED && forwardInput!=0) {
-			print ("Y" + rb.velocity.magnitude+ " X:"+forwardInput+" Z:"+boost);
-
-			br.motorTorque = forwardInput * motorForce * boost;
-			bl.motorTorque = forwardInput * motorForce * boost;
-		} else {
-			br.motorTorque = 0;
-			bl.motorTorque = 0;
-		}
-		//		} else {
-		//			br.brakeTorque = -1*forwardInput * brakeForce;
-		//			bl.brakeTorque = -1*forwardInput * brakeForce;
-		//			fr.brakeTorque = -1*forwardInput * brakeForce;
-		//			fl.brakeTorque = -1*forwardInput * brakeForce;
-		//		}
-		//		if (brakeInput > 0) {
-		//			br.motorTorque = 0;
-		//			bl.motorTorque = 0;
-		//		}
-
-		fr.steerAngle = turnInput * turnForce;
-		fl.steerAngle = turnInput * turnForce;
-
-		br.brakeTorque = brakeInput * brakeForce * boost;
-		bl.brakeTorque = brakeInput * brakeForce * boost;
-		fr.brakeTorque = brakeInput * brakeForce * boost;
-		fl.brakeTorque = brakeInput * brakeForce * boost;
-
-        if (writePositionsToFile)
-            WriteToRepo();
     }
 
     void WriteToRepo()

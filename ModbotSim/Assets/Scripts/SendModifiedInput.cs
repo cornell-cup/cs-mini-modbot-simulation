@@ -47,7 +47,8 @@ public class SendModifiedInput : MonoBehaviour {
 		if (turninput > 1)
 			turninput = 1;
 
-        orien = transform.rotation.eulerAngles.y;
+        //orien = transform.rotation.eulerAngles.y;
+        orien = m.getWheelOrien();
         velX = rb.velocity.x;
         velY = rb.velocity.y;
         speed = rb.velocity.magnitude;

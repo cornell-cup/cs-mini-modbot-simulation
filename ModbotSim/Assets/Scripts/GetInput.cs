@@ -106,12 +106,13 @@ public class GetInput : MonoBehaviour {
 		return 0;
 	}
 
-	public int getForwardInput(){
+	public float getForwardInput(){
 		Vector3 Udp = Vector3.zero;
-		int forwardInput;
+		int forwardInput = 0;
 		if (!usingPhone)
 		{
-			if (Input.GetAxis(vertical) > 0)
+            
+		/*	if (Input.GetAxis(vertical) > 0)
 				forwardInput = 1;
 			else if (Input.GetAxis(vertical) < 0)
 				forwardInput = -1;
@@ -122,12 +123,14 @@ public class GetInput : MonoBehaviour {
 				return -1;
 			} 
 			else
-				forwardInput = 0;
-            if(Input.GetKey(KeyCode.JoystickButton2))
+				forwardInput = 0;*/
+                float temp = Input.GetAxis(vertical);
+            if (Input.GetKey(KeyCode.JoystickButton2))
             {
-                forwardInput *= -1;
+                temp *= -1;
             }
-		}
+            return temp;
+        }
 		else
 		{
 			float z = Udp.z;

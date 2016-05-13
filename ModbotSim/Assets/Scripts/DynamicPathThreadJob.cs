@@ -11,18 +11,20 @@ public class DynamicPathThreadJob : ThreadJob
 	private List<Vector3> pathWayPoints; 
 	private HashSet<Vector3> closedNodes;
 	private double pathLength;
+	private bool useItemReduction;
 
 	// <summary>
 	// Constructor that initializes the start node and end node of the path planning
 	// </summary>
 	// <param name="startNode">Node object where the path planning starts from</param>
 	// <param name="endNode">Node object representing where the path should move towards</param> 
-	public DynamicPathThreadJob(Node startNode, Node endNode, HashSet<Vector3> closedNodes, double pathLength) {
+	public DynamicPathThreadJob(Node startNode, Node endNode, HashSet<Vector3> closedNodes, double pathLength, bool useItemReduction) {
 		this.startNode = startNode;
 		this.endNode = endNode;
 		this.closedNodes = closedNodes;
 		destinationNode = null;
 		this.pathLength = pathLength;
+		this.useItemReduction = useItemReduction;
 	}
 
 	// <summary>
@@ -36,7 +38,8 @@ public class DynamicPathThreadJob : ThreadJob
 		Dictionary<Node, float> cost_so_far = new Dictionary<Node, float> ();
 		came_from.Add (startNode, null);
 		cost_so_far.Add (startNode, 0);
-		open.queue (PathPlanningDataStructures.heuristic.Estimate (startNode), startNode);
+		open.queue (PathPlanningDataStructures.heuristic.Estimate (startNode, useItemReduction), 
+			startNode);
 		while (open.getSize() > 0) {
 			Node current = open.dequeue ();
 
@@ -54,7 +57,8 @@ public class DynamicPathThreadJob : ThreadJob
 				if ((cost_so_far.ContainsKey (n) == false || graph_cost < cost_so_far [n]) && 
 				closedNodes.Contains(n.position) == false) {
 					cost_so_far [n] = graph_cost;
-					float priority = graph_cost + PathPlanningDataStructures.heuristic.Estimate (n);
+					float priority = graph_cost + 
+						PathPlanningDataStructures.heuristic.Estimate (n, useItemReduction);
 					open.queue (priority, n);
 					came_from [n] = current;
 				}
@@ -65,9 +69,15 @@ public class DynamicPathThreadJob : ThreadJob
 		pathWayPoints = new List<Vector3> ();
 		Node currentNode = destinationNode;
 		pathWayPoints.Add (currentNode.position);
+		lock (PathPlanningDataStructures.globalLock) {
+			PathPlanningDataStructures.nodeToCount [currentNode.position] += 1;
+		}
 		while (currentNode.Equals(startNode) == false) {
 			currentNode = came_from [currentNode];
 			pathWayPoints.Add (currentNode.position);
+			lock (PathPlanningDataStructures.globalLock) {
+				PathPlanningDataStructures.nodeToCount [currentNode.position] += 1;
+			}
 		}
 		pathWayPoints.Reverse ();
 	}

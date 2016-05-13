@@ -21,6 +21,7 @@ TagManager:
   - mainCar
   - FenceHolder
   - udpvision
+  - trees
   layers:
   - Default
   - TransparentFX

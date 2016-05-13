@@ -65,7 +65,7 @@ public class UDPSend : MonoBehaviour
             byte[] dataf = data
                 .SelectMany(a => a)
                 .ToArray();
-            Debug.Log(BitConverter.ToString(dataf));
+            //Debug.Log(BitConverter.ToString(dataf));
             client.Send(dataf, dataf.Length, remoteEndPoint);
         }
         catch (Exception err)

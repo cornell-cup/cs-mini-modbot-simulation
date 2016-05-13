@@ -11,6 +11,8 @@ public class PathPlanningKart : MonoBehaviour
 {
 	//list of waypoints of the current path segment
 	public List<Vector3> currentWayPoints;
+	//boolean list describing whether a waypoint at an index is still being used by this car
+	public bool[] usesWaypoints;
 	//list of waypoints of the next path segment
 	public List<Vector3> nextWayPoints;
 	//list of waypoints for savior
@@ -41,10 +43,14 @@ public class PathPlanningKart : MonoBehaviour
 	public void PathPlanInitialSegment () {
 		//first triggered thread job for this car
 		startNode = PathPlanningDataStructures.graph.getClosestNode (transform.position);
-		currentThreadJob = new DynamicPathThreadJob (startNode, PathPlanningDataStructures.graph.endNode, closedNodes, 15.0f);
+		currentThreadJob = new DynamicPathThreadJob (startNode, PathPlanningDataStructures.graph.endNode, closedNodes, 15.0f, true);
 		currentThreadJob.Start();
 		currentThreadJob.Join();
 		currentWayPoints = currentThreadJob.getPathWayPoints();
+		usesWaypoints = new bool[currentWayPoints.Count];
+		for (int i = 0; i < usesWaypoints.Length; i++) {
+			usesWaypoints [i] = true;
+		}
 		closedNodes = currentThreadJob.getClosedNodes ();
 		//indicate that next path segment needs to calculated
 		jobInProgress = false;
@@ -56,6 +62,7 @@ public class PathPlanningKart : MonoBehaviour
 	// that calculates the path in the background
 	// </summary>
 	public void PathPlanNextSegment () {
+		bool noItem = (GetComponent<PowerUp>().powerUp == "");
 		//Check if the next path segment needs to be calculated in a thread
 		if (jobInProgress == false && nextWayPoints == null && dynamicReplan == false) {
 			//trigger thread job for this car to obtain the next set of waypoints
@@ -65,7 +72,7 @@ public class PathPlanningKart : MonoBehaviour
 			} else {
 				pathStartNode = currentThreadJob.destinationNode;
 			}
-			currentThreadJob = new DynamicPathThreadJob (pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 12.0f);
+			currentThreadJob = new DynamicPathThreadJob (pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 12.0f, noItem);
 			currentThreadJob.Start ();
 			jobInProgress = true;
 		} else if (jobInProgress == false && dynamicReplan) {
@@ -75,7 +82,7 @@ public class PathPlanningKart : MonoBehaviour
 			} else {
 				pathStartNode = PathPlanningDataStructures.graph.getClosestNode(transform.position + 3 * transform.forward);
 			}
-			currentThreadJob = new DynamicPathThreadJob(pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 5.0f);
+			currentThreadJob = new DynamicPathThreadJob(pathStartNode, PathPlanningDataStructures.graph.endNode, closedNodes, 5.0f, noItem);
 			currentThreadJob.Start ();
 			jobInProgress = true;
 		}
@@ -111,6 +118,7 @@ public class PathPlanningKart : MonoBehaviour
 				return;
 			}
 			if (currentPowerUp.powerUp == "Banana") {
+                UnityEngine.Debug.Log("GOT A BANANA");
 				Banana currentBanana = currentPowerUp.itemObject.GetComponent<Banana> ();
 				if (currentBanana.fired == false) {
 					//Iterate through all existing karts and check if another kart is behind
@@ -129,7 +137,8 @@ public class PathPlanningKart : MonoBehaviour
 					}
 				}
 			} else if (currentPowerUp.powerUp == "Green Shell") {
-				Shell currentShell = currentPowerUp.itemObject.GetComponent<Shell> ();
+                UnityEngine.Debug.Log("GOT A SHELL");
+                Shell currentShell = currentPowerUp.itemObject.GetComponent<Shell> ();
 				if (currentShell.fired == false) {
 					//Iterate through all existing karts and check if another kart is in
 					//front of this kart and somewhat inline with this kart's direction
