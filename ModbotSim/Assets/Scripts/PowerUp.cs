@@ -33,6 +33,7 @@ public class PowerUp : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        Debug.Log("Your Powerup: " + powerUp);
 		if (isActive) {
 			if (powerUp == "Boost") {
 				time += Time.deltaTime;
@@ -81,6 +82,7 @@ public class PowerUp : MonoBehaviour {
 
                 if (other.transform.tag == "Banana")
                 {
+                    Debug.Log("Picked up a Banana");
                     powerUp = "Banana";
                     Vector3 kartPos = transform.position;
                     Vector3 kartDir = -1f * transform.forward;
@@ -110,10 +112,6 @@ public class PowerUp : MonoBehaviour {
                     Activate();
                     Destroy(other.gameObject);
                 }
-            }
-            else
-            {
-                Destroy(other.gameObject);
             }
         }
 	}
